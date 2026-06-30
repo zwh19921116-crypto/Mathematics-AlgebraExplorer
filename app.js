@@ -141,18 +141,26 @@ document.addEventListener('DOMContentLoaded', function() {
   function parseCustomEquation(equation) {
     // Parse format like "3x + 2x + 5" or "3y^2 + 2y^2 + 5"
     const terms = [];
-    const regex = /([+-]?\s*\d*\.?\d*)\s*([a-z]?)(\^?\d*)?/gi;
-    let match;
-
-    while ((match = regex.exec(equation)) !== null) {
-      const coefficient = parseFloat(match[1].replace(/\s/g, '')) || (match[2] ? 1 : 0);
-      const variable = match[2] || '';
-      const power = match[3] ? parseInt(match[3].replace('^', '')) : (variable ? 1 : 0);
-
-      if (coefficient !== 0) {
+    // Split by + and - while keeping the operators
+    const termStrings = equation.match(/[+-]?[^+-]+/g) || [];
+    
+    termStrings.forEach((termStr) => {
+      termStr = termStr.trim();
+      if (!termStr) return;
+      
+      // Match pattern: optional sign, coefficient, variable, optional power
+      const match = termStr.match(/^([+-]?\s*\d*\.?\d+)?\s*([a-z]?)(\^(\d+))?/i);
+      
+      if (match) {
+        let coefficient = match[1] ? parseFloat(match[1].replace(/\s/g, '')) : (match[2] ? 1 : 0);
+        const variable = match[2] || '';
+        const power = match[4] ? parseInt(match[4]) : (variable ? 1 : 0);
+        
+        if (variable === '' && !match[1]) return; // Skip if no valid term
+        
         terms.push({ coef: coefficient, var: variable, pow: power });
       }
-    }
+    });
 
     return terms;
   }
@@ -271,7 +279,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Update active card
     document.querySelectorAll('.example-card').forEach(card => card.classList.remove('active'));
-    event.target.classList.add('active');
   }
 
   // Custom equation handler
