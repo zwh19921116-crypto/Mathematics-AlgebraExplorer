@@ -165,23 +165,6 @@ h1 {
   font-size: 1.1rem;
 }
 
-.cta {
-  margin-top: 24px;
-  display: inline-block;
-  background: linear-gradient(130deg, var(--brand) 0%, var(--brand-deep) 100%);
-  color: white;
-  text-decoration: none;
-  font-weight: 700;
-  border-radius: 12px;
-  padding: 12px 20px;
-  box-shadow: var(--shadow);
-  transition: transform 0.2s ease;
-}
-
-.cta:hover {
-  transform: translateY(-2px);
-}
-
 .section-wrap {
   width: min(1040px, calc(100% - 30px));
   margin: 20px auto;
