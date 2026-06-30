@@ -60,43 +60,69 @@ document.addEventListener('DOMContentLoaded', function() {
     const term2 = `${c}${termFormat}`;
     const termFinal = `${xCoeff}${termFormat}`;
 
-    return [
-      {
-        title: 'Step 1: Look at our expression',
-        visual: `<span class="term-box x-term">${term1}</span> ${b !== 0 ? `<span class="term-box number-term">${signed(b)}</span>` : ''} <span class="term-box x-term">${term2}</span> ${d !== 0 ? `<span class="term-box number-term">${signed(d)}</span>` : ''}`,
-        explanation: `We have terms: <strong>${term1}</strong>${b !== 0 ? `, <strong>${b}</strong>` : ''}, <strong>${term2}</strong>${d !== 0 ? `, <strong>${d}</strong>` : ''}.`
-      },
-      {
-        title: `Step 2: Find the ${variable}${powerStr} terms (blue)`,
-        visual: `<span class="term-box x-term highlight">${term1}</span> ${b !== 0 ? `<span class="term-box number-term">${signed(b)}</span>` : ''} <span class="term-box x-term highlight">${term2}</span> ${d !== 0 ? `<span class="term-box number-term">${signed(d)}</span>` : ''}`,
-        explanation: `Look for all terms with <strong>${variable}${powerStr}</strong> - those are <strong>like terms</strong>. We have <strong>${term1}</strong> and <strong>${term2}</strong>. They both have "${variable}${powerStr}", so we can add them!`
-      },
-      ...(b !== 0 || d !== 0 ? [{
-        title: 'Step 3: Find the number terms (orange)',
+    const steps = [];
+    let stepNum = 1;
+
+    // Step 1: Look at expression
+    steps.push({
+      title: `Step ${stepNum}: Look at our expression`,
+      visual: `<span class="term-box x-term">${term1}</span> ${b !== 0 ? `<span class="term-box number-term">${signed(b)}</span>` : ''} <span class="term-box x-term">${term2}</span> ${d !== 0 ? `<span class="term-box number-term">${signed(d)}</span>` : ''}`,
+      explanation: `We have terms: <strong>${term1}</strong>${b !== 0 ? `, <strong>${b}</strong>` : ''}, <strong>${term2}</strong>${d !== 0 ? `, <strong>${d}</strong>` : ''}.`
+    });
+    stepNum++;
+
+    // Step 2: Find variable terms
+    steps.push({
+      title: `Step ${stepNum}: Find the ${variable}${powerStr} terms (blue)`,
+      visual: `<span class="term-box x-term highlight">${term1}</span> ${b !== 0 ? `<span class="term-box number-term">${signed(b)}</span>` : ''} <span class="term-box x-term highlight">${term2}</span> ${d !== 0 ? `<span class="term-box number-term">${signed(d)}</span>` : ''}`,
+      explanation: `Look for all terms with <strong>${variable}${powerStr}</strong> - those are <strong>like terms</strong>. We have <strong>${term1}</strong> and <strong>${term2}</strong>. They both have \"${variable}${powerStr}\", so we can add them!`
+    });
+    stepNum++;
+
+    // Step 3 (conditional): Find number terms
+    if (b !== 0 || d !== 0) {
+      steps.push({
+        title: `Step ${stepNum}: Find the number terms (orange)`,
         visual: `<span class="term-box x-term">${term1}</span> ${b !== 0 ? `<span class="term-box number-term highlight">${signed(b)}</span>` : ''} <span class="term-box x-term">${term2}</span> ${d !== 0 ? `<span class="term-box number-term highlight">${signed(d)}</span>` : ''}`,
         explanation: `Look for all numbers without variables - those are <strong>like terms</strong> too. We have <strong>${b}</strong> and <strong>${d}</strong>. We can add them!`
-      }] : []),
-      {
-        title: `Step 4: Group the ${variable}${powerStr} terms together`,
-        visual: `<span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box x-term">${term1}</span> <span class="term-box x-term">${term2}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>${b !== 0 || d !== 0 ? ` + <span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>` : ''}`,
-        explanation: `Put parentheses around the ${variable}${powerStr} terms${b !== 0 || d !== 0 ? ' and the numbers' : ''}. This helps us see what we're adding together.`
-      },
-      {
-        title: `Step 5: Add the ${variable}${powerStr} terms`,
-        visual: `<span class="term-box x-term">${termFinal}</span>${b !== 0 ? ` <span class="term-box number-term">${signed(b)}</span>` : ''}${d !== 0 ? ` <span class="term-box number-term">${signed(d)}</span>` : ''}`,
-        explanation: `<strong>${a} + ${c} = ${xCoeff}</strong>, so <strong>${term1} + ${term2} = ${termFinal}</strong>`
-      },
-      ...(b !== 0 || d !== 0 ? [{
-        title: 'Step 6: Add the number terms',
+      });
+      stepNum++;
+
+      // Step 4: Group both
+      steps.push({
+        title: `Step ${stepNum}: Group the variable and number terms`,
+        visual: `<span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box x-term">${term1}</span> <span class="term-box x-term">${term2}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span> + <span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>`,
+        explanation: `Put parentheses around the ${variable}${powerStr} terms and the numbers. This helps us see what we're adding together.`
+      });
+      stepNum++;
+    }
+
+    // Step for adding variable terms
+    steps.push({
+      title: `Step ${stepNum}: Add the ${variable}${powerStr} terms`,
+      visual: `<span class="term-box x-term">${termFinal}</span>${b !== 0 ? ` <span class="term-box number-term">${signed(b)}</span>` : ''}${d !== 0 ? ` <span class="term-box number-term">${signed(d)}</span>` : ''}`,
+      explanation: `<strong>${a} + ${c} = ${xCoeff}</strong>, so <strong>${term1} + ${term2} = ${termFinal}</strong>`
+    });
+    stepNum++;
+
+    // Final step: Add number terms (if any)
+    if (b !== 0 || d !== 0) {
+      steps.push({
+        title: `Step ${stepNum}: Add the number terms`,
         visual: `<span class="term-box x-term">${termFinal}</span> <span class="term-box number-term">${constant}</span>`,
         explanation: `<strong>${b} + ${d} = ${constant}</strong> (add the numbers without variables)`
-      }] : []),
-      {
-        title: '✓ Final Answer',
-        visual: `<span class="term-box x-term" style="padding: 16px 20px; font-size: 1.2rem; font-weight: 700;">${termFinal}${constant !== 0 ? ` ${signed(constant)}` : ''}</span>`,
-        explanation: `Perfect! Our answer is <strong>${termFinal}${constant !== 0 ? ` ${signed(constant)}` : ''}</strong>.`
-      }
-    ];
+      });
+      stepNum++;
+    }
+
+    // Final Answer
+    steps.push({
+      title: '✓ Final Answer',
+      visual: `<span class="term-box x-term" style="padding: 16px 20px; font-size: 1.2rem; font-weight: 700;">${termFinal}${constant !== 0 ? ` ${signed(constant)}` : ''}</span>`,
+      explanation: `Perfect! Our answer is <strong>${termFinal}${constant !== 0 ? ` ${signed(constant)}` : ''}</strong>.`
+    });
+
+    return steps;
   }
 
   function showResult(containerId, title, steps, answerText) {
@@ -899,7 +925,7 @@ document.addEventListener('DOMContentLoaded', function() {
                       `Add or subtract based on the signs of the numbers.`
       },
       {
-        title: '✓ Answer',
+        title: '✓ Final Answer',
         visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
           <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${result}</span>
         </div>`,
