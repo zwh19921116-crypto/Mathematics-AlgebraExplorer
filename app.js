@@ -2215,38 +2215,54 @@ document.addEventListener('DOMContentLoaded', function() {
         const const2 = term2.constant > 0 ? `+ ${term2.constant}` : term2.constant < 0 ? `- ${Math.abs(term2.constant)}` : '';
         
         foilWorkingVisual = `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; color: var(--brand-deep); line-height: 2.4;">
+          <div style="font-family: 'Courier New', monospace; color: var(--brand-deep); line-height: 2.8;">
+            <style>
+              .foil-term-box { position: relative; cursor: pointer; transition: all 0.3s ease; }
+              .foil-term-box:hover { transform: scale(1.02); }
+              .binomial-term { display: inline-block; position: relative; margin: 0 6px; padding: 8px 12px; border: 2px solid #0a7ea4; border-radius: 4px; transition: all 0.3s ease; }
+              .binomial-term.highlight-green { box-shadow: 0 0 0 4px #1abc9c, inset 0 0 0 2px #1abc9c !important; background: rgba(26, 188, 156, 0.2) !important; }
+              .binomial-term.highlight-purple { box-shadow: 0 0 0 4px #9b59b6, inset 0 0 0 2px #9b59b6 !important; background: rgba(155, 89, 182, 0.2) !important; }
+              .binomial-term.highlight-orange { box-shadow: 0 0 0 4px #e67e22, inset 0 0 0 2px #e67e22 !important; background: rgba(230, 126, 34, 0.2) !important; }
+              .binomial-term.highlight-red { box-shadow: 0 0 0 4px #e74c3c, inset 0 0 0 2px #e74c3c !important; background: rgba(231, 76, 60, 0.2) !important; }
+            </style>
+            
             <!-- Original binomials at top -->
-            <div style="text-align: center; margin-bottom: 24px;">
-              <div style="font-size: 1.1rem; font-weight: 700; letter-spacing: 12px; color: var(--brand-deep);">
-                <span style="border: 2px solid #0a7ea4; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${coeff1}</span>
-                <span style="border: 2px solid #0a7ea4; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${const1}</span>
-                <span style="border: 2px solid #0c4c72; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${coeff2}</span>
-                <span style="border: 2px solid #0c4c72; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${const2}</span>
+            <div style="text-align: center; margin-bottom: 24px; padding: 16px; background: rgba(255,255,255,0.6); border-radius: 8px;">
+              <div style="font-size: 0.9rem; color: #666; margin-bottom: 12px; font-weight: 600;">Hover on a FOIL box to see which terms multiply:</div>
+              <div style="font-size: 1.3rem; font-weight: 900; color: var(--brand-deep); letter-spacing: 2px;">
+                <span class="binomial-term" style="border: 2px solid #0a7ea4;" data-term="coeff1">${coeff1}</span>
+                <span class="binomial-term" style="border: 2px solid #0a7ea4;" data-term="const1">${const1}</span>
+                <span style="color: #666; margin: 0 4px;">×</span>
+                <span class="binomial-term" style="border: 2px solid #0c4c72;" data-term="coeff2">${coeff2}</span>
+                <span class="binomial-term" style="border: 2px solid #0c4c72;" data-term="const2">${const2}</span>
               </div>
             </div>
             
-            <!-- FOIL Products with connections shown -->
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
-              <div style="padding: 12px; background: rgba(26, 188, 156, 0.2); border-radius: 6px; border: 2px solid #1abc9c; position: relative;">
-                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 First: ${coeff1} × ${coeff2}</div>
-                <div style="font-weight: 700; font-size: 1.2rem; color: #1abc9c; text-align: center;">${first}x²</div>
-                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ From outer terms</div>
+            <!-- FOIL Products with "makes" language -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;" class="foil-grid">
+              <div class="foil-term-box" style="padding: 14px; background: rgba(26, 188, 156, 0.2); border-radius: 6px; border: 2px solid #1abc9c; cursor: pointer;" onmouseenter="document.querySelectorAll('[data-term=coeff1], [data-term=coeff2]').forEach(t=>t.classList.add('highlight-green'))" onmouseleave="document.querySelectorAll('.binomial-term').forEach(t=>t.classList.remove('highlight-green','highlight-purple','highlight-orange','highlight-red'))">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 8px; font-weight: 700;">FIRST</div>
+                <div style="font-size: 0.95rem; color: var(--brand-deep); margin-bottom: 10px; font-weight: 600;">${coeff1} × ${coeff2}</div>
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 10px;">makes</div>
+                <div style="font-weight: 900; font-size: 1.3rem; color: #1abc9c; text-align: center; padding: 8px; background: rgba(26, 188, 156, 0.4); border-radius: 4px;">${first}x²</div>
               </div>
-              <div style="padding: 12px; background: rgba(155, 89, 182, 0.2); border-radius: 6px; border: 2px solid #9b59b6;">
-                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 Outer: ${coeff1} × ${const2}</div>
-                <div style="font-weight: 700; font-size: 1.2rem; color: #9b59b6; text-align: center;">${outer > 0 ? '+' : ''}${outer}x</div>
-                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ Outer pair</div>
+              <div class="foil-term-box" style="padding: 14px; background: rgba(155, 89, 182, 0.2); border-radius: 6px; border: 2px solid #9b59b6; cursor: pointer;" onmouseenter="document.querySelectorAll('[data-term=coeff1], [data-term=const2]').forEach(t=>t.classList.add('highlight-purple'))" onmouseleave="document.querySelectorAll('.binomial-term').forEach(t=>t.classList.remove('highlight-green','highlight-purple','highlight-orange','highlight-red'))">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 8px; font-weight: 700;">OUTER</div>
+                <div style="font-size: 0.95rem; color: var(--brand-deep); margin-bottom: 10px; font-weight: 600;">${coeff1} × ${const2}</div>
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 10px;">makes</div>
+                <div style="font-weight: 900; font-size: 1.3rem; color: #9b59b6; text-align: center; padding: 8px; background: rgba(155, 89, 182, 0.4); border-radius: 4px;">${outer > 0 ? '+' : ''}${outer}x</div>
               </div>
-              <div style="padding: 12px; background: rgba(230, 126, 34, 0.2); border-radius: 6px; border: 2px solid #e67e22;">
-                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 Inner: ${const1} × ${coeff2}</div>
-                <div style="font-weight: 700; font-size: 1.2rem; color: #e67e22; text-align: center;">${inner > 0 ? '+' : ''}${inner}x</div>
-                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ Inner pair</div>
+              <div class="foil-term-box" style="padding: 14px; background: rgba(230, 126, 34, 0.2); border-radius: 6px; border: 2px solid #e67e22; cursor: pointer;" onmouseenter="document.querySelectorAll('[data-term=const1], [data-term=coeff2]').forEach(t=>t.classList.add('highlight-orange'))" onmouseleave="document.querySelectorAll('.binomial-term').forEach(t=>t.classList.remove('highlight-green','highlight-purple','highlight-orange','highlight-red'))">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 8px; font-weight: 700;">INNER</div>
+                <div style="font-size: 0.95rem; color: var(--brand-deep); margin-bottom: 10px; font-weight: 600;">${const1} × ${coeff2}</div>
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 10px;">makes</div>
+                <div style="font-weight: 900; font-size: 1.3rem; color: #e67e22; text-align: center; padding: 8px; background: rgba(230, 126, 34, 0.4); border-radius: 4px;">${inner > 0 ? '+' : ''}${inner}x</div>
               </div>
-              <div style="padding: 12px; background: rgba(231, 76, 60, 0.2); border-radius: 6px; border: 2px solid #e74c3c;">
-                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 Last: ${const1} × ${const2}</div>
-                <div style="font-weight: 700; font-size: 1.2rem; color: #e74c3c; text-align: center;">${last > 0 ? '+' : ''}${last}</div>
-                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ Constants</div>
+              <div class="foil-term-box" style="padding: 14px; background: rgba(231, 76, 60, 0.2); border-radius: 6px; border: 2px solid #e74c3c; cursor: pointer;" onmouseenter="document.querySelectorAll('[data-term=const1], [data-term=const2]').forEach(t=>t.classList.add('highlight-red'))" onmouseleave="document.querySelectorAll('.binomial-term').forEach(t=>t.classList.remove('highlight-green','highlight-purple','highlight-orange','highlight-red'))">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 8px; font-weight: 700;">LAST</div>
+                <div style="font-size: 0.95rem; color: var(--brand-deep); margin-bottom: 10px; font-weight: 600;">${const1} × ${const2}</div>
+                <div style="font-size: 0.8rem; color: #999; margin-bottom: 10px;">makes</div>
+                <div style="font-weight: 900; font-size: 1.3rem; color: #e74c3c; text-align: center; padding: 8px; background: rgba(231, 76, 60, 0.4); border-radius: 4px;">${last > 0 ? '+' : ''}${last}</div>
               </div>
             </div>
           </div>
@@ -2259,57 +2275,48 @@ document.addEventListener('DOMContentLoaded', function() {
         
         combineVisual = `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
           <div style="font-family: 'Courier New', monospace; color: var(--brand-deep); line-height: 2.8;">
-            <!-- Show trace from FOIL products to final answer -->
-            <div style="margin-bottom: 20px;">
-              <div style="font-size: 0.85rem; color: #666; font-weight: 600; margin-bottom: 12px;">📌 Trace each FOIL product to the final answer:</div>
+            <!-- Combining step -->
+            <div style="padding: 16px; background: rgba(31, 138, 72, 0.2); border-radius: 8px; margin-bottom: 20px;">
+              <div style="font-size: 0.9rem; color: #666; font-weight: 600; margin-bottom: 12px;">Now we combine the like terms:</div>
               
-              <div style="display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 12px; align-items: center; margin-bottom: 16px;">
-                <!-- FOIL Products -->
-                <div style="text-align: center;">
-                  <div style="font-size: 0.8rem; color: #666; margin-bottom: 6px;">FOIL Products</div>
-                  <div style="padding: 10px; background: rgba(255,255,255,0.5); border-radius: 6px; border: 2px solid #999;">
-                    <div style="font-weight: 700; font-size: 1rem; margin: 4px;">
-                      <span style="background: rgba(26, 188, 156, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${first}x²</span>
-                      <span style="background: rgba(155, 89, 182, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${outer > 0 ? '+' : ''}${outer}x</span>
-                      <span style="background: rgba(230, 126, 34, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${inner > 0 ? '+' : ''}${inner}x</span>
-                      <span style="background: rgba(231, 76, 60, 0.3); padding: 3px 6px; border-radius: 3px; display: block;">${last > 0 ? '+' : ''}${last}</span>
-                    </div>
-                  </div>
-                </div>
-                
-                <!-- Arrow -->
-                <div style="text-align: center; font-size: 1.4rem; color: #1f8a48; font-weight: 700;">→</div>
-                
-                <!-- Final Answer -->
-                <div style="text-align: center;">
-                  <div style="font-size: 0.8rem; color: #666; margin-bottom: 6px;">Combine Like Terms</div>
-                  <div style="padding: 10px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border: 2px solid var(--success);">
-                    <div style="font-weight: 700; font-size: 1rem; margin: 4px;">
-                      <div style="background: rgba(26, 188, 156, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${first}x²</div>
-                      <div style="background: rgba(155, 89, 182, 0.6); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px; color: white; font-weight: 800;">+ ${xTermSum}x</div>
-                      <div style="background: rgba(231, 76, 60, 0.3); padding: 3px 6px; border-radius: 3px; display: block;">${last > 0 ? '+' : ''}${last}</div>
-                    </div>
-                  </div>
-                </div>
+              <div style="font-size: 1.15rem; font-weight: 700; color: var(--brand-deep); text-align: center; margin-bottom: 16px;">
+                <span style="background: rgba(155, 89, 182, 0.3); padding: 8px 12px; border-radius: 4px; display: inline-block; margin: 4px;">${outer}x</span>
+                <span style="color: #666; margin: 0 8px; font-weight: 400;">and</span>
+                <span style="background: rgba(230, 126, 34, 0.3); padding: 8px 12px; border-radius: 4px; display: inline-block; margin: 4px;">${inner > 0 ? '+' : ''}${inner}x</span>
+              </div>
+              
+              <div style="text-align: center; font-size: 0.95rem; color: #666; margin-bottom: 12px; font-weight: 600;">are LIKE TERMS (both have x)</div>
+              
+              <div style="font-size: 1.05rem; text-align: center; font-weight: 700; color: var(--brand-deep);">
+                <span style="background: rgba(155, 89, 182, 0.3); padding: 8px 12px; border-radius: 4px; display: inline-block; margin: 4px;">${outer}</span>
+                +
+                <span style="background: rgba(230, 126, 34, 0.3); padding: 8px 12px; border-radius: 4px; display: inline-block; margin: 4px;">${inner}</span>
+                =
+                <span style="background: rgba(155, 89, 182, 0.6); color: white; padding: 8px 12px; border-radius: 4px; display: inline-block; margin: 4px; font-weight: 900;">${xTermSum}</span>
+              </div>
+              
+              <div style="text-align: center; font-size: 1.1rem; font-weight: 800; color: var(--success); margin-top: 12px;">
+                So together they make: <span style="background: rgba(155, 89, 182, 0.6); color: white; padding: 8px 12px; border-radius: 4px; display: inline-block; margin: 4px;">${xTermSum}x</span>
               </div>
             </div>
             
-            <!-- Show the combining calculation -->
-            <div style="padding: 12px; background: rgba(155, 89, 182, 0.15); border-radius: 6px; border-left: 3px solid #9b59b6; margin-bottom: 16px;">
-              <div style="font-size: 0.85rem; color: #666; font-weight: 600; margin-bottom: 8px;">✏️ Combine the x terms:</div>
-              <div style="font-size: 1.05rem; font-weight: 700; color: var(--brand-deep); text-align: center;">
-                ${outer}x + (${inner}x) = <span style="background: rgba(155, 89, 182, 0.3); padding: 2px 6px; border-radius: 3px;">${xTermSum}x</span>
+            <!-- Final combined form -->
+            <div style="padding: 16px; background: rgba(31, 138, 72, 0.3); border-radius: 8px; border: 3px solid var(--success); text-align: center;">
+              <div style="font-size: 0.95rem; color: #666; margin-bottom: 12px; font-weight: 600;">✓ COMBINING ALL THE PIECES TOGETHER:</div>
+              
+              <div style="margin-bottom: 16px;">
+                <div style="font-size: 0.9rem; color: #666; margin-bottom: 6px;">The</div>
+                <div style="display: inline-block; background: rgba(26, 188, 156, 0.3); padding: 8px 12px; border-radius: 4px; margin: 4px; font-weight: 700; font-size: 1.05rem;">${first}x²</div>
+                <span style="color: #666; margin: 0 6px;">+</span>
+                <div style="display: inline-block; background: rgba(155, 89, 182, 0.6); color: white; padding: 8px 12px; border-radius: 4px; margin: 4px; font-weight: 800; font-size: 1.05rem;">${xTermSum}x</div>
+                <span style="color: #666; margin: 0 6px;">+</span>
+                <div style="display: inline-block; background: rgba(231, 76, 60, 0.3); padding: 8px 12px; border-radius: 4px; margin: 4px; font-weight: 700; font-size: 1.05rem;">${last}</div>
               </div>
-            </div>
-            
-            <!-- Final expanded form with breakdown -->
-            <div style="padding: 14px; background: rgba(31, 138, 72, 0.25); border-radius: 6px; border: 3px solid var(--success); text-align: center;">
-              <div style="font-size: 0.85rem; color: #666; margin-bottom: 10px; font-weight: 600;">✓ FINAL EXPANDED FORM:</div>
-              <div style="font-size: 1.5rem; font-weight: 900; color: var(--success); letter-spacing: 1px;">
+              
+              <div style="font-size: 0.95rem; color: #666; margin-bottom: 12px; font-weight: 600;">makes</div>
+              
+              <div style="font-size: 1.6rem; font-weight: 900; color: var(--success); padding: 12px; background: rgba(31, 138, 72, 0.25); border-radius: 6px;">
                 ${example.expanded}
-              </div>
-              <div style="font-size: 0.8rem; color: #666; margin-top: 10px; font-weight: 500;">
-                From: ${first}x² term + ${xTermSum}x combined + ${last} constant
               </div>
             </div>
           </div>
