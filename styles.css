@@ -357,6 +357,11 @@ input[type="number"]:focus {
   border-width: 3px;
 }
 
+sup {
+  font-size: 0.75em;
+  font-weight: 600;
+}
+
 .step-visual {
   margin: 20px 0;
   padding: 16px;

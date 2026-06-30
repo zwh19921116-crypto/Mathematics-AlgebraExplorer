@@ -69,45 +69,53 @@ document.addEventListener('DOMContentLoaded', function() {
       const b = Number(document.getElementById('lt-b').value);
       const c = Number(document.getElementById('lt-c').value);
       const d = Number(document.getElementById('lt-d').value);
+      const variable = document.getElementById('lt-var1').value || 'x';
+      const power = Number(document.getElementById('lt-pow1').value) || 1;
 
       const xCoeff = a + c;
       const constant = b + d;
+      
+      const powerStr = power === 1 ? '' : `<sup>${power}</sup>`;
+      const termFormat = `${variable}${powerStr}`;
+      const term1 = `${a}${termFormat}`;
+      const term2 = `${c}${termFormat}`;
+      const termFinal = `${xCoeff}${termFormat}`;
 
       const steps = [
         {
           title: 'Step 1: Look at our expression',
-          visual: `<span class="term-box x-term">${a}x</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box x-term">${c}x</span> <span class="term-box number-term">${signed(d)}</span>`,
-          explanation: `We have 4 terms: <strong>${a}x</strong>, <strong>${b}</strong>, <strong>${c}x</strong>, and <strong>${d}</strong>.`
+          visual: `<span class="term-box x-term">${term1}</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box x-term">${term2}</span> <span class="term-box number-term">${signed(d)}</span>`,
+          explanation: `We have 4 terms: <strong>${term1}</strong>, <strong>${b}</strong>, <strong>${term2}</strong>, and <strong>${d}</strong>.`
         },
         {
-          title: 'Step 2: Find the x terms (blue)',
-          visual: `<span class="term-box x-term highlight">${a}x</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box x-term highlight">${c}x</span> <span class="term-box number-term">${signed(d)}</span>`,
-          explanation: `Look for all terms with an "x" - those are <strong>like terms</strong>. We have <strong>${a}x</strong> and <strong>${c}x</strong>. They both have "x", so we can add them!`
+          title: `Step 2: Find the ${variable}${powerStr} terms (blue)`,
+          visual: `<span class="term-box x-term highlight">${term1}</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box x-term highlight">${term2}</span> <span class="term-box number-term">${signed(d)}</span>`,
+          explanation: `Look for all terms with <strong>${variable}${powerStr}</strong> - those are <strong>like terms</strong>. We have <strong>${term1}</strong> and <strong>${term2}</strong>. They both have "${variable}${powerStr}", so we can add them!`
         },
         {
           title: 'Step 3: Find the number terms (orange)',
-          visual: `<span class="term-box x-term">${a}x</span> <span class="term-box number-term highlight">${signed(b)}</span> <span class="term-box x-term">${c}x</span> <span class="term-box number-term highlight">${signed(d)}</span>`,
-          explanation: `Look for all numbers without "x" - those are <strong>like terms</strong> too. We have <strong>${b}</strong> and <strong>${d}</strong>. We can add them!`
+          visual: `<span class="term-box x-term">${term1}</span> <span class="term-box number-term highlight">${signed(b)}</span> <span class="term-box x-term">${term2}</span> <span class="term-box number-term highlight">${signed(d)}</span>`,
+          explanation: `Look for all numbers without variables - those are <strong>like terms</strong> too. We have <strong>${b}</strong> and <strong>${d}</strong>. We can add them!`
         },
         {
-          title: 'Step 4: Group the x terms together',
-          visual: `<span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box x-term">${a}x</span> <span class="term-box x-term">${c}x</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span> + <span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>`,
-          explanation: `Put parentheses around the x terms and the numbers. This helps us see what we're adding together.`
+          title: `Step 4: Group the ${variable}${powerStr} terms together`,
+          visual: `<span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box x-term">${term1}</span> <span class="term-box x-term">${term2}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span> + <span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>`,
+          explanation: `Put parentheses around the ${variable}${powerStr} terms and the numbers. This helps us see what we're adding together.`
         },
         {
-          title: 'Step 5: Add the x terms',
-          visual: `<span class="term-box x-term">${xCoeff}x</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span>`,
-          explanation: `<strong>${a}x + ${c}x = ${xCoeff}x</strong> (add the numbers in front of the x)`
+          title: `Step 5: Add the ${variable}${powerStr} terms`,
+          visual: `<span class="term-box x-term">${termFinal}</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span>`,
+          explanation: `<strong>${a} + ${c} = ${xCoeff}</strong>, so <strong>${term1} + ${term2} = ${termFinal}</strong>`
         },
         {
           title: 'Step 6: Add the number terms',
-          visual: `<span class="term-box x-term">${xCoeff}x</span> <span class="term-box number-term">${constant}</span>`,
-          explanation: `<strong>${b} + ${d} = ${constant}</strong> (add the numbers without x)`
+          visual: `<span class="term-box x-term">${termFinal}</span> <span class="term-box number-term">${constant}</span>`,
+          explanation: `<strong>${b} + ${d} = ${constant}</strong> (add the numbers without variables)`
         },
         {
           title: '✓ Final Answer',
-          visual: `<span class="term-box x-term" style="padding: 16px 20px; font-size: 1.2rem; font-weight: 700;">${xCoeff}x ${signed(constant)}</span>`,
-          explanation: `Perfect! We combined like terms to simplify the expression. Our answer is <strong>${xCoeff}x ${signed(constant)}</strong>.`
+          visual: `<span class="term-box x-term" style="padding: 16px 20px; font-size: 1.2rem; font-weight: 700;">${termFinal} ${signed(constant)}</span>`,
+          explanation: `Perfect! We combined like terms to simplify the expression. Our answer is <strong>${termFinal} ${signed(constant)}</strong>.`
         }
       ];
 
