@@ -1,45 +1,48 @@
-// Navigation
-const navLinks = document.querySelectorAll('.nav-link');
-const topicSections = document.querySelectorAll('.topic-section');
+// Wait for DOM to be fully loaded
+document.addEventListener('DOMContentLoaded', function() {
+  // Navigation
+  const navLinks = document.querySelectorAll('.nav-link');
+  const topicSections = document.querySelectorAll('.topic-section');
 
-function setActiveLink(section) {
-  navLinks.forEach((link) => {
-    if (link.dataset.section === section) {
-      link.classList.add('active');
-    } else {
-      link.classList.remove('active');
-    }
-  });
-}
-
-function showSection(sectionId) {
-  // Hide all topic sections
-  topicSections.forEach((section) => {
-    section.style.display = 'none';
-  });
-
-  // Show the specific topic
-  const section = document.getElementById(sectionId);
-  if (section) {
-    section.style.display = 'block';
+  function setActiveLink(section) {
+    navLinks.forEach((link) => {
+      if (link.dataset.section === section) {
+        link.classList.add('active');
+      } else {
+        link.classList.remove('active');
+      }
+    });
   }
-}
 
-navLinks.forEach((link) => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const section = link.dataset.section;
-    setActiveLink(section);
-    showSection(section);
+  function showSection(sectionId) {
+    // Hide all topic sections
+    topicSections.forEach((section) => {
+      section.style.display = 'none';
+    });
+
+    // Show the specific topic
+    const section = document.getElementById(sectionId);
+    if (section) {
+      section.style.display = 'block';
+    }
+  }
+
+  navLinks.forEach((link) => {
+    link.addEventListener('click', (e) => {
+      e.preventDefault();
+      const section = link.dataset.section;
+      setActiveLink(section);
+      showSection(section);
+    });
   });
-});
 
-// Initialize - show first topic on page load
-if (topicSections.length > 0) {
-  const firstSection = topicSections[0].id;
-  setActiveLink(firstSection);
-  showSection(firstSection);
-}
+  // Initialize - show first topic on page load
+  if (topicSections.length > 0) {
+    const firstSection = topicSections[0].id;
+    setActiveLink(firstSection);
+    showSection(firstSection);
+  }
+});
 
 const fmt = (value) => {
   if (Number.isInteger(value)) {
