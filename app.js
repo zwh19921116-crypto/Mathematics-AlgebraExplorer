@@ -1,7 +1,6 @@
 // Navigation
 const navLinks = document.querySelectorAll('.nav-link');
 const topicSections = document.querySelectorAll('.topic-section');
-const heroSection = document.querySelector('.hero');
 
 function setActiveLink(section) {
   navLinks.forEach((link) => {
@@ -19,12 +18,10 @@ function showSection(sectionId) {
     section.style.display = 'none';
   });
 
-  // If intro is selected, show hero; otherwise show the specific topic
-  if (sectionId === 'intro') {
-    heroSection.style.display = 'block';
-  } else {
-    heroSection.style.display = 'none';
-    document.getElementById(sectionId).style.display = 'block';
+  // Show the specific topic
+  const section = document.getElementById(sectionId);
+  if (section) {
+    section.style.display = 'block';
   }
 }
 

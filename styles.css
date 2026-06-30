@@ -84,6 +84,29 @@ body {
 
 .content-panel {
   flex: 1;
+  padding: 24px 28px;
+}
+
+.section-title {
+  margin-bottom: 24px;
+  padding-bottom: 16px;
+  border-bottom: 2px solid var(--line);
+}
+
+.section-title h2 {
+  margin: 0 0 8px;
+  color: var(--brand-deep);
+  font-size: 1.8rem;
+}
+
+.section-title p {
+  margin: 0;
+  font-size: 0.95rem;
+  color: var(--muted);
+}
+
+.panel-help {
+  color: var(--muted);
 }
 
 .bg-orb {
