@@ -2161,9 +2161,77 @@ document.addEventListener('DOMContentLoaded', function() {
     { display: '(x - 4)(x - 5)', expanded: 'x² - 9x + 20' }
   ];
 
+  function parseBinomial(expr) {
+    // Parse expressions like (ax+b)(cx+d)
+    const match = expr.match(/\(([^)]+)\)\(([^)]+)\)/);
+    if (!match) return null;
+    
+    const parse = (term) => {
+      const xMatch = term.match(/([+-]?\d*)\s*x\s*([+-]\s*\d+)?/);
+      if (!xMatch) return null;
+      const coeff = xMatch[1] === '' || xMatch[1] === '+' ? 1 : xMatch[1] === '-' ? -1 : parseInt(xMatch[1]);
+      const constant = xMatch[2] ? parseInt(xMatch[2].replace(/\s/g, '')) : 0;
+      return { coeff, constant };
+    };
+    
+    const term1 = parse(match[1].trim());
+    const term2 = parse(match[2].trim());
+    
+    return { term1, term2, expr };
+  }
+
   function displayPolySteps(example) {
     polyCustomInput.value = example.display;
     polyStepsContainer.innerHTML = '';
+
+    const parsed = parseBinomial(example.display);
+    let foilVisual = '';
+    let finalText = '';
+    
+    if (parsed) {
+      const { term1, term2 } = parsed;
+      if (term1 && term2) {
+        // Calculate FOIL products
+        const first = term1.coeff * term2.coeff;
+        const outer = term1.coeff * term2.constant;
+        const inner = term1.constant * term2.coeff;
+        const last = term1.constant * term2.constant;
+        
+        // Format the products for display
+        const formatTerm = (val, isFirst = false) => {
+          if (val === 0) return '';
+          if (isFirst) return val === 1 ? 'x²' : val === -1 ? '-x²' : `${val}x²`;
+          return val === 1 ? 'x' : val === -1 ? '-x' : `${val}x`;
+        };
+        
+        foilVisual = `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1rem; color: var(--brand-deep); margin-bottom: 16px;">
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
+              <div style="padding: 10px; background: rgba(26, 188, 156, 0.2); border-radius: 6px; border-left: 3px solid #1abc9c;">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">First</div>
+                <div style="font-weight: 700; color: var(--brand-deep);">${first}x²</div>
+              </div>
+              <div style="padding: 10px; background: rgba(155, 89, 182, 0.2); border-radius: 6px; border-left: 3px solid #9b59b6;">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">Outer</div>
+                <div style="font-weight: 700; color: var(--brand-deep);">${outer > 0 ? '+' : ''}${outer}x</div>
+              </div>
+              <div style="padding: 10px; background: rgba(230, 126, 34, 0.2); border-radius: 6px; border-left: 3px solid #e67e22;">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">Inner</div>
+                <div style="font-weight: 700; color: var(--brand-deep);">${inner > 0 ? '+' : ''}${inner}x</div>
+              </div>
+              <div style="padding: 10px; background: rgba(231, 76, 60, 0.2); border-radius: 6px; border-left: 3px solid #e74c3c;">
+                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">Last</div>
+                <div style="font-weight: 700; color: var(--brand-deep);">${last > 0 ? '+' : ''}${last}</div>
+              </div>
+            </div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.15); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="font-size: 0.9rem; color: #666; margin-bottom: 4px;">Combine like terms:</div>
+              <div style="font-weight: 700; font-size: 1.1rem; color: var(--success);">${example.expanded}</div>
+            </div>
+          </div>
+        </div>`;
+      }
+    }
 
     const steps = [
       {
@@ -2187,13 +2255,8 @@ document.addEventListener('DOMContentLoaded', function() {
       },
       {
         title: 'Step 3: Multiply and combine',
-        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Get four products:</div>
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
-              <span style="color: var(--success); font-weight: 700;">Then combine like terms</span>
-            </div>
-          </div>
+        visual: foilVisual || `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="color: var(--brand-deep); font-weight: 600;">Unable to parse expression. Use format: (ax+b)(cx+d)</div>
         </div>`,
         explanation: 'Multiply all pairs, then add together any like terms (same variable and power).'
       },
