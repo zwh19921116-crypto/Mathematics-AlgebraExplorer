@@ -1104,45 +1104,94 @@ document.addEventListener('DOMContentLoaded', function() {
   const sysCustomBtn = document.getElementById('sys-custom-btn');
 
   const sysExamples = [
-    { display: 'x + y = 5 and 2x - y = 4', x: 3, y: 2 },
-    { display: 'x + y = 7 and x - y = 1', x: 4, y: 3 },
-    { display: '2x + y = 8 and x + y = 5', x: 3, y: 2 },
-    { display: 'x + 2y = 7 and x - y = 1', x: 3, y: 2 }
+    { 
+      eq1: 'x + y = 5',
+      eq2: '2x - y = 4',
+      x: 3, 
+      y: 2,
+      display: 'x + y = 5 and 2x - y = 4'
+    },
+    { 
+      eq1: 'x + y = 7',
+      eq2: 'x - y = 1',
+      x: 4, 
+      y: 3,
+      display: 'x + y = 7 and x - y = 1'
+    },
+    { 
+      eq1: '2x + y = 8',
+      eq2: 'x + y = 5',
+      x: 3, 
+      y: 2,
+      display: '2x + y = 8 and x + y = 5'
+    },
+    { 
+      eq1: 'x + 2y = 7',
+      eq2: 'x - y = 1',
+      x: 3, 
+      y: 2,
+      display: 'x + 2y = 7 and x - y = 1'
+    }
   ];
 
   function displaySysSteps(example) {
-    sysCustomInput1.value = example.display.split('and')[0].trim();
-    sysCustomInput2.value = example.display.split('and')[1].trim();
+    sysCustomInput1.value = example.eq1;
+    sysCustomInput2.value = example.eq2;
     sysStepsContainer.innerHTML = '';
 
     const steps = [
       {
-        title: 'Step 1: Look at both equations',
-        visual: `<div style="text-align: left;">
-          <p style="margin: 8px 0;">${example.display.split('and')[0].trim()}</p>
-          <p style="margin: 8px 0;">${example.display.split('and')[1].trim()}</p>
+        title: 'Step 1: Write both equations',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <div style="font-size: 1.1rem; font-weight: 600; margin: 8px 0;">Equation 1: ${example.eq1}</div>
+          <div style="font-size: 1.1rem; font-weight: 600; margin: 8px 0;">Equation 2: ${example.eq2}</div>
         </div>`,
-        explanation: 'We need to find values for both x and y that work in BOTH equations.'
+        explanation: 'A system means we have TWO equations with TWO unknowns (x and y). We need to find values that satisfy BOTH equations.'
       },
       {
-        title: 'Step 2: Choose a method',
-        visual: `<span style="font-size: 1.1rem;"><strong>Elimination:</strong> Add or subtract equations to remove one variable</span>`,
-        explanation: 'Or use <strong>substitution</strong>: solve for one variable, then plug it into the other equation.'
+        title: 'Step 2: Look for a way to eliminate one variable',
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="margin-bottom: 8px;"><strong>Elimination Method:</strong> Add or subtract the equations to cancel out one variable</div>
+          <div style="margin-top: 12px;">Notice: Can we add/subtract to make x or y disappear?</div>
+        </div>`,
+        explanation: 'We often use the elimination method: add or subtract equations so one variable cancels out.'
       },
       {
-        title: 'Step 3: Solve for one variable',
-        visual: `<span style="font-size: 1.1rem;">Use the equations to find the first value</span>`,
-        explanation: 'Combine the equations cleverly to eliminate one variable.'
+        title: 'Step 3: Add or subtract the equations',
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 0.95rem; margin: 8px 0;"><strong>When we add Equation 1 and Equation 2:</strong></div>
+          <div style="font-family: monospace; margin: 8px 0; background: rgba(255, 255, 255, 0.6); padding: 8px; border-radius: 4px;">
+            (${example.eq1}) + (${example.eq2})
+          </div>
+          <div style="margin-top: 8px; font-weight: 600; color: var(--brand-deep);">One variable is eliminated!</div>
+        </div>`,
+        explanation: 'This gives us an equation with only one variable we can solve.'
       },
       {
-        title: 'Step 4: Solve for the other variable',
-        visual: `<span style="font-size: 1.1rem;">Plug back into an original equation</span>`,
-        explanation: 'Use the value you found to get the second variable.'
+        title: 'Step 4: Solve for the first variable',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--success);">Solve the single-variable equation</div>
+          <div style="margin-top: 8px; font-size: 0.95rem;">Use normal equation solving steps</div>
+        </div>`,
+        explanation: 'Now we have one equation with one unknown - solve it like we learned before!'
       },
       {
-        title: '✓ Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${example.x}, y = ${example.y}</span>`,
-        explanation: `The solution is the point (${example.x}, ${example.y})`
+        title: 'Step 5: Find the second variable',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-size: 0.95rem; margin-bottom: 8px;">Plug your first answer back into either original equation</div>
+          <div style="font-weight: 600; color: var(--brand-deep);">For example: If x = ${example.x}, substitute into ${example.eq1}</div>
+          <div style="margin-top: 8px; font-family: monospace;">${example.x} + y = ${example.x + example.y}</div>
+          <div style="margin-top: 8px; font-weight: 600;">Solve: y = ${example.y}</div>
+        </div>`,
+        explanation: 'Substitute the first solution into an original equation to find the second variable.'
+      },
+      {
+        title: '✓ Solution',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <div style="font-size: 1.2rem; font-weight: 700; color: var(--success);">x = ${example.x}, y = ${example.y}</div>
+          <div style="margin-top: 8px; font-size: 0.9rem; color: var(--muted);">Point: (${example.x}, ${example.y})</div>
+        </div>`,
+        explanation: `Check: Does (${example.x}, ${example.y}) work in BOTH original equations? Try it!`
       }
     ];
 
@@ -1162,7 +1211,11 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (sysCustomBtn) {
     sysCustomBtn.addEventListener('click', () => {
-      displaySysSteps({ display: 'System of equations', x: 0, y: 0 });
+      const eq1 = sysCustomInput1.value.trim();
+      const eq2 = sysCustomInput2.value.trim();
+      if (eq1 && eq2) {
+        displaySysSteps({ eq1, eq2, x: '?', y: '?', display: `${eq1} and ${eq2}` });
+      }
     });
   }
 
