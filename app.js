@@ -1374,70 +1374,144 @@ document.addEventListener('DOMContentLoaded', function() {
   const ineqCustomBtn = document.getElementById('ineq-custom-btn');
 
   const ineqExamples = [
-    { display: 'x + 3 > 7', answer: 'x > 4' },
-    { display: '2x ≤ 10', answer: 'x ≤ 5' },
-    { display: 'x - 2 < 5', answer: 'x < 7' },
-    { display: '3x ≥ 12', answer: 'x ≥ 4' }
+    { display: 'x + 3 > 7', answer: 'x > 4', operation: 'subtract', operand: 3, symbol: '>' },
+    { display: '2x ≤ 10', answer: 'x ≤ 5', operation: 'divide', operand: 2, symbol: '≤' },
+    { display: 'x - 2 < 5', answer: 'x < 7', operation: 'add', operand: 2, symbol: '<' },
+    { display: '3x ≥ 12', answer: 'x ≥ 4', operation: 'divide', operand: 3, symbol: '≥' }
   ];
 
   function displayIneqSteps(example) {
     ineqCustomInput.value = example.display;
     ineqStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Original inequality',
-        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
-          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
-        </div>`,
-        explanation: 'Inequalities show a RANGE of values, not just one answer. The symbols are: < (less than), > (greater than), ≤ (less than or equal), ≥ (greater than or equal)'
-      },
-      {
-        title: 'Step 2: Solve like an equation',
-        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
-            Use the same steps as solving equations:
-          </div>
-          <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; line-height: 1.8;">
-            • Undo operations by doing the <span style="color: var(--accent); font-weight: 700;">opposite on BOTH sides</span><br/>
-            • Work step-by-step to isolate the variable
-          </div>
-        </div>`,
-        explanation: 'Undo operations in reverse order: subtraction/addition first, then multiplication/division.'
-      },
-      {
-        title: '⚠️ Important Rule!',
-        visual: `<div style="background: rgba(180, 58, 58, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--error);">
-          <div style="font-size: 1.2rem; font-weight: 700; color: var(--error);">
-            FLIP the inequality sign when:<br/>
-            • Multiplying by a NEGATIVE number<br/>
-            • Dividing by a NEGATIVE number
-          </div>
-          <div style="margin-top: 12px; font-size: 0.95rem; color: #666;">
-            Example: If -2x > 6, divide by -2: x <span style="color: var(--error); font-weight: 700;"><</span> -3 (sign flips!)
-          </div>
-        </div>`,
-        explanation: 'This is the one BIG difference between inequalities and equations!'
-      },
-      {
-        title: '✓ Solution',
-        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
-          <span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.answer}</span>
-        </div>`,
-        explanation: `Any value that satisfies ${example.answer} makes the original inequality true.`
-      }
-    ];
+    // Use the example properties if available
+    const operation = example.operation || '+';
+    const operand = example.operand !== undefined ? example.operand : 0;
+    const symbol = example.symbol || '>';
+    const variable = 'x';
+    
+    // Parse the answer to get the result value (e.g., "x ≤ 5")
+    const answerMatch = example.answer.match(/\d+/);
+    const answerValue = answerMatch ? parseInt(answerMatch[0]) : 0;
+    
+    // Extract the right value from the display string - find last number
+    const numMatches = example.display.match(/\d+/g);
+    const rightValue = numMatches ? parseInt(numMatches[numMatches.length - 1]) : 0;
 
-    steps.forEach((step) => {
-      const stepDiv = document.createElement('div');
-      stepDiv.className = 'step-section';
-      stepDiv.innerHTML = `
-        <h4>${step.title}</h4>
-        <div class="step-visual">${step.visual}</div>
-        <p>${step.explanation}</p>
-      `;
-      ineqStepsContainer.appendChild(stepDiv);
-    });
+    // Step 1: Original inequality
+    const step1 = document.createElement('div');
+    step1.className = 'step-section';
+    step1.innerHTML = `
+      <h4>Step 1: Original inequality</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.6rem; font-weight: 700; color: var(--brand-deep); padding: 20px; background: rgba(10, 126, 164, 0.1); border-radius: 8px; border: 2px solid var(--brand);">
+          ${example.display}
+        </div>
+        <div style="margin-top: 12px; font-size: 0.9rem; color: #666; font-weight: 600;">
+          This means: a range of values for ${variable} that satisfy this condition
+        </div>
+      </div>
+    `;
+    ineqStepsContainer.appendChild(step1);
+
+    // Step 2: Undo the operation
+    let undoHTML = '';
+    let leftSideText = '';
+    let rightSideText = '';
+    
+    if (operation === 'subtract') {
+      undoHTML = `To isolate ${variable}, we need to undo the addition`;
+      leftSideText = `${variable} + ${operand} − ${operand}`;
+      rightSideText = `${rightValue} − ${operand}`;
+    } else if (operation === 'add') {
+      undoHTML = `To isolate ${variable}, we need to undo the subtraction`;
+      leftSideText = `${variable} − ${operand} + ${operand}`;
+      rightSideText = `${rightValue} + ${operand}`;
+    } else if (operation === 'divide') {
+      undoHTML = `To isolate ${variable}, we need to undo the multiplication`;
+      leftSideText = `${operand}${variable} ÷ ${operand}`;
+      rightSideText = `${rightValue} ÷ ${operand}`;
+    }
+
+    const step2 = document.createElement('div');
+    step2.className = 'step-section';
+    step2.innerHTML = `
+      <h4>Step 2: Undo the operation (both sides)</h4>
+      <div class="step-visual">
+        <div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 0.9rem; color: #666; font-weight: 600; margin-bottom: 8px;">${undoHTML}</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+              <div style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Left side</div>
+                <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: 700; padding: 12px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+                  ${leftSideText}
+                </div>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: #999;">${symbol}</div>
+              <div style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Right side</div>
+                <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; font-weight: 700; padding: 12px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+                  ${rightSideText}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; padding: 12px; background: rgba(255, 122, 89, 0.15); border-radius: 6px;">
+            <span style="color: var(--accent); font-weight: 700;">Do the same operation to BOTH sides to keep it balanced</span>
+          </div>
+        </div>
+      </div>
+    `;
+    ineqStepsContainer.appendChild(step2);
+
+    // Step 3: Solution
+    const step3 = document.createElement('div');
+    step3.className = 'step-section';
+    step3.innerHTML = `
+      <h4>Step 3: Simplify to find the solution</h4>
+      <div class="step-visual">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap; margin-bottom: 16px;">
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Simplified left</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 12px 16px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+              ${variable}
+            </div>
+          </div>
+          <div style="font-size: 1.3rem; font-weight: 700; color: #999;">${symbol}</div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Simplified right</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 12px 16px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+              ${answerValue}
+            </div>
+          </div>
+        </div>
+        <div style="text-align: center; padding: 12px; background: rgba(31, 138, 72, 0.15); border-radius: 6px;">
+          <span style="color: var(--success); font-weight: 700;">Solution: ${variable} ${symbol} ${answerValue}</span>
+          <span style="color: #999; font-size: 0.9rem; margin-left: 8px;">makes ${example.answer}</span>
+        </div>
+      </div>
+    `;
+    ineqStepsContainer.appendChild(step3);
+
+    // Step 4: What it means
+    const symbolText = symbol === '>' ? 'greater than' : symbol === '<' ? 'less than' : symbol === '>=' ? 'greater than or equal to' : 'less than or equal to';
+    const step4 = document.createElement('div');
+    step4.className = 'step-section';
+    step4.innerHTML = `
+      <h4>✓ Final Answer</h4>
+      <div class="step-visual">
+        <div style="text-align: center;">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.6rem; font-weight: 700; color: var(--success); padding: 20px; background: rgba(31, 138, 72, 0.15); border-radius: 8px; border: 2px solid var(--success); margin-bottom: 12px;">
+            ${example.answer}
+          </div>
+          <div style="font-size: 0.95rem; color: #666; font-weight: 600; line-height: 1.6;">
+            Any value of ${variable} that is ${symbolText} <strong>${answerValue}</strong> makes the inequality true.
+          </div>
+        </div>
+      </div>
+    `;
+    ineqStepsContainer.appendChild(step4);
 
     ineqStepsContainer.style.display = 'block';
   }
@@ -1679,18 +1753,150 @@ document.addEventListener('DOMContentLoaded', function() {
     factorCustomInput.value = example.display;
     factorStepsContainer.innerHTML = '';
 
-    const steps = generateFactorSteps(example);
+    // Parse coefficients
+    const expr = example.display.replace(/\s+/g, '');
+    const parts = expr.match(/x²([+-]?\d*)x?([+-]?\d*)/);
+    let b = 0, c = 0;
+    
+    if (parts) {
+      b = parts[1] ? parseInt(parts[1]) : 1;
+      c = parts[2] ? parseInt(parts[2]) : 0;
+    }
+    
+    // Find factor pair
+    let factor1 = null, factor2 = null;
+    for (let i = 1; i <= Math.abs(c); i++) {
+      if (c % i === 0) {
+        const other = c / i;
+        if (i + other === b || -i - other === b) {
+          factor1 = i * Math.sign(b + other);
+          factor2 = other * Math.sign(b - other);
+          break;
+        }
+      }
+    }
+    
+    if (!factor1 || !factor2) {
+      factor1 = 1; factor2 = c;
+    }
 
-    steps.forEach((step) => {
-      const stepDiv = document.createElement('div');
-      stepDiv.className = 'step-section';
-      stepDiv.innerHTML = `
-        <h4>${step.title}</h4>
-        <div class="step-visual">${step.visual}</div>
-        <p>${step.explanation}</p>
-      `;
-      factorStepsContainer.appendChild(stepDiv);
-    });
+    // Step 1: Original quadratic
+    const step1 = document.createElement('div');
+    step1.className = 'step-section';
+    step1.innerHTML = `
+      <h4>Step 1: Original quadratic</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.6rem; font-weight: 700; color: var(--brand-deep); padding: 20px; background: rgba(10, 126, 164, 0.1); border-radius: 8px; border: 2px solid var(--brand);">
+          ${example.display}
+        </div>
+      </div>
+    `;
+    factorStepsContainer.appendChild(step1);
+
+    // Step 2: Find factor pairs
+    const step2 = document.createElement('div');
+    step2.className = 'step-section';
+    step2.innerHTML = `
+      <h4>Step 2: Find two numbers that multiply and add</h4>
+      <div class="step-visual">
+        <div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="margin-bottom: 16px;">
+            <div style="font-size: 0.95rem; color: #666; font-weight: 600; margin-bottom: 10px;">We need numbers that:</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap;">
+              <div style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Multiply to constant</div>
+                <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+                  ${c}
+                </div>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: #999;">and</div>
+              <div style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Add to middle</div>
+                <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+                  ${b}
+                </div>
+              </div>
+            </div>
+          </div>
+          <div style="margin-top: 16px; padding: 14px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+            <div style="display: flex; align-items: center; justify-content: center; gap: 24px; flex-wrap: wrap;">
+              <div style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 4px;">Factor 1</div>
+                <div style="font-family: 'Courier New', monospace; font-size: 1.3rem; font-weight: 700; color: var(--success);">
+                  ${factor1}
+                </div>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--success);">×</div>
+              <div style="text-align: center;">
+                <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 4px;">Factor 2</div>
+                <div style="font-family: 'Courier New', monospace; font-size: 1.3rem; font-weight: 700; color: var(--success);">
+                  ${factor2}
+                </div>
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: var(--success);">=</div>
+              <div style="font-family: 'Courier New', monospace; font-size: 1.3rem; font-weight: 700; color: var(--success);">
+                ${factor1 * factor2}
+                <div style="font-size: 0.75rem; color: #666; margin-top: 4px;">✓</div>
+              </div>
+            </div>
+            <div style="margin-top: 8px; text-align: center; font-size: 0.9rem; color: #666; font-weight: 600;">
+              ${factor1} + ${factor2} = ${factor1 + factor2} ✓
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    factorStepsContainer.appendChild(step2);
+
+    // Step 3: Build the factored form
+    const step3 = document.createElement('div');
+    step3.className = 'step-section';
+    step3.innerHTML = `
+      <h4>Step 3: Write the factors as binomials</h4>
+      <div class="step-visual">
+        <div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="margin-bottom: 16px; text-align: center;">
+            <div style="font-size: 0.95rem; color: #666; font-weight: 600; margin-bottom: 10px;">The numbers become the constants in binomials:</div>
+            <div style="display: flex; align-items: center; justify-content: center; gap: 12px; flex-wrap: wrap;">
+              <div style="font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: 700; padding: 12px 16px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+                (x ${factor1 >= 0 ? '+' : ''} ${factor1})
+              </div>
+              <div style="font-size: 1.2rem; font-weight: 700; color: #999;">×</div>
+              <div style="font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: 700; padding: 12px 16px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+                (x ${factor2 >= 0 ? '+' : ''} ${factor2})
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px;">
+            <span style="color: var(--success); font-weight: 700;">makes ${example.factored}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    factorStepsContainer.appendChild(step3);
+
+    // Step 4: Final factored form
+    const step4 = document.createElement('div');
+    step4.className = 'step-section';
+    step4.innerHTML = `
+      <h4>✓ Factored Form</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="margin-bottom: 12px;">
+          <div style="font-size: 0.95rem; color: #666; font-weight: 600; margin-bottom: 8px;">Result:</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.5rem; font-weight: 700; color: var(--brand-deep); margin-bottom: 8px;">
+            ${example.display}
+          </div>
+          <div style="font-size: 1.2rem; color: #999; margin-bottom: 8px;">=</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.6rem; font-weight: 700; color: var(--success); padding: 20px; background: rgba(31, 138, 72, 0.15); border-radius: 8px; border: 2px solid var(--success);">
+            ${example.factored}
+          </div>
+        </div>
+        <div style="margin-top: 12px; font-size: 0.9rem; color: #666; font-weight: 600;">
+          Now you can find where this equals zero by solving each factor!
+        </div>
+      </div>
+    `;
+    factorStepsContainer.appendChild(step4);
 
     factorStepsContainer.style.display = 'block';
   }
@@ -1893,67 +2099,168 @@ document.addEventListener('DOMContentLoaded', function() {
   const expCustomBtn = document.getElementById('exp-custom-btn');
 
   const expExamples = [
-    { display: 'x² × x³', simplified: 'x⁵', rule: 'Add exponents when multiplying same bases' },
-    { display: 'x⁵ ÷ x²', simplified: 'x³', rule: 'Subtract exponents when dividing same bases' },
-    { display: '(x²)³', simplified: 'x⁶', rule: 'Multiply exponents when raising to a power' },
-    { display: 'x⁰', simplified: '1', rule: 'Any base to the 0 power equals 1' }
+    { display: 'x² × x³', simplified: 'x⁵', rule: 'Add exponents when multiplying same bases', exp1: 2, exp2: 3, operation: '×' },
+    { display: 'x⁵ ÷ x²', simplified: 'x³', rule: 'Subtract exponents when dividing same bases', exp1: 5, exp2: 2, operation: '÷' },
+    { display: '(x²)³', simplified: 'x⁶', rule: 'Multiply exponents when raising to a power', exp1: 2, exp2: 3, operation: 'power' },
+    { display: 'x⁰', simplified: '1', rule: 'Any base to the 0 power equals 1', exp1: 0, operation: 'zero' }
   ];
 
   function displayExpSteps(example) {
     expCustomInput.value = example.display;
     expStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Expression with exponents',
-        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
-          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
-        </div>`,
-        explanation: 'We have an expression involving exponents that we need to simplify.'
-      },
-      {
-        title: 'Step 2: Identify the rule',
-        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); text-align: center;">
-            <span style="color: var(--accent); font-weight: 700;">${example.rule}</span>
-          </div>
-          <div style="margin-top: 12px; padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; font-size: 0.95rem;">
-            Remember: The bases must be the same!
-          </div>
-        </div>`,
-        explanation: example.rule
-      },
-      {
-        title: 'Step 3: Apply the rule',
-        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Simplify:</div>
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
-              <span style="color: var(--success); font-weight: 700; font-size: 1.2rem;">${example.simplified}</span>
+    // Step 1: Original expression
+    const step1 = document.createElement('div');
+    step1.className = 'step-section';
+    step1.innerHTML = `
+      <h4>Step 1: Original expression</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.6rem; font-weight: 700; color: var(--brand-deep); padding: 20px; background: rgba(10, 126, 164, 0.1); border-radius: 8px; border: 2px solid var(--brand);">
+          ${example.display}
+        </div>
+      </div>
+    `;
+    expStepsContainer.appendChild(step1);
+
+    // Step 2: Apply the rule with calculation
+    const step2 = document.createElement('div');
+    step2.className = 'step-section';
+    let calculationHTML = '';
+    let resultExponent = 0;
+    
+    if (example.operation === '×') {
+      const result = example.exp1 + example.exp2;
+      resultExponent = result;
+      calculationHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">First exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+              ${example.exp1}
             </div>
           </div>
-        </div>`,
-        explanation: 'Work through the exponent rule to get the simplified form.'
-      },
-      {
-        title: '✓ Final Answer',
-        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
-          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.simplified}</span>
-        </div>`,
-        explanation: `${example.display} simplifies to ${example.simplified}`
-      }
-    ];
-
-    steps.forEach((step) => {
-      const stepDiv = document.createElement('div');
-      stepDiv.className = 'step-section';
-      stepDiv.innerHTML = `
-        <h4>${step.title}</h4>
-        <div class="step-visual">${step.visual}</div>
-        <p>${step.explanation}</p>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #999;">+</div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Second exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+              ${example.exp2}
+            </div>
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #999;">=</div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">New exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+              ${result}
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; text-align: center; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px;">
+          <span style="color: var(--success); font-weight: 700;">${example.exp1} + ${example.exp2} = ${result}</span>
+          <span style="color: #999; font-size: 0.9rem; margin-left: 8px;">makes x^${result}</span>
+        </div>
       `;
-      expStepsContainer.appendChild(stepDiv);
-    });
+    } else if (example.operation === '÷') {
+      const result = example.exp1 - example.exp2;
+      resultExponent = result;
+      calculationHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Numerator exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+              ${example.exp1}
+            </div>
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #999;">−</div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Denominator exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+              ${example.exp2}
+            </div>
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #999;">=</div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">New exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+              ${result}
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; text-align: center; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px;">
+          <span style="color: var(--success); font-weight: 700;">${example.exp1} − ${example.exp2} = ${result}</span>
+          <span style="color: #999; font-size: 0.9rem; margin-left: 8px;">makes x^${result}</span>
+        </div>
+      `;
+    } else if (example.operation === 'power') {
+      const result = example.exp1 * example.exp2;
+      resultExponent = result;
+      calculationHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 16px; flex-wrap: wrap;">
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Inner exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+              ${example.exp1}
+            </div>
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #999;">×</div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">Outer exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+              ${example.exp2}
+            </div>
+          </div>
+          <div style="font-size: 1.4rem; font-weight: 700; color: #999;">=</div>
+          <div style="text-align: center;">
+            <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 6px;">New exponent</div>
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; padding: 10px 16px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+              ${result}
+            </div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; text-align: center; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px;">
+          <span style="color: var(--success); font-weight: 700;">${example.exp1} × ${example.exp2} = ${result}</span>
+          <span style="color: #999; font-size: 0.9rem; margin-left: 8px;">makes x^${result}</span>
+        </div>
+      `;
+    } else if (example.operation === 'zero') {
+      resultExponent = 0;
+      calculationHTML = `
+        <div style="text-align: center; padding: 20px; background: rgba(31, 138, 72, 0.1); border-radius: 8px; border: 2px solid var(--success);">
+          <div style="font-size: 1.2rem; color: #666; font-weight: 600; margin-bottom: 12px;">Any number to the power of 0 equals 1</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: 700; color: var(--success);">
+            x⁰ = 1
+          </div>
+        </div>
+      `;
+    }
+
+    step2.innerHTML = `
+      <h4>Step 2: Apply the rule</h4>
+      <div class="step-visual">
+        <div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="margin-bottom: 12px; font-size: 0.95rem; color: #666; font-weight: 600;">
+            Rule: ${example.rule}
+          </div>
+          ${calculationHTML}
+        </div>
+      </div>
+    `;
+    expStepsContainer.appendChild(step2);
+
+    // Step 3: Final answer
+    const step3 = document.createElement('div');
+    step3.className = 'step-section';
+    step3.innerHTML = `
+      <h4>✓ Simplified Form</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.6rem; font-weight: 700; color: var(--success); padding: 20px; background: rgba(31, 138, 72, 0.15); border-radius: 8px; border: 2px solid var(--success);">
+          ${example.simplified}
+        </div>
+        <div style="margin-top: 12px; font-size: 0.95rem; color: #666; font-weight: 600;">
+          ${example.display} = ${example.simplified}
+        </div>
+      </div>
+    `;
+    expStepsContainer.appendChild(step3);
 
     expStepsContainer.style.display = 'block';
   }
