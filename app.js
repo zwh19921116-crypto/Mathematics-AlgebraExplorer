@@ -992,32 +992,90 @@ document.addEventListener('DOMContentLoaded', function() {
     { display: '5x - 5 = 15', x: 4 }
   ];
 
+  function generateTwoStepSteps(example) {
+    // Parse equation: ax + b = c
+    const eqParts = example.display.split('=').map(e => e.trim());
+    const leftSide = eqParts[0];
+    const rightSide = parseFloat(eqParts[1]);
+    
+    // Extract coefficient and constant from left side
+    const xMatch = leftSide.match(/(-?\d*)\s*x/);
+    const constMatch = leftSide.match(/([+-]\s*\d+)(?!x)|^(-?\d+)(?!\s*x)/);
+    
+    const coeff = xMatch ? parseFloat(xMatch[1] || 1) : 1;
+    let constant = 0;
+    if (constMatch) {
+      const constStr = constMatch[0].replace(/\s/g, '');
+      constant = parseFloat(constStr);
+    }
+    
+    // Step 1: Subtract constant from both sides
+    const afterStep1 = rightSide - constant;
+    const x = afterStep1 / coeff;
+    
+    const steps = [
+      {
+        title: 'Step 1: Write the equation',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: `We need to solve this in two steps: first remove the constant, then divide by the coefficient.`
+      },
+      {
+        title: `Step 2: Subtract ${constant} from BOTH sides`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Original:</div>
+            <div style="margin-bottom: 24px;">${example.display}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${constant} from BOTH sides:</div>
+            <div style="margin-bottom: 24px;">
+              ${coeff}x ${signed(constant)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>= ${rightSide} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>
+            </div>
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700;">${coeff}x = ${afterStep1}</div>
+            </div>
+          </div>
+        </div>`,
+        explanation: `We subtract the constant to isolate the x term.`
+      },
+      {
+        title: `Step 3: Divide BOTH sides by ${coeff}`,
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
+            <div style="margin-bottom: 24px;">${coeff}x = ${afterStep1}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Divide BOTH sides by ${coeff}:</div>
+            <div style="margin-bottom: 24px;">
+              ${coeff}x <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${coeff} </span>= ${afterStep1} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${coeff} </span>
+            </div>
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${fmt(x)}</div>
+            </div>
+          </div>
+        </div>`,
+        explanation: `Divide both sides by ${coeff} to get x by itself.`
+      },
+      {
+        title: '✓ Solution',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">x = ${fmt(x)}</span>
+        </div>`,
+        explanation: `Check: Plug ${fmt(x)} back into the original equation to verify it works!`
+      }
+    ];
+    
+    return steps;
+  }
+
   function displayTwoStepSteps(example) {
     twoStepCustomInput.value = example.display;
     twoStepStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Identify the equation',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'We need two operations: undo addition/subtraction, then undo multiplication/division.'
-      },
-      {
-        title: 'Step 2: Undo addition/subtraction first',
-        visual: `<span style="font-size: 1.1rem;">Move the constant to the other side</span>`,
-        explanation: 'This isolates the term with x.'
-      },
-      {
-        title: 'Step 3: Undo multiplication/division',
-        visual: `<span style="font-size: 1.1rem;">Divide by the coefficient</span>`,
-        explanation: 'This isolates x completely.'
-      },
-      {
-        title: '✓ Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${example.x}</span>`,
-        explanation: `The value of x is ${example.x}`
-      }
-    ];
+    const steps = generateTwoStepSteps(example);
 
     steps.forEach((step) => {
       const stepDiv = document.createElement('div');
@@ -1062,37 +1120,117 @@ document.addEventListener('DOMContentLoaded', function() {
     { display: '4x - 1 + 2x = 23', x: 4 }
   ];
 
+  function generateMultiStepSteps(example) {
+    // Parse equation: axn + ax + b = c
+    const eqParts = example.display.split('=').map(e => e.trim());
+    const leftSide = eqParts[0];
+    const rightSide = parseFloat(eqParts[1]);
+    
+    // Extract all x terms and constants
+    const xTerms = leftSide.match(/([+-]?\s*\d*)\s*x/g) || [];
+    const totalCoeff = xTerms.reduce((sum, term) => {
+      const coeff = parseFloat(term.replace(/[x\s]/g, '') || 1);
+      return sum + coeff;
+    }, 0);
+    
+    // Extract constants
+    const parts = leftSide.split(/x/).map(p => p.trim());
+    let constant = 0;
+    for (let i = 0; i < parts.length; i++) {
+      if (i === parts.length - 1) {
+        const match = parts[i].match(/([+-]?\s*\d+)/);
+        if (match) constant += parseFloat(match[0].replace(/\s/g, ''));
+      } else {
+        const match = parts[i].match(/([+-]?\s*\d+)$/);
+        if (match) constant += parseFloat(match[0].replace(/\s/g, ''));
+      }
+    }
+    
+    const afterStep1 = rightSide - constant;
+    const x = afterStep1 / totalCoeff;
+    
+    const steps = [
+      {
+        title: 'Step 1: Original equation',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: `First, combine all x terms together on the left side.`
+      },
+      {
+        title: `Step 2: Combine like terms`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Original:</div>
+            <div style="margin-bottom: 24px;">${example.display}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Combine all x terms:</div>
+            <div style="margin-bottom: 24px;">
+              <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;">${totalCoeff}x</span> ${signed(constant)} = ${rightSide}
+            </div>
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700;">${totalCoeff}x ${signed(constant)} = ${rightSide}</div>
+            </div>
+          </div>
+        </div>`,
+        explanation: `Add up all the coefficients of x, and all the constant numbers.`
+      },
+      {
+        title: `Step 3: Subtract ${constant} from BOTH sides`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
+            <div style="margin-bottom: 24px;">${totalCoeff}x ${signed(constant)} = ${rightSide}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${constant} from BOTH sides:</div>
+            <div style="margin-bottom: 24px;">
+              ${totalCoeff}x ${signed(constant)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>= ${rightSide} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>
+            </div>
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700;">${totalCoeff}x = ${afterStep1}</div>
+            </div>
+          </div>
+        </div>`,
+        explanation: `Move the constant to the right side to isolate the x term.`
+      },
+      {
+        title: `Step 4: Divide BOTH sides by ${totalCoeff}`,
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
+            <div style="margin-bottom: 24px;">${totalCoeff}x = ${afterStep1}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Divide BOTH sides by ${totalCoeff}:</div>
+            <div style="margin-bottom: 24px;">
+              ${totalCoeff}x <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${totalCoeff} </span>= ${afterStep1} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${totalCoeff} </span>
+            </div>
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${fmt(x)}</div>
+            </div>
+          </div>
+        </div>`,
+        explanation: `Divide both sides by ${totalCoeff} to isolate x completely.`
+      },
+      {
+        title: '✓ Solution',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">x = ${fmt(x)}</span>
+        </div>`,
+        explanation: `Check: Substitute ${fmt(x)} back into the original equation to verify the solution!`
+      }
+    ];
+    
+    return steps;
+  }
+
   function displayMultiStepSteps(example) {
     multiStepCustomInput.value = example.display;
     multiStepStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Original equation',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'Combine like terms first, then solve like a two-step equation.'
-      },
-      {
-        title: 'Step 2: Combine like terms on left side',
-        visual: `<span style="font-size: 1.1rem;">Group all x terms together</span>`,
-        explanation: 'Add or subtract the coefficients of x.'
-      },
-      {
-        title: 'Step 3: Isolate the x term',
-        visual: `<span style="font-size: 1.1rem;">Move constants to the right side</span>`,
-        explanation: 'Use addition or subtraction.'
-      },
-      {
-        title: 'Step 4: Solve for x',
-        visual: `<span style="font-size: 1.1rem;">Divide by the coefficient</span>`,
-        explanation: 'This gives us the final answer.'
-      },
-      {
-        title: '✓ Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${fmt(example.x)}</span>`,
-        explanation: `The value of x is ${fmt(example.x)}`
-      }
-    ];
+    const steps = generateMultiStepSteps(example);
 
     steps.forEach((step) => {
       const stepDiv = document.createElement('div');
