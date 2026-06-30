@@ -14,7 +14,25 @@
   <div class="bg-orb orb-2" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
 
-  <header class="hero">
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <h2>Algebra Explorer</h2>
+      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+    </div>
+    <ul class="nav-menu" role="navigation">
+      <li><a href="#intro" class="nav-link active" data-section="intro">Overview</a></li>
+      <li><a href="#topic-likeTerms" class="nav-link" data-section="likeTerms">Combine Like Terms</a></li>
+      <li><a href="#topic-solveEq" class="nav-link" data-section="solveEq">Solve Linear Equation</a></li>
+      <li><a href="#topic-distribute" class="nav-link" data-section="distribute">Distributive Property</a></li>
+      <li><a href="#topic-practice" class="nav-link" data-section="practice">Practice Challenge</a></li>
+    </ul>
+  </nav>
+
+  <header class="hero" id="intro">
     <div class="hero-content">
       <p class="kicker">Mathematics Learning Studio</p>
       <h1>Algebra Explorer</h1>
@@ -22,39 +40,15 @@
         Learn algebra the easy way with guided, step-by-step walkthroughs.
         Every activity shows what to do, why it works, and how to check your answer.
       </p>
-      <a class="cta" href="#explorer">Start Exploring</a>
+      <a class="cta" href="#topic-likeTerms">Start Exploring</a>
     </div>
   </header>
 
   <main>
-    <section class="quick-guide section-wrap">
-      <h2>Three Easy Rules</h2>
-      <div class="rule-cards">
-        <article class="rule-card">
-          <h3>1) Keep Like Terms Together</h3>
-          <p>Only combine terms with the same variable and power. Example: 3x and 5x can combine, but 3x and 5 cannot.</p>
-        </article>
-        <article class="rule-card">
-          <h3>2) Balance Both Sides</h3>
-          <p>For equations, whatever you do on one side, do the same on the other side to keep things equal.</p>
-        </article>
-        <article class="rule-card">
-          <h3>3) Reverse Operations</h3>
-          <p>Undo addition and subtraction first, then multiplication and division, to isolate the variable.</p>
-        </article>
-      </div>
-    </section>
-
-    <section id="explorer" class="explorer section-wrap">
+    <section id="topic-likeTerms" class="explorer section-wrap topic-section">
       <div class="section-title">
-        <h2>Interactive Algebra Explorer</h2>
-        <p>Pick a topic, enter values, and follow the worked steps.</p>
-      </div>
-
-      <div class="topic-tabs" role="tablist" aria-label="Algebra Topics">
-        <button class="topic-tab active" data-topic="likeTerms" role="tab" aria-selected="true">Combine Like Terms</button>
-        <button class="topic-tab" data-topic="solveEq" role="tab" aria-selected="false">Solve Linear Equation</button>
-        <button class="topic-tab" data-topic="distribute" role="tab" aria-selected="false">Distributive Property</button>
+        <h2>Combine Like Terms</h2>
+        <p>Learn how to simplify expressions by grouping terms with the same variable.</p>
       </div>
 
       <div class="panels">
@@ -78,7 +72,16 @@
           <button class="action" id="run-likeTerms">Show Steps</button>
           <div class="result" id="result-likeTerms"></div>
         </section>
+      </div>
+    </section>
 
+    <section id="topic-solveEq" class="explorer section-wrap topic-section">
+      <div class="section-title">
+        <h2>Solve Linear Equations</h2>
+        <p>Master the steps to balance equations and isolate the variable.</p>
+      </div>
+
+      <div class="panels">
         <section class="panel" id="panel-solveEq" role="tabpanel">
           <h3>Solve ax + b = cx + d</h3>
           <p class="panel-help">Great for practicing balancing equations.</p>
@@ -99,7 +102,16 @@
           <button class="action" id="run-solveEq">Show Steps</button>
           <div class="result" id="result-solveEq"></div>
         </section>
+      </div>
+    </section>
 
+    <section id="topic-distribute" class="explorer section-wrap topic-section">
+      <div class="section-title">
+        <h2>Distributive Property</h2>
+        <p>Learn how to multiply a number by a sum or difference inside parentheses.</p>
+      </div>
+
+      <div class="panels">
         <section class="panel" id="panel-distribute" role="tabpanel">
           <h3>Use the Distributive Property</h3>
           <p class="panel-help">Expand k(mx + n)</p>
@@ -120,7 +132,7 @@
       </div>
     </section>
 
-    <section class="practice section-wrap">
+    <section id="topic-practice" class="practice section-wrap topic-section">
       <div class="section-title">
         <h2>Quick Practice Challenge</h2>
         <p>Try one random linear equation each time and check your answer.</p>

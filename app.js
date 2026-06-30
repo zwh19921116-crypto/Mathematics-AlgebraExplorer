@@ -1,24 +1,72 @@
-const tabs = document.querySelectorAll('.topic-tab');
-const panels = {
-  likeTerms: document.getElementById('panel-likeTerms'),
-  solveEq: document.getElementById('panel-solveEq'),
-  distribute: document.getElementById('panel-distribute')
-};
+// Sidebar Navigation
+const navLinks = document.querySelectorAll('.nav-link');
+const menuToggle = document.getElementById('menu-toggle');
+const sidebar = document.getElementById('sidebar');
+const navMenu = document.querySelector('.nav-menu');
 
-for (const tab of tabs) {
-  tab.addEventListener('click', () => {
-    tabs.forEach((btn) => {
-      btn.classList.remove('active');
-      btn.setAttribute('aria-selected', 'false');
-    });
-
-    Object.values(panels).forEach((panel) => panel.classList.remove('active'));
-
-    tab.classList.add('active');
-    tab.setAttribute('aria-selected', 'true');
-    panels[tab.dataset.topic].classList.add('active');
+function setActiveLink(section) {
+  navLinks.forEach((link) => {
+    if (link.dataset.section === section) {
+      link.classList.add('active');
+    } else {
+      link.classList.remove('active');
+    }
   });
 }
+
+navLinks.forEach((link) => {
+  link.addEventListener('click', (e) => {
+    e.preventDefault();
+    const section = link.dataset.section;
+    setActiveLink(section);
+
+    const target = document.getElementById(section);
+    if (target) {
+      target.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Close mobile menu after navigation
+    if (window.innerWidth <= 720) {
+      navMenu.classList.remove('open');
+      menuToggle.classList.remove('open');
+    }
+  });
+});
+
+// Mobile menu toggle
+if (menuToggle) {
+  menuToggle.addEventListener('click', () => {
+    navMenu.classList.toggle('open');
+    menuToggle.classList.toggle('open');
+  });
+}
+
+// Close menu when clicking outside
+document.addEventListener('click', (e) => {
+  if (window.innerWidth <= 720 && !e.target.closest('.sidebar')) {
+    navMenu.classList.remove('open');
+    menuToggle.classList.remove('open');
+  }
+});
+
+// Update active link on scroll
+window.addEventListener('scroll', () => {
+  const sections = document.querySelectorAll('[id^="intro"], [id^="topic-"]');
+  let current = '';
+
+  sections.forEach((section) => {
+    const sectionTop = section.offsetTop;
+    const sectionHeight = section.clientHeight;
+    if (window.pageYOffset >= sectionTop - 100) {
+      current = section.getAttribute('id');
+    }
+  });
+
+  if (current) {
+    const sectionName = current.replace('topic-', '');
+    setActiveLink(sectionName);
+  }
+});
 
 const fmt = (value) => {
   if (Number.isInteger(value)) {
