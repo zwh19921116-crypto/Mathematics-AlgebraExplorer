@@ -1549,37 +1549,139 @@ document.addEventListener('DOMContentLoaded', function() {
     { display: 'x² + 2x - 3 = 0', roots: 'x = 1 or x = -3' }
   ];
 
+  function generateQuadSteps(example) {
+    // Parse equation: x² + bx + c = 0
+    const eqParts = example.display.split('=').map(e => e.trim());
+    const leftSide = eqParts[0];
+    
+    // Extract coefficients
+    let a = 0, b = 0, c = 0;
+    const terms = leftSide.replace(/\s+/g, '').replace(/-/g, '+-').split('+').filter(t => t.length > 0);
+    
+    for (let term of terms) {
+      if (term.includes('x²') || term.includes('x^2')) {
+        a = parseFloat(term.replace(/x²|x\^2/g, '') || 1);
+      } else if (term.includes('x')) {
+        b = parseFloat(term.replace('x', '') || 1);
+      } else {
+        c = parseFloat(term);
+      }
+    }
+    
+    // For simple factoring (when a = 1)
+    if (a === 1) {
+      // Find factors of c that add to b
+      let factor1 = null, factor2 = null;
+      for (let i = 1; i <= Math.abs(c); i++) {
+        if (c % i === 0) {
+          const other = c / i;
+          if (i + other === b) {
+            factor1 = i;
+            factor2 = other;
+            break;
+          }
+          if (-i - other === b) {
+            factor1 = -i;
+            factor2 = -other;
+            break;
+          }
+        }
+      }
+      
+      if (factor1 !== null && factor2 !== null) {
+        const root1 = -factor1;
+        const root2 = -factor2;
+        
+        const steps = [
+          {
+            title: 'Step 1: Original equation',
+            visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+              <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+            </div>`,
+            explanation: 'A quadratic equation has an x² term and equals zero.'
+          },
+          {
+            title: 'Step 2: Find factors',
+            visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+              <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+                Find two numbers that multiply to <strong>${c}</strong> and add to <strong>${b}</strong>
+              </div>
+              <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+                <div style="color: var(--success); font-weight: 700;">Numbers: <strong>${factor1}</strong> and <strong>${factor2}</strong></div>
+                <div style="color: #666; font-size: 0.9rem; margin-top: 4px;">${factor1} × ${factor2} = ${c}  ✓  |  ${factor1} + ${factor2} = ${b}  ✓</div>
+              </div>
+            </div>`,
+            explanation: 'We need two numbers that multiply to the constant term and add to the coefficient of x.'
+          },
+          {
+            title: 'Step 3: Write as factors',
+            visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+              <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+                <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Factored form:</div>
+                <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+                  <span style="color: var(--success); font-weight: 700; font-size: 1.2rem;">(x ${factor1 >= 0 ? '+' : ''} ${factor1})(x ${factor2 >= 0 ? '+' : ''} ${factor2}) = 0</span>
+                </div>
+              </div>
+            </div>`,
+            explanation: 'Write the quadratic as a product of two binomials.'
+          },
+          {
+            title: 'Step 4: Set each factor to zero',
+            visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+              <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600;">
+                <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Either factor equals zero:</div>
+                <div style="display: flex; justify-content: space-around; text-align: center;">
+                  <div>
+                    x ${factor1 >= 0 ? '+' : ''} ${factor1} = 0<br/>
+                    <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;">x = ${-factor1}</span>
+                  </div>
+                  <div style="color: #999;">OR</div>
+                  <div>
+                    x ${factor2 >= 0 ? '+' : ''} ${factor2} = 0<br/>
+                    <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;">x = ${-factor2}</span>
+                  </div>
+                </div>
+              </div>
+            </div>`,
+            explanation: 'If a product equals zero, at least one factor must equal zero. Solve each equation separately.'
+          },
+          {
+            title: '✓ Solutions',
+            visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+              <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">x = ${root1} or x = ${root2}</span>
+            </div>`,
+            explanation: `The quadratic has two solutions: ${root1} and ${root2}. Check: (${root1})² + ${b}(${root1}) + ${c} = 0 and (${root2})² + ${b}(${root2}) + ${c} = 0 ✓`
+          }
+        ];
+        
+        return steps;
+      }
+    }
+    
+    // Fallback to simple display
+    return [
+      {
+        title: 'Step 1: Original equation',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: 'Quadratic equations have an x² term and equal zero.'
+      },
+      {
+        title: '✓ Roots',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.roots}</span>
+        </div>`,
+        explanation: 'The solutions to the quadratic equation'
+      }
+    ];
+  }
+
   function displayQuadSteps(example) {
     quadCustomInput.value = example.display;
     quadStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Identify the quadratic',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'Quadratic equations have an x² term and equal zero.'
-      },
-      {
-        title: 'Step 2: Method 1 - Factor if possible',
-        visual: `<span style="font-size: 1.1rem;">Factor into (x + a)(x + b) = 0</span>`,
-        explanation: 'If it factors nicely, solve each factor = 0'
-      },
-      {
-        title: 'Step 3: Method 2 - Use the Quadratic Formula',
-        visual: `<span style="font-size: 1rem;"><strong>x = [-b ± √(b² - 4ac)] / 2a</strong></span>`,
-        explanation: 'This always works for any quadratic equation'
-      },
-      {
-        title: 'Step 4: Solve for x',
-        visual: `<span style="font-size: 1.1rem;">Perform the calculations</span>`,
-        explanation: 'Quadratics typically have 2 solutions (roots)'
-      },
-      {
-        title: '✓ Roots',
-        visual: `<span style="font-size: 1.3rem; font-weight: 700; color: var(--success);">${example.roots}</span>`,
-        explanation: `The solutions to the quadratic equation`
-      }
-    ];
+    const steps = generateQuadSteps(example);
 
     steps.forEach((step) => {
       const stepDiv = document.createElement('div');
