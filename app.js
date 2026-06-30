@@ -59,82 +59,96 @@ document.addEventListener('DOMContentLoaded', function() {
     `;
   }
 
-  // Combine Like Terms - Interactive Step-by-Step
-  const runLikeTerms = document.getElementById('run-likeTerms');
+  // Combine Like Terms - Preset Examples
+  const ltExamplesContainer = document.getElementById('lt-examples');
   const ltStepsContainer = document.getElementById('lt-steps-container');
 
-  if (runLikeTerms) {
-    runLikeTerms.addEventListener('click', () => {
-      const a = Number(document.getElementById('lt-a').value);
-      const b = Number(document.getElementById('lt-b').value);
-      const c = Number(document.getElementById('lt-c').value);
-      const d = Number(document.getElementById('lt-d').value);
-      const variable = document.getElementById('lt-var1').value || 'x';
-      const power = Number(document.getElementById('lt-pow1').value) || 1;
+  const likeTermsExamples = [
+    { display: '3x + 2x', a: 3, b: 0, c: 2, d: 0, var: 'x', pow: 1, label: 'x terms' },
+    { display: '4y + 3y', a: 4, b: 0, c: 3, d: 0, var: 'y', pow: 1, label: 'y terms' },
+    { display: '2y² + 5y²', a: 2, b: 0, c: 5, d: 0, var: 'y', pow: 2, label: 'y² terms' },
+    { display: '3x + 5 + 2x - 1', a: 3, b: 5, c: 2, d: -1, var: 'x', pow: 1, label: 'mixed' }
+  ];
 
-      const xCoeff = a + c;
-      const constant = b + d;
-      
-      const powerStr = power === 1 ? '' : `<sup>${power}</sup>`;
-      const termFormat = `${variable}${powerStr}`;
-      const term1 = `${a}${termFormat}`;
-      const term2 = `${c}${termFormat}`;
-      const termFinal = `${xCoeff}${termFormat}`;
+  function generateStepsForExample(a, b, c, d, variable, power) {
+    const xCoeff = a + c;
+    const constant = b + d;
+    
+    const powerStr = power === 1 ? '' : `<sup>${power}</sup>`;
+    const termFormat = `${variable}${powerStr}`;
+    const term1 = `${a}${termFormat}`;
+    const term2 = `${c}${termFormat}`;
+    const termFinal = `${xCoeff}${termFormat}`;
 
-      const steps = [
-        {
-          title: 'Step 1: Look at our expression',
-          visual: `<span class="term-box x-term">${term1}</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box x-term">${term2}</span> <span class="term-box number-term">${signed(d)}</span>`,
-          explanation: `We have 4 terms: <strong>${term1}</strong>, <strong>${b}</strong>, <strong>${term2}</strong>, and <strong>${d}</strong>.`
-        },
-        {
-          title: `Step 2: Find the ${variable}${powerStr} terms (blue)`,
-          visual: `<span class="term-box x-term highlight">${term1}</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box x-term highlight">${term2}</span> <span class="term-box number-term">${signed(d)}</span>`,
-          explanation: `Look for all terms with <strong>${variable}${powerStr}</strong> - those are <strong>like terms</strong>. We have <strong>${term1}</strong> and <strong>${term2}</strong>. They both have "${variable}${powerStr}", so we can add them!`
-        },
-        {
-          title: 'Step 3: Find the number terms (orange)',
-          visual: `<span class="term-box x-term">${term1}</span> <span class="term-box number-term highlight">${signed(b)}</span> <span class="term-box x-term">${term2}</span> <span class="term-box number-term highlight">${signed(d)}</span>`,
-          explanation: `Look for all numbers without variables - those are <strong>like terms</strong> too. We have <strong>${b}</strong> and <strong>${d}</strong>. We can add them!`
-        },
-        {
-          title: `Step 4: Group the ${variable}${powerStr} terms together`,
-          visual: `<span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box x-term">${term1}</span> <span class="term-box x-term">${term2}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span> + <span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>`,
-          explanation: `Put parentheses around the ${variable}${powerStr} terms and the numbers. This helps us see what we're adding together.`
-        },
-        {
-          title: `Step 5: Add the ${variable}${powerStr} terms`,
-          visual: `<span class="term-box x-term">${termFinal}</span> <span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span>`,
-          explanation: `<strong>${a} + ${c} = ${xCoeff}</strong>, so <strong>${term1} + ${term2} = ${termFinal}</strong>`
-        },
-        {
-          title: 'Step 6: Add the number terms',
-          visual: `<span class="term-box x-term">${termFinal}</span> <span class="term-box number-term">${constant}</span>`,
-          explanation: `<strong>${b} + ${d} = ${constant}</strong> (add the numbers without variables)`
-        },
-        {
-          title: '✓ Final Answer',
-          visual: `<span class="term-box x-term" style="padding: 16px 20px; font-size: 1.2rem; font-weight: 700;">${termFinal} ${signed(constant)}</span>`,
-          explanation: `Perfect! We combined like terms to simplify the expression. Our answer is <strong>${termFinal} ${signed(constant)}</strong>.`
-        }
-      ];
-
-      // Clear and rebuild steps container
-      ltStepsContainer.innerHTML = '';
-      steps.forEach((step, index) => {
-        const stepDiv = document.createElement('div');
-        stepDiv.className = 'step-section';
-        stepDiv.innerHTML = `
-          <h4>${step.title}</h4>
-          <div class="step-visual">${step.visual}</div>
-          <p>${step.explanation}</p>
-        `;
-        ltStepsContainer.appendChild(stepDiv);
-      });
-
-      ltStepsContainer.style.display = 'block';
-    });
+    return [
+      {
+        title: 'Step 1: Look at our expression',
+        visual: `<span class="term-box x-term">${term1}</span> ${b !== 0 ? `<span class="term-box number-term">${signed(b)}</span>` : ''} <span class="term-box x-term">${term2}</span> ${d !== 0 ? `<span class="term-box number-term">${signed(d)}</span>` : ''}`,
+        explanation: `We have terms: <strong>${term1}</strong>${b !== 0 ? `, <strong>${b}</strong>` : ''}, <strong>${term2}</strong>${d !== 0 ? `, <strong>${d}</strong>` : ''}.`
+      },
+      {
+        title: `Step 2: Find the ${variable}${powerStr} terms (blue)`,
+        visual: `<span class="term-box x-term highlight">${term1}</span> ${b !== 0 ? `<span class="term-box number-term">${signed(b)}</span>` : ''} <span class="term-box x-term highlight">${term2}</span> ${d !== 0 ? `<span class="term-box number-term">${signed(d)}</span>` : ''}`,
+        explanation: `Look for all terms with <strong>${variable}${powerStr}</strong> - those are <strong>like terms</strong>. We have <strong>${term1}</strong> and <strong>${term2}</strong>. They both have "${variable}${powerStr}", so we can add them!`
+      },
+      ...(b !== 0 || d !== 0 ? [{
+        title: 'Step 3: Find the number terms (orange)',
+        visual: `<span class="term-box x-term">${term1}</span> ${b !== 0 ? `<span class="term-box number-term highlight">${signed(b)}</span>` : ''} <span class="term-box x-term">${term2}</span> ${d !== 0 ? `<span class="term-box number-term highlight">${signed(d)}</span>` : ''}`,
+        explanation: `Look for all numbers without variables - those are <strong>like terms</strong> too. We have <strong>${b}</strong> and <strong>${d}</strong>. We can add them!`
+      }] : []),
+      {
+        title: `Step 4: Group the ${variable}${powerStr} terms together`,
+        visual: `<span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box x-term">${term1}</span> <span class="term-box x-term">${term2}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>${b !== 0 || d !== 0 ? ` + <span style="font-size: 1.2rem; margin: 0 8px;">(</span><span class="term-box number-term">${signed(b)}</span> <span class="term-box number-term">${signed(d)}</span><span style="font-size: 1.2rem; margin: 0 8px;">)</span>` : ''}`,
+        explanation: `Put parentheses around the ${variable}${powerStr} terms${b !== 0 || d !== 0 ? ' and the numbers' : ''}. This helps us see what we're adding together.`
+      },
+      {
+        title: `Step 5: Add the ${variable}${powerStr} terms`,
+        visual: `<span class="term-box x-term">${termFinal}</span>${b !== 0 ? ` <span class="term-box number-term">${signed(b)}</span>` : ''}${d !== 0 ? ` <span class="term-box number-term">${signed(d)}</span>` : ''}`,
+        explanation: `<strong>${a} + ${c} = ${xCoeff}</strong>, so <strong>${term1} + ${term2} = ${termFinal}</strong>`
+      },
+      ...(b !== 0 || d !== 0 ? [{
+        title: 'Step 6: Add the number terms',
+        visual: `<span class="term-box x-term">${termFinal}</span> <span class="term-box number-term">${constant}</span>`,
+        explanation: `<strong>${b} + ${d} = ${constant}</strong> (add the numbers without variables)`
+      }] : []),
+      {
+        title: '✓ Final Answer',
+        visual: `<span class="term-box x-term" style="padding: 16px 20px; font-size: 1.2rem; font-weight: 700;">${termFinal}${constant !== 0 ? ` ${signed(constant)}` : ''}</span>`,
+        explanation: `Perfect! Our answer is <strong>${termFinal}${constant !== 0 ? ` ${signed(constant)}` : ''}</strong>.`
+      }
+    ];
   }
+
+  function displaySteps(example) {
+    const steps = generateStepsForExample(example.a, example.b, example.c, example.d, example.var, example.pow);
+    
+    ltStepsContainer.innerHTML = '';
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      ltStepsContainer.appendChild(stepDiv);
+    });
+
+    ltStepsContainer.style.display = 'block';
+    
+    // Update active card
+    document.querySelectorAll('.example-card').forEach(card => card.classList.remove('active'));
+    event.target.classList.add('active');
+  }
+
+  // Create example cards
+  likeTermsExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displaySteps(example));
+    ltExamplesContainer.appendChild(card);
+  });
 
   // Solve Linear Equation
   const runSolveEq = document.getElementById('run-solveEq');
