@@ -998,15 +998,22 @@ document.addEventListener('DOMContentLoaded', function() {
     const leftSide = eqParts[0];
     const rightSide = parseFloat(eqParts[1]);
     
-    // Extract coefficient and constant from left side
-    const xMatch = leftSide.match(/(-?\d*)\s*x/);
-    const constMatch = leftSide.match(/([+-]\s*\d+)(?!x)|^(-?\d+)(?!\s*x)/);
-    
-    const coeff = xMatch ? parseFloat(xMatch[1] || 1) : 1;
+    // Better parsing: split by + and - while keeping operators
+    let coeff = 0;
     let constant = 0;
-    if (constMatch) {
-      const constStr = constMatch[0].replace(/\s/g, '');
-      constant = parseFloat(constStr);
+    
+    const terms = leftSide.match(/[+-]?[^+-]+/g) || [];
+    
+    for (let term of terms) {
+      term = term.trim();
+      if (term.includes('x')) {
+        // This is an x term
+        coeff += parseFloat(term.replace(/x/g, '') || 1);
+      } else if (term !== '') {
+        // This is a constant
+        const val = parseFloat(term);
+        if (!isNaN(val)) constant += val;
+      }
     }
     
     // Step 1: Subtract constant from both sides
@@ -1126,23 +1133,23 @@ document.addEventListener('DOMContentLoaded', function() {
     const leftSide = eqParts[0];
     const rightSide = parseFloat(eqParts[1]);
     
-    // Extract all x terms and constants
-    const xTerms = leftSide.match(/([+-]?\s*\d*)\s*x/g) || [];
-    const totalCoeff = xTerms.reduce((sum, term) => {
-      const coeff = parseFloat(term.replace(/[x\s]/g, '') || 1);
-      return sum + coeff;
-    }, 0);
-    
-    // Extract constants
-    const parts = leftSide.split(/x/).map(p => p.trim());
+    // Extract all x terms and constants with better parsing
+    let totalCoeff = 0;
     let constant = 0;
-    for (let i = 0; i < parts.length; i++) {
-      if (i === parts.length - 1) {
-        const match = parts[i].match(/([+-]?\s*\d+)/);
-        if (match) constant += parseFloat(match[0].replace(/\s/g, ''));
-      } else {
-        const match = parts[i].match(/([+-]?\s*\d+)$/);
-        if (match) constant += parseFloat(match[0].replace(/\s/g, ''));
+    
+    // Split by + and - while keeping the operators
+    const terms = leftSide.match(/[+-]?[^+-]+/g) || [];
+    
+    for (let term of terms) {
+      term = term.trim();
+      if (term.includes('x')) {
+        // This is an x term
+        const coeff = parseFloat(term.replace(/x/g, '') || 1);
+        totalCoeff += coeff;
+      } else if (term !== '') {
+        // This is a constant
+        const val = parseFloat(term);
+        if (!isNaN(val)) constant += val;
       }
     }
     
