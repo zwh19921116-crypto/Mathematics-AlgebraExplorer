@@ -1580,7 +1580,7 @@ document.addEventListener('DOMContentLoaded', function() {
   ];
 
   function generateFactorSteps(example) {
-    const expr = example.display;
+    const expr = example.display.replace(/\s+/g, ''); // Remove all spaces
     const parts = expr.match(/x²([+-]?\d*)x?([+-]?\d*)/);
     let b = 0, c = 0;
     
@@ -1658,6 +1658,20 @@ document.addEventListener('DOMContentLoaded', function() {
     factorStepsContainer.innerHTML = '';
 
     const steps = generateFactorSteps(example);
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      factorStepsContainer.appendChild(stepDiv);
+    });
+
+    factorStepsContainer.style.display = 'block';
+  }
 
   if (factorCustomBtn) {
     factorCustomBtn.addEventListener('click', () => {
