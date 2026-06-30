@@ -72,10 +72,12 @@ document.addEventListener('DOMContentLoaded', function() {
       const constant = b + d;
 
       const steps = [
-        `Write: ${a}x ${signed(b)} ${c}x ${signed(d)}`,
-        `Group: (${a}x ${signed(c)}x) + (${b} ${signed(d)})`,
-        `Combine x terms: ${a}x ${signed(c)}x = ${xCoeff}x`,
-        `Combine constants: ${b} ${signed(d)} = ${constant}`
+        `<strong>Expression:</strong> ${a}x ${signed(b)} ${c}x ${signed(d)}`,
+        `<strong>Identify like terms:</strong> "${a}x" and "${c}x" both have the variable x (they're like terms). "${b}" and "${d}" are both constants (like terms).`,
+        `<strong>Group by type:</strong> (${a}x ${signed(c)}x) ${signed(b)} ${signed(d)}`,
+        `<strong>Add the x terms:</strong> ${a}x ${signed(c)}x = ${xCoeff}x (we can add them because they have the same variable)`,
+        `<strong>Add the constants:</strong> ${b} ${signed(d)} = ${constant} (we can add them because they're both just numbers)`,
+        `<strong>Final answer:</strong> ${xCoeff}x ${signed(constant)}`
       ];
 
       const answer = `${xCoeff}x ${signed(constant)}`;
