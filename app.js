@@ -1,11 +1,11 @@
 // Wait for DOM to be fully loaded
 document.addEventListener('DOMContentLoaded', function() {
   // Navigation
-  const navLinks = document.querySelectorAll('.nav-link');
-  const topicSections = document.querySelectorAll('.topic-section');
+  const menuLinks = document.querySelectorAll('.menu-link');
+  const topics = document.querySelectorAll('.topic');
 
-  function setActiveLink(section) {
-    navLinks.forEach((link) => {
+  function setActiveMenu(section) {
+    menuLinks.forEach((link) => {
       if (link.dataset.section === section) {
         link.classList.add('active');
       } else {
@@ -14,33 +14,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  function showSection(sectionId) {
-    // Hide all topic sections
-    topicSections.forEach((section) => {
-      section.style.display = 'none';
+  function showTopic(sectionId) {
+    topics.forEach((topic) => {
+      topic.classList.remove('active');
     });
-
-    // Show the specific topic
-    const section = document.getElementById(sectionId);
-    if (section) {
-      section.style.display = 'block';
+    const topic = document.getElementById(sectionId);
+    if (topic) {
+      topic.classList.add('active');
     }
   }
 
-  navLinks.forEach((link) => {
+  menuLinks.forEach((link) => {
     link.addEventListener('click', (e) => {
       e.preventDefault();
       const section = link.dataset.section;
-      setActiveLink(section);
-      showSection(section);
+      setActiveMenu(section);
+      showTopic(section);
     });
   });
 
   // Initialize - show first topic on page load
-  if (topicSections.length > 0) {
-    const firstSection = topicSections[0].id;
-    setActiveLink(firstSection);
-    showSection(firstSection);
+  if (topics.length > 0) {
+    const firstSection = topics[0].id;
+    setActiveMenu(firstSection);
+    showTopic(firstSection);
   }
 
   // Utility functions
@@ -58,7 +55,7 @@ document.addEventListener('DOMContentLoaded', function() {
     container.innerHTML = `
       <h4>${title}</h4>
       <ol>${steps.map((step) => `<li>${step}</li>`).join('')}</ol>
-      <p><strong>Final answer:</strong> ${answerText}</p>
+      <p><strong>Answer:</strong> ${answerText}</p>
     `;
   }
 
@@ -75,14 +72,14 @@ document.addEventListener('DOMContentLoaded', function() {
       const constant = b + d;
 
       const steps = [
-        `Write the expression: ${a}x ${signed(b)} ${c}x ${signed(d)}.`,
-        `Group like terms: (${a}x + ${c}x) + (${b} ${signed(d)}).`,
-        `Add x terms: ${a}x + ${c}x = ${xCoeff}x.`,
-        `Add constants: ${b} ${signed(d)} = ${constant}.`
+        `Write: ${a}x ${signed(b)} ${c}x ${signed(d)}`,
+        `Group: (${a}x ${signed(c)}x) + (${b} ${signed(d)})`,
+        `Combine x terms: ${a}x ${signed(c)}x = ${xCoeff}x`,
+        `Combine constants: ${b} ${signed(d)} = ${constant}`
       ];
 
       const answer = `${xCoeff}x ${signed(constant)}`;
-      showResult('result-likeTerms', 'How to combine like terms', steps, answer);
+      showResult('result-likeTerms', 'Solution', steps, answer);
     });
   }
 
@@ -95,17 +92,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const c = Number(document.getElementById('se-c').value);
       const d = Number(document.getElementById('se-d').value);
 
+      // Update equation display
+      document.getElementById('eq-display').textContent = `${a}x ${signed(b)} = ${c}x ${signed(d)}`;
+
       const leftCoeff = a - c;
       const rightConst = d - b;
 
       if (leftCoeff === 0) {
         const msg = rightConst === 0
-          ? 'Infinitely many solutions (both sides are identical).'
-          : 'No solution (variable terms cancel, but constants are different).';
-        showResult('result-solveEq', 'How to solve the equation', [
-          `Start with ${a}x ${signed(b)} = ${c}x ${signed(d)}.`,
-          `Move variable terms to one side and constants to the other.`,
-          `You get 0x = ${rightConst}.`
+          ? 'All values work (infinite solutions)'
+          : 'No solution exists';
+        showResult('result-solveEq', 'Solution', [
+          `Start: ${a}x ${signed(b)} = ${c}x ${signed(d)}`,
+          `Subtract ${c}x: ${leftCoeff}x ${signed(b)} = ${d}`,
+          `Result: 0x = ${rightConst}`
         ], msg);
         return;
       }
@@ -113,13 +113,13 @@ document.addEventListener('DOMContentLoaded', function() {
       const x = rightConst / leftCoeff;
 
       const steps = [
-        `Start with ${a}x ${signed(b)} = ${c}x ${signed(d)}.`,
-        `Subtract ${c}x from both sides: ${leftCoeff}x ${signed(b)} = ${d}.`,
-        `Subtract ${b} from both sides: ${leftCoeff}x = ${rightConst}.`,
-        `Divide both sides by ${leftCoeff}: x = ${fmt(x)}.`
+        `Start: ${a}x ${signed(b)} = ${c}x ${signed(d)}`,
+        `Move x terms: ${leftCoeff}x ${signed(b)} = ${d}`,
+        `Move constants: ${leftCoeff}x = ${rightConst}`,
+        `Divide: x = ${fmt(x)}`
       ];
 
-      showResult('result-solveEq', 'How to solve a linear equation', steps, `x = ${fmt(x)}`);
+      showResult('result-solveEq', 'Solution', steps, `x = ${fmt(x)}`);
     });
   }
 
@@ -131,17 +131,20 @@ document.addEventListener('DOMContentLoaded', function() {
       const m = Number(document.getElementById('dp-m').value);
       const n = Number(document.getElementById('dp-n').value);
 
+      // Update equation display
+      document.getElementById('dist-display').textContent = `${k}(${m}x ${signed(n)})`;
+
       const xCoeff = k * m;
       const constant = k * n;
 
       const steps = [
-        `Start with ${k}(${m}x ${signed(n)}).`,
-        `Multiply ${k} by ${m}x to get ${xCoeff}x.`,
-        `Multiply ${k} by ${n} to get ${constant}.`,
-        `Put the terms together: ${xCoeff}x ${signed(constant)}.`
+        `Start: ${k}(${m}x ${signed(n)})`,
+        `Multiply ${k} × ${m}x = ${xCoeff}x`,
+        `Multiply ${k} × ${n} = ${constant}`,
+        `Result: ${xCoeff}x ${signed(constant)}`
       ];
 
-      showResult('result-distribute', 'How to distribute', steps, `${xCoeff}x ${signed(constant)}`);
+      showResult('result-distribute', 'Solution', steps, `${xCoeff}x ${signed(constant)}`);
     });
   }
 
@@ -167,10 +170,10 @@ document.addEventListener('DOMContentLoaded', function() {
 
       currentChallenge = { a, b, c, d, x: xValue };
 
-      document.getElementById('challenge-question').textContent = `${a}x ${signed(b)} = ${c}x ${signed(d)}. Solve for x.`;
+      document.getElementById('challenge-question').textContent = `${a}x ${signed(b)} = ${c}x ${signed(d)}`;
+      document.getElementById('challenge-answer').value = '';
       document.getElementById('challenge-feedback').textContent = '';
       document.getElementById('challenge-feedback').className = 'feedback';
-      document.getElementById('challenge-answer').value = '';
     });
   }
 
@@ -180,23 +183,23 @@ document.addEventListener('DOMContentLoaded', function() {
       const feedback = document.getElementById('challenge-feedback');
 
       if (!currentChallenge) {
-        feedback.textContent = 'Generate a challenge first.';
+        feedback.textContent = 'Generate a problem first';
         feedback.className = 'feedback bad';
         return;
       }
 
       const userAnswer = Number(document.getElementById('challenge-answer').value);
       if (Number.isNaN(userAnswer)) {
-        feedback.textContent = 'Enter a number for x.';
+        feedback.textContent = 'Enter a number';
         feedback.className = 'feedback bad';
         return;
       }
 
       if (Math.abs(userAnswer - currentChallenge.x) < 1e-9) {
-        feedback.textContent = `Correct. Nice work. x = ${currentChallenge.x}.`;
+        feedback.textContent = `✓ Correct! x = ${currentChallenge.x}`;
         feedback.className = 'feedback ok';
       } else {
-        feedback.textContent = `Not quite. The correct answer is x = ${currentChallenge.x}.`;
+        feedback.textContent = `✗ Try again. Answer: x = ${currentChallenge.x}`;
         feedback.className = 'feedback bad';
       }
     });
