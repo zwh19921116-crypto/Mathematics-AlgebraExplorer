@@ -38,8 +38,7 @@ window.addEventListener('scroll', () => {
   });
 
   if (current) {
-    const sectionName = current.replace('topic-', '');
-    setActiveLink(sectionName);
+    setActiveLink(current);
   }
 });
 
