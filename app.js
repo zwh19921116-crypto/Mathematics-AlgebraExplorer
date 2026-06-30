@@ -1669,10 +1669,10 @@ document.addEventListener('DOMContentLoaded', function() {
   const factorCustomBtn = document.getElementById('factor-custom-btn');
 
   const factorExamples = [
-    { display: 'x² + 5x + 6', factored: '(x + 2)(x + 3)' },
-    { display: 'x² + 7x + 12', factored: '(x + 3)(x + 4)' },
-    { display: 'x² - 5x + 6', factored: '(x - 2)(x - 3)' },
-    { display: 'x² - 1', factored: '(x + 1)(x - 1)' }
+    { display: 'x² + 5x + 6', factored: '(x + 2)(x + 3)', b: 5, c: 6, factor1: 2, factor2: 3 },
+    { display: 'x² + 7x + 12', factored: '(x + 3)(x + 4)', b: 7, c: 12, factor1: 3, factor2: 4 },
+    { display: 'x² - 5x + 6', factored: '(x - 2)(x - 3)', b: -5, c: 6, factor1: -2, factor2: -3 },
+    { display: 'x² - 1', factored: '(x + 1)(x - 1)', b: 0, c: -1, factor1: 1, factor2: -1 }
   ];
 
   function generateFactorSteps(example) {
@@ -1753,32 +1753,11 @@ document.addEventListener('DOMContentLoaded', function() {
     factorCustomInput.value = example.display;
     factorStepsContainer.innerHTML = '';
 
-    // Parse coefficients
-    const expr = example.display.replace(/\s+/g, '');
-    const parts = expr.match(/x²([+-]?\d*)x?([+-]?\d*)/);
-    let b = 0, c = 0;
-    
-    if (parts) {
-      b = parts[1] ? parseInt(parts[1]) : 1;
-      c = parts[2] ? parseInt(parts[2]) : 0;
-    }
-    
-    // Find factor pair
-    let factor1 = null, factor2 = null;
-    for (let i = 1; i <= Math.abs(c); i++) {
-      if (c % i === 0) {
-        const other = c / i;
-        if (i + other === b || -i - other === b) {
-          factor1 = i * Math.sign(b + other);
-          factor2 = other * Math.sign(b - other);
-          break;
-        }
-      }
-    }
-    
-    if (!factor1 || !factor2) {
-      factor1 = 1; factor2 = c;
-    }
+    // Use the example properties directly
+    const b = example.b !== undefined ? example.b : 0;
+    const c = example.c !== undefined ? example.c : 0;
+    const factor1 = example.factor1 !== undefined ? example.factor1 : 0;
+    const factor2 = example.factor2 !== undefined ? example.factor2 : 0;
 
     // Step 1: Original quadratic
     const step1 = document.createElement('div');
