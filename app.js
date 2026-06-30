@@ -332,39 +332,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const steps = [
       {
-        title: 'Step 1: Look at the equation',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${a}x ${signed(b)} = ${c}x ${signed(d)}</span>`,
-        explanation: `We need to get all x terms on one side and all numbers on the other side.`
+        title: 'Step 1: Write the equation',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${a}x ${signed(b)} = ${c}x ${signed(d)}</span>
+        </div>`,
+        explanation: `This is what we're solving. Goal: Get x by itself on one side.`
       },
       {
-        title: `Step 2: Move x terms to the left`,
-        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${a}x ${signed(b)} - ${c}x = ${d}</span>`,
-        explanation: `Subtract ${c}x from both sides: ${a}x - ${c}x = ${leftCoeff}x`
+        title: `Step 2: Subtract ${c}x from BOTH sides`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="margin-bottom: 8px;"><strong>Left side:</strong> ${a}x ${signed(b)} − ${c}x = ${leftCoeff}x ${signed(b)}</div>
+          <div><strong>Right side:</strong> ${c}x ${signed(d)} − ${c}x = ${d}</div>
+          <div style="margin-top: 12px; font-size: 1.1rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x ${signed(b)} = ${d}</div>
+        </div>`,
+        explanation: `We subtract ${c}x from both sides to move all x terms to the left.`
       },
       {
-        title: `Step 3: Simplify left side`,
-        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x ${signed(b)} = ${d}</span>`,
-        explanation: `We now have ${leftCoeff}x ${signed(b)} on the left.`
+        title: `Step 3: Subtract ${b} from BOTH sides`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="margin-bottom: 8px;"><strong>Left side:</strong> ${leftCoeff}x ${signed(b)} − ${b} = ${leftCoeff}x</div>
+          <div><strong>Right side:</strong> ${d} − ${b} = ${rightConst}</div>
+          <div style="margin-top: 12px; font-size: 1.1rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x = ${rightConst}</div>
+        </div>`,
+        explanation: `We subtract ${b} from both sides to move the constant to the right.`
       },
       {
-        title: `Step 4: Move constants to the right`,
-        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x = ${d} ${signed(-b)}</span>`,
-        explanation: `Subtract ${b} from both sides.`
+        title: `Step 4: Divide BOTH sides by ${leftCoeff}`,
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="margin-bottom: 8px;"><strong>Left side:</strong> ${leftCoeff}x ÷ ${leftCoeff} = x</div>
+          <div><strong>Right side:</strong> ${rightConst} ÷ ${leftCoeff} = ${fmt(x)}</div>
+          <div style="margin-top: 12px; font-size: 1.1rem; font-weight: 600; color: var(--brand-deep);">x = ${fmt(x)}</div>
+        </div>`,
+        explanation: `Divide both sides by ${leftCoeff} to get x by itself.`
       },
       {
-        title: `Step 5: Simplify right side`,
-        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x = ${rightConst}</span>`,
-        explanation: `${d} ${signed(-b)} = ${rightConst}`
-      },
-      {
-        title: `Step 6: Divide to isolate x`,
-        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">x = ${rightConst} ÷ ${leftCoeff}</span>`,
-        explanation: `Divide both sides by ${leftCoeff} to isolate x.`
-      },
-      {
-        title: '✓ Final Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--brand-deep); background: rgba(10, 126, 164, 0.1); padding: 16px 24px; border-radius: 10px;">x = ${fmt(x)}</span>`,
-        explanation: `The solution is <strong>x = ${fmt(x)}</strong>`
+        title: '✓ Solution',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">x = ${fmt(x)}</span>
+        </div>`,
+        explanation: `Check: Plug ${fmt(x)} back into the original equation to verify it works!`
       }
     ];
 
@@ -475,29 +481,114 @@ document.addEventListener('DOMContentLoaded', function() {
   });
 
   // Distributive Property
-  const runDistribute = document.getElementById('run-distribute');
-  if (runDistribute) {
-    runDistribute.addEventListener('click', () => {
-      const k = Number(document.getElementById('dp-k').value);
-      const m = Number(document.getElementById('dp-m').value);
-      const n = Number(document.getElementById('dp-n').value);
+  const distExamplesContainer = document.getElementById('dist-examples');
+  const distStepsContainer = document.getElementById('dist-steps-container');
+  const distCustomInput = document.getElementById('dist-custom-input');
+  const distCustomBtn = document.getElementById('dist-custom-btn');
 
-      // Update equation display
-      document.getElementById('dist-display').textContent = `${k}(${m}x ${signed(n)})`;
+  const distributeExamples = [
+    { display: '3(2x + 5)', k: 3, m: 2, n: 5 },
+    { display: '4(3x - 2)', k: 4, m: 3, n: -2 },
+    { display: '-2(x + 4)', k: -2, m: 1, n: 4 },
+    { display: '5(4x - 3)', k: 5, m: 4, n: -3 }
+  ];
 
-      const xCoeff = k * m;
-      const constant = k * n;
+  function generateDistributeSteps(k, m, n) {
+    const xCoeff = k * m;
+    const constant = k * n;
 
-      const steps = [
-        `Start: ${k}(${m}x ${signed(n)})`,
-        `Multiply ${k} × ${m}x = ${xCoeff}x`,
-        `Multiply ${k} × ${n} = ${constant}`,
-        `Result: ${xCoeff}x ${signed(constant)}`
-      ];
+    const steps = [
+      {
+        title: 'Step 1: Write the expression',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${k}(${m}x ${signed(n)})</span>
+        </div>`,
+        explanation: `The distributive property says: multiply ${k} by EACH term inside the parentheses.`
+      },
+      {
+        title: `Step 2: Multiply ${k} × ${m}x`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem;"><strong>${k} × ${m}x = ${xCoeff}x</strong></div>
+          <div style="margin-top: 8px; font-size: 0.95rem; color: var(--muted);">Multiply the outside number by the x term</div>
+        </div>`,
+        explanation: `First, distribute ${k} to the x term: ${k} × ${m}x = ${xCoeff}x`
+      },
+      {
+        title: `Step 3: Multiply ${k} × ${n}`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem;"><strong>${k} × ${n} = ${constant}</strong></div>
+          <div style="margin-top: 8px; font-size: 0.95rem; color: var(--muted);">Then multiply the outside number by the constant</div>
+        </div>`,
+        explanation: `Next, distribute ${k} to the constant: ${k} × ${n} = ${constant}`
+      },
+      {
+        title: '✓ Final Answer',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${xCoeff}x ${signed(constant)}</span>
+        </div>`,
+        explanation: `Combine the results: ${k}(${m}x ${signed(n)}) = ${xCoeff}x ${signed(constant)}`
+      }
+    ];
 
-      showResult('result-distribute', 'Solution', steps, `${xCoeff}x ${signed(constant)}`);
+    return steps;
+  }
+
+  function displayDistributeSteps(example) {
+    distCustomInput.value = example.display;
+    distStepsContainer.innerHTML = '';
+
+    const steps = generateDistributeSteps(example.k, example.m, example.n);
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      distStepsContainer.appendChild(stepDiv);
+    });
+
+    distStepsContainer.style.display = 'block';
+  }
+
+  if (distCustomBtn) {
+    distCustomBtn.addEventListener('click', () => {
+      try {
+        const expr = distCustomInput.value.trim();
+        if (!expr) return;
+        // Parse format: k(mx + n) or similar
+        const match = expr.match(/(-?\d+)\s*\(\s*(-?\d+)?\s*x?\s*([+\-]\s*\d+)?\s*\)/);
+        if (!match) {
+          alert('Invalid format. Use: k(mx + n)');
+          return;
+        }
+        const k = parseInt(match[1]);
+        const m = match[2] ? parseInt(match[2]) : 1;
+        const n = match[3] ? parseInt(match[3].replace(/\s/g, '')) : 0;
+        displayDistributeSteps({ display: expr, k, m, n });
+      } catch (e) {
+        distStepsContainer.innerHTML = '<p style="color: var(--danger);">Invalid format. Try: 3(2x + 5)</p>';
+        distStepsContainer.style.display = 'block';
+      }
     });
   }
+
+  if (distCustomInput) {
+    distCustomInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        distCustomBtn.click();
+      }
+    });
+  }
+
+  distributeExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayDistributeSteps(example));
+    distExamplesContainer.appendChild(card);
+  });
 
   // ========== VARIABLES & EXPRESSIONS ==========
   const varExamplesContainer = document.getElementById('var-examples');

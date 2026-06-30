@@ -92,25 +92,19 @@
           <p class="subtitle">Multiply a number by terms inside parentheses.</p>
           
           <div class="card">
-            <div class="equation-display">
-              <span id="dist-display">4(2x - 3)</span>
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="dist-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Create Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap;">
+              <input type="text" id="dist-custom-input" placeholder="e.g., 3(2x + 5)" style="flex: 1; min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace; font-size: 0.95rem;">
+              <button class="btn-primary" id="dist-custom-btn">Show Steps</button>
             </div>
-            <div class="inputs">
-              <div class="input-pair">
-                <label>Outside number (k)</label>
-                <input type="number" id="dp-k" value="4" />
-              </div>
-              <div class="input-pair">
-                <label>x coefficient (m)</label>
-                <input type="number" id="dp-m" value="2" />
-              </div>
-              <div class="input-pair">
-                <label>Constant (n)</label>
-                <input type="number" id="dp-n" value="-3" />
-              </div>
-            </div>
-            <button class="btn-primary" id="run-distribute">Show Steps</button>
-            <div class="result" id="result-distribute"></div>
+            <p style="font-size: 0.85rem; color: var(--muted); margin: 0;">Format: <code style="background: var(--light); padding: 2px 6px; border-radius: 4px;">k(mx + n)</code></p>
+            
+            <div id="dist-steps-container" style="display: none; margin-top: 24px;"></div>
           </div>
         </section>
 
