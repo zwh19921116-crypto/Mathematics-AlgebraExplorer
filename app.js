@@ -639,24 +639,46 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const steps = [
       {
-        title: 'Step 1: Identify the expression',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${example.display}</span>`,
-        explanation: 'An expression contains variables (letters) and numbers.'
-      },
-      {
-        title: 'Step 2: Find each term',
-        visual: example.terms.map(t => `<span class="term-box x-term">${t}</span>`).join(''),
-        explanation: `Terms are separated by + and -. This has ${example.terms.length} terms: ${example.terms.join(', ')}`
-      },
-      {
-        title: 'Step 3: Identify parts of each term',
-        visual: `<div style="text-align: left;">
-          <p><strong>Coefficient</strong>: The number that multiplies the variable</p>
-          <p><strong>Variable</strong>: The letter (x, y, a, etc.)</p>
-          <p><strong>Exponent/Power</strong>: The small number (if any)</p>
-          <p><strong>Constant</strong>: A term with no variable</p>
+        title: 'Step 1: Original expression',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
         </div>`,
-        explanation: 'For example: In 3x², 3 is the coefficient, x is the variable, 2 is the exponent.'
+        explanation: 'An expression contains variables (letters) and numbers combined with operations.'
+      },
+      {
+        title: 'Step 2: Identify each term',
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+            Terms (separated by + or −):
+          </div>
+          <div style="display: flex; gap: 8px; flex-wrap: wrap; justify-content: center;">
+            ${example.terms.map(t => `<div style="background: rgba(10, 126, 164, 0.3); padding: 8px 12px; border-radius: 6px; font-weight: 700; color: var(--brand-deep);">${t}</div>`).join('')}
+          </div>
+          <div style="margin-top: 12px; color: #666; font-size: 0.95rem; text-align: center;">
+            Total: ${example.terms.length} term${example.terms.length !== 1 ? 's' : ''}
+          </div>
+        </div>`,
+        explanation: `Terms are separated by + and −. This expression has ${example.terms.length} terms: ${example.terms.join(', ')}`
+      },
+      {
+        title: 'Step 3: Break down each term',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-size: 0.95rem; color: var(--brand-deep); line-height: 2.2;">
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 4px; margin-bottom: 8px;">
+              <strong style="color: var(--success);">Coefficient:</strong> The number multiplying the variable
+            </div>
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 4px; margin-bottom: 8px;">
+              <strong style="color: var(--success);">Variable:</strong> The letter (x, y, a, etc.)
+            </div>
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 4px; margin-bottom: 8px;">
+              <strong style="color: var(--success);">Exponent:</strong> The small number showing power (x², y³, etc.)
+            </div>
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 4px;">
+              <strong style="color: var(--success);">Constant:</strong> A number with no variable
+            </div>
+          </div>
+        </div>`,
+        explanation: 'Example: In 3x², the coefficient is 3, variable is x, and exponent is 2.'
       }
     ];
 
@@ -710,28 +732,54 @@ document.addEventListener('DOMContentLoaded', function() {
     pemdasCustomInput.value = example.display;
     pemdasStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'PEMDAS Reminder',
-        visual: '<strong>P</strong>arentheses → <strong>E</strong>xponents → <strong>M</strong>ultiply/<strong>D</strong>ivide (left→right) → <strong>A</strong>dd/<strong>S</strong>ubtract (left→right)',
-        explanation: 'Always follow this order!'
-      },
-      {
-        title: 'Step 1: Look at the expression',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'Identify which operations need to be done first.'
-      },
-      {
-        title: 'Step 2: Follow PEMDAS',
-        visual: `<span style="font-size: 1.1rem;">Do multiplication and division first (left to right)</span>`,
-        explanation: 'In this case, multiply or divide before adding or subtracting.'
-      },
-      {
-        title: '✓ Final Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.solution}</span>`,
-        explanation: 'The answer after following the correct order of operations.'
-      }
-    ];
+    // Parse the expression to show detailed steps
+    let steps = [];
+    const expr = example.display;
+    
+    steps.push({
+      title: 'Step 1: Original expression',
+      visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+        <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${expr}</span>
+      </div>`,
+      explanation: 'We must solve this using the correct order of operations: PEMDAS'
+    });
+
+    steps.push({
+      title: 'Step 2: PEMDAS Order',
+      visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+        <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); text-align: center;">
+          <div style="margin: 6px 0;"><strong>P</strong>arentheses</div>
+          <div style="margin: 6px 0;"><strong>E</strong>xponents</div>
+          <div style="margin: 6px 0;"><strong>M</strong>ultiplication / <strong>D</strong>ivision (left to right)</div>
+          <div style="margin: 6px 0;"><strong>A</strong>ddition / <strong>S</strong>ubtraction (left to right)</div>
+        </div>
+      </div>`,
+      explanation: 'Follow these steps in order. Multiplication and Division are done before Addition and Subtraction.'
+    });
+
+    steps.push({
+      title: 'Step 3: Apply order',
+      visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600;">
+          <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Work through each operation:</div>
+          <div style="text-align: center;">
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              Start with <span style="color: var(--success); font-weight: 700;">Multiplication/Division</span>, then<br/>
+              <span style="color: var(--success); font-weight: 700;">Addition/Subtraction</span> (left to right)
+            </div>
+          </div>
+        </div>
+      </div>`,
+      explanation: 'Perform operations in the correct sequence.'
+    });
+
+    steps.push({
+      title: '✓ Final Answer',
+      visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+        <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.solution}</span>
+      </div>`,
+      explanation: `By following PEMDAS, we get: ${expr} = ${example.solution}`
+    });
 
     steps.forEach((step) => {
       const stepDiv = document.createElement('div');
@@ -787,21 +835,51 @@ document.addEventListener('DOMContentLoaded', function() {
     intStepsContainer.innerHTML = '';
 
     const result = example.a + example.b;
+    const isNegativeA = example.a < 0;
+    const isNegativeB = example.b < 0;
+    const absA = Math.abs(example.a);
+    const absB = Math.abs(example.b);
+
     const steps = [
       {
-        title: 'Step 1: Look at the numbers',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.a} + ${example.b}</span>`,
-        explanation: 'Identify positive and negative numbers.'
+        title: 'Step 1: Original problem',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.a} ${example.b >= 0 ? '+' : ''} ${example.b}</span>
+        </div>`,
+        explanation: 'We\'re adding integers. Some might be negative.'
       },
       {
-        title: 'Step 2: Combine them',
-        visual: `<span style="font-size: 1.1rem;">Think of a number line</span>`,
-        explanation: `Start at ${example.a}, move ${example.b > 0 ? example.b + ' right' : Math.abs(example.b) + ' left'}`
+        title: 'Step 2: Identify positive and negative',
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+            ${isNegativeA ? `<span style="color: #d94a4a;">● ${example.a} is NEGATIVE (${absA})</span>` : `<span style="color: var(--success);">● ${example.a} is POSITIVE</span>`}<br/>
+            ${isNegativeB ? `<span style="color: #d94a4a;">● ${example.b} is NEGATIVE (${absB})</span>` : `<span style="color: var(--success);">● ${example.b} is POSITIVE</span>`}
+          </div>
+        </div>`,
+        explanation: 'Determine the sign of each number.'
+      },
+      {
+        title: 'Step 3: Calculate',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Working:</div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              ${isNegativeA && isNegativeB ? `${absA} + ${absB} = ${absA + absB}, both negative → <span style="color: var(--success); font-weight: 700;">-${absA + absB}</span>` :
+                isNegativeA && !isNegativeB ? `${absB} - ${absA} = <span style="color: var(--success); font-weight: 700;">${Math.abs(result)}</span>` :
+                !isNegativeA && isNegativeB ? `${absA} - ${absB} = <span style="color: var(--success); font-weight: 700;">${result}</span>` :
+                `${absA} + ${absB} = <span style="color: var(--success); font-weight: 700;">${result}</span>`}
+            </div>
+          </div>
+        </div>`,
+        explanation: result < 0 ? `When both are negative, the answer is negative. When signs differ, subtract and use the sign of the larger number.` : 
+                      `Add or subtract based on the signs of the numbers.`
       },
       {
         title: '✓ Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${result}</span>`,
-        explanation: `${example.a} + ${example.b} = ${result}`
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${result}</span>
+        </div>`,
+        explanation: `${example.a} + (${example.b}) = ${result}`
       }
     ];
 
@@ -1286,24 +1364,45 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const steps = [
       {
-        title: 'Step 1: Look at the inequality',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'Inequalities show a range of values, not just one answer.'
+        title: 'Step 1: Original inequality',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: 'Inequalities show a RANGE of values, not just one answer. The symbols are: < (less than), > (greater than), ≤ (less than or equal), ≥ (greater than or equal)'
       },
       {
         title: 'Step 2: Solve like an equation',
-        visual: `<span style="font-size: 1.1rem;">Use the same steps as solving equations</span>`,
-        explanation: 'Undo operations by doing the opposite on both sides.'
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+            Use the same steps as solving equations:
+          </div>
+          <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; line-height: 1.8;">
+            • Undo operations by doing the <span style="color: var(--accent); font-weight: 700;">opposite on BOTH sides</span><br/>
+            • Work step-by-step to isolate the variable
+          </div>
+        </div>`,
+        explanation: 'Undo operations in reverse order: subtraction/addition first, then multiplication/division.'
       },
       {
         title: '⚠️ Important Rule!',
-        visual: `<span style="font-size: 1.1rem; font-weight: 700; color: var(--danger);">If you multiply or divide by a negative number, FLIP the inequality sign!</span>`,
-        explanation: 'For example: -2x > 6 becomes x < -3 (sign flips when dividing by -2)'
+        visual: `<div style="background: rgba(180, 58, 58, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--error);">
+          <div style="font-size: 1.2rem; font-weight: 700; color: var(--error);">
+            FLIP the inequality sign when:<br/>
+            • Multiplying by a NEGATIVE number<br/>
+            • Dividing by a NEGATIVE number
+          </div>
+          <div style="margin-top: 12px; font-size: 0.95rem; color: #666;">
+            Example: If -2x > 6, divide by -2: x <span style="color: var(--error); font-weight: 700;"><</span> -3 (sign flips!)
+          </div>
+        </div>`,
+        explanation: 'This is the one BIG difference between inequalities and equations!'
       },
       {
-        title: '✓ Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.answer}</span>`,
-        explanation: `Any value where ${example.answer} makes the inequality true.`
+        title: '✓ Solution',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.answer}</span>
+        </div>`,
+        explanation: `Any value that satisfies ${example.answer} makes the original inequality true.`
       }
     ];
 
@@ -1480,46 +1579,85 @@ document.addEventListener('DOMContentLoaded', function() {
     { display: 'x² - 1', factored: '(x + 1)(x - 1)' }
   ];
 
+  function generateFactorSteps(example) {
+    const expr = example.display;
+    const parts = expr.match(/x²([+-]?\d*)x?([+-]?\d*)/);
+    let b = 0, c = 0;
+    
+    if (parts) {
+      b = parts[1] ? parseInt(parts[1]) : 1;
+      c = parts[2] ? parseInt(parts[2]) : 0;
+    }
+    
+    let factor1 = null, factor2 = null;
+    for (let i = 1; i <= Math.abs(c); i++) {
+      if (c % i === 0) {
+        const other = c / i;
+        if (i + other === b || -i - other === b) {
+          factor1 = i * Math.sign(b + other);
+          factor2 = other * Math.sign(b - other);
+          break;
+        }
+      }
+    }
+    
+    if (!factor1 || !factor2) {
+      factor1 = 1; factor2 = c;
+    }
+
+    const steps = [
+      {
+        title: 'Step 1: Original quadratic',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: 'We need to find two numbers that multiply to the constant term and add to the middle coefficient.'
+      },
+      {
+        title: 'Step 2: Find factor pairs',
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+            Find two numbers that:<br/>
+            • Multiply to <strong>${c}</strong><br/>
+            • Add to <strong>${b}</strong>
+          </div>
+          <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+            <div style="color: var(--success); font-weight: 700;">Numbers: <strong>${factor1}</strong> and <strong>${factor2}</strong></div>
+            <div style="color: #666; font-size: 0.9rem; margin-top: 4px;">${factor1} × ${factor2} = ${c}  ✓  |  ${factor1} + ${factor2} = ${b}  ✓</div>
+          </div>
+        </div>`,
+        explanation: 'Identify the pair of factors needed for factoring.'
+      },
+      {
+        title: 'Step 3: Write in factored form',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Factored form:</div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              <span style="color: var(--success); font-weight: 700; font-size: 1.2rem;">${example.factored}</span>
+            </div>
+          </div>
+        </div>`,
+        explanation: 'Express the quadratic as a product of two binomials using the factors found.'
+      },
+      {
+        title: '✓ Factored Form',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <div style="font-size: 1.2rem; font-weight: 600; color: #666; margin-bottom: 8px;">Result:</div>
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.display} = ${example.factored}</span>
+        </div>`,
+        explanation: `The quadratic is now written in factored form. This makes it easier to find the roots if set equal to zero.`
+      }
+    ];
+    
+    return steps;
+  }
+
   function displayFactorSteps(example) {
     factorCustomInput.value = example.display;
     factorStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Look at the quadratic',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'Find two numbers that multiply to give the constant term and add to give the middle coefficient.'
-      },
-      {
-        title: 'Step 2: Find the factor pairs',
-        visual: `<span style="font-size: 1.1rem;">Look for patterns</span>`,
-        explanation: 'For quadratics of form x² + bx + c, we need numbers that multiply to c and add to b.'
-      },
-      {
-        title: 'Step 3: Write the factors',
-        visual: `<span style="font-size: 1.1rem;">Use the pattern (x + m)(x + n)</span>`,
-        explanation: 'where m and n are the numbers from Step 2.'
-      },
-      {
-        title: '✓ Factored Form',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.factored}</span>`,
-        explanation: `${example.display} = ${example.factored}`
-      }
-    ];
-
-    steps.forEach((step) => {
-      const stepDiv = document.createElement('div');
-      stepDiv.className = 'step-section';
-      stepDiv.innerHTML = `
-        <h4>${step.title}</h4>
-        <div class="step-visual">${step.visual}</div>
-        <p>${step.explanation}</p>
-      `;
-      factorStepsContainer.appendChild(stepDiv);
-    });
-
-    factorStepsContainer.style.display = 'block';
-  }
+    const steps = generateFactorSteps(example);
 
   if (factorCustomBtn) {
     factorCustomBtn.addEventListener('click', () => {
@@ -1731,19 +1869,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const steps = [
       {
-        title: 'Step 1: Identify the operation',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: `The rule is: ${example.rule}`
+        title: 'Step 1: Expression with exponents',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: 'We have an expression involving exponents that we need to simplify.'
       },
       {
-        title: 'Step 2: Apply the rule',
-        visual: `<span style="font-size: 1.1rem;">Follow the exponent rule for this operation</span>`,
-        explanation: 'Remember: the bases must be the same to use these rules!'
+        title: 'Step 2: Identify the rule',
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); text-align: center;">
+            <span style="color: var(--accent); font-weight: 700;">${example.rule}</span>
+          </div>
+          <div style="margin-top: 12px; padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; font-size: 0.95rem;">
+            Remember: The bases must be the same!
+          </div>
+        </div>`,
+        explanation: example.rule
       },
       {
-        title: '✓ Simplified Form',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.simplified}</span>`,
-        explanation: `${example.display} = ${example.simplified}`
+        title: 'Step 3: Apply the rule',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Simplify:</div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              <span style="color: var(--success); font-weight: 700; font-size: 1.2rem;">${example.simplified}</span>
+            </div>
+          </div>
+        </div>`,
+        explanation: 'Work through the exponent rule to get the simplified form.'
+      },
+      {
+        title: '✓ Final Answer',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.simplified}</span>
+        </div>`,
+        explanation: `${example.display} simplifies to ${example.simplified}`
       }
     ];
 
@@ -1795,24 +1956,43 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const steps = [
       {
-        title: 'Step 1: Look at the fraction',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'Find the greatest common divisor (GCD) of the numbers.'
+        title: 'Step 1: Original fraction',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: 'We need to simplify this fraction to lowest terms.'
       },
       {
         title: `Step 2: Find the GCD`,
-        visual: `<span style="font-size: 1.1rem;">GCD = ${example.gcd}</span>`,
-        explanation: `Divide both numerator and denominator by ${example.gcd}`
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+            Find the Greatest Common Divisor (GCD)
+          </div>
+          <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px;">
+            <div style="color: var(--accent); font-weight: 700;">GCD = ${example.gcd}</div>
+            <div style="color: #666; font-size: 0.9rem; margin-top: 4px;">Divide both top and bottom by ${example.gcd}</div>
+          </div>
+        </div>`,
+        explanation: `The GCD is the largest number that divides both the numerator and denominator evenly.`
       },
       {
-        title: 'Step 3: Cancel common factors',
-        visual: `<span style="font-size: 1.1rem;">Also cancel common variables</span>`,
-        explanation: 'Any variables that appear in both numerator and denominator cancel out.'
+        title: 'Step 3: Divide by the GCD',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Cancel common factors:</div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              <span style="color: var(--success); font-weight: 700; font-size: 1.1rem;">Numerator ÷ ${example.gcd} | Denominator ÷ ${example.gcd}</span>
+            </div>
+          </div>
+        </div>`,
+        explanation: 'Divide both the numerator and denominator by the GCD.'
       },
       {
         title: '✓ Simplified Form',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.simplified}</span>`,
-        explanation: `${example.display} = ${example.simplified}`
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.simplified}</span>
+        </div>`,
+        explanation: `${example.display} = ${example.simplified} (in lowest terms)`
       }
     ];
 
@@ -1864,24 +2044,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const steps = [
       {
-        title: 'Step 1: Look at the radical',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'Find perfect square factors of the number under the radical.'
+        title: 'Step 1: Original radical',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: 'We need to simplify this radical by factoring out perfect squares.'
       },
       {
-        title: 'Step 2: Factor into perfect squares',
-        visual: `<span style="font-size: 1.1rem;">${example.explanation}</span>`,
-        explanation: 'Perfect squares: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100...'
+        title: 'Step 2: Find perfect square factors',
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+            Perfect squares: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100...
+          </div>
+          <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px;">
+            <div style="color: var(--accent); font-weight: 700;">${example.explanation}</div>
+          </div>
+        </div>`,
+        explanation: 'Look for the largest perfect square that divides evenly into the number under the radical.'
       },
       {
-        title: 'Step 3: Simplify',
-        visual: `<span style="font-size: 1.1rem;">Take square root of perfect squares outside</span>`,
-        explanation: 'Keep the rest under the radical.'
+        title: 'Step 3: Extract perfect squares',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Take square root of perfect squares:</div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              <span style="color: var(--success); font-weight: 700; font-size: 1.1rem;">√ outside the radical, remainder stays inside</span>
+            </div>
+          </div>
+        </div>`,
+        explanation: 'Perfect square factors come outside the radical, and the remaining factors stay inside.'
       },
       {
         title: '✓ Simplified Form',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.simplified}</span>`,
-        explanation: `${example.display} = ${example.simplified}`
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.simplified}</span>
+        </div>`,
+        explanation: `${example.display} simplifies to ${example.simplified}`
       }
     ];
 
@@ -1933,24 +2131,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const steps = [
       {
-        title: 'Step 1: Identify the polynomials',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'We need to multiply these two binomials together.'
+        title: 'Step 1: Binomials to multiply',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: 'We need to multiply these two binomials together to expand the expression.'
       },
       {
         title: 'Step 2: Use FOIL method',
-        visual: `<span style="font-size: 1.1rem;"><strong>F</strong>irst · <strong>O</strong>uter · <strong>I</strong>nner · <strong>L</strong>ast</span>`,
-        explanation: 'Multiply each term in the first binomial by each term in the second.'
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
+            <strong>F</strong>irst · <strong>O</strong>uter · <strong>I</strong>nner · <strong>L</strong>ast
+          </div>
+          <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; font-size: 0.9rem;">
+            Multiply each term in first binomial by each term in second binomial
+          </div>
+        </div>`,
+        explanation: 'FOIL helps us remember to multiply all four pairs of terms.'
       },
       {
-        title: 'Step 3: Multiply all pairs',
-        visual: `<span style="font-size: 1.1rem;">Create four products, then combine like terms</span>`,
-        explanation: 'This gives us the expanded form.'
+        title: 'Step 3: Multiply and combine',
+        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Get four products:</div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              <span style="color: var(--success); font-weight: 700;">Then combine like terms</span>
+            </div>
+          </div>
+        </div>`,
+        explanation: 'Multiply all pairs, then add together any like terms (same variable and power).'
       },
       {
         title: '✓ Expanded Form',
-        visual: `<span style="font-size: 1.3rem; font-weight: 700; color: var(--success);">${example.expanded}</span>`,
-        explanation: `${example.display} = ${example.expanded}`
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.expanded}</span>
+        </div>`,
+        explanation: `${example.display} expands to ${example.expanded}`
       }
     ];
 
