@@ -242,6 +242,17 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   function displaySteps(example) {
+    // Convert display format to input format (² to ^2, ³ to ^3, etc.)
+    let inputFormat = example.display
+      .replace(/²/g, '^2')
+      .replace(/³/g, '^3')
+      .replace(/⁴/g, '^4')
+      .replace(/⁵/g, '^5');
+    
+    // Populate the custom input field
+    ltCustomInput.value = inputFormat;
+    
+    // Show the steps
     const steps = generateStepsForExample(example.a, example.b, example.c, example.d, example.var, example.pow);
     
     ltStepsContainer.innerHTML = '';
