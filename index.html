@@ -30,29 +30,38 @@
         <!-- Combine Like Terms -->
         <section id="topic-likeTerms" class="topic active">
           <h1>Combine Like Terms</h1>
-          <p class="subtitle">Simplify expressions by grouping terms with the same variable.</p>
+          <p class="subtitle">Group terms that look the same, then add them together.</p>
           
           <div class="card">
             <div class="inputs">
               <div class="input-pair">
-                <label>Coefficient of x</label>
+                <label>First x term</label>
                 <input type="number" id="lt-a" value="3" />
               </div>
               <div class="input-pair">
-                <label>+ Constant</label>
+                <label>First number</label>
                 <input type="number" id="lt-b" value="5" />
               </div>
               <div class="input-pair">
-                <label>+ Coefficient of x</label>
+                <label>Second x term</label>
                 <input type="number" id="lt-c" value="2" />
               </div>
               <div class="input-pair">
-                <label>+ Constant</label>
+                <label>Second number</label>
                 <input type="number" id="lt-d" value="-1" />
               </div>
             </div>
             <button class="btn-primary" id="run-likeTerms">Show Steps</button>
-            <div class="result" id="result-likeTerms"></div>
+            
+            <div id="lt-steps-container" style="display: none; margin-top: 24px;">
+              <div id="lt-visual-step" style="text-align: center; margin-bottom: 20px;"></div>
+              <p id="lt-explanation" style="font-size: 1rem; line-height: 1.6; color: var(--ink); margin: 16px 0;"></p>
+              <div style="display: flex; gap: 12px; justify-content: center; margin-top: 16px;">
+                <button class="btn-secondary" id="lt-prev-btn" style="display: none;">← Back</button>
+                <span id="lt-step-counter" style="font-weight: 600; color: var(--brand-deep); padding: 10px 16px; background: rgba(10, 126, 164, 0.08); border-radius: 8px;"></span>
+                <button class="btn-secondary" id="lt-next-btn">Next →</button>
+              </div>
+            </div>
           </div>
         </section>
 
