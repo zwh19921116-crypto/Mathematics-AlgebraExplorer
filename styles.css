@@ -369,6 +369,55 @@ input[type="number"]:focus {
   flex-wrap: wrap;
 }
 
+.step-section {
+  background: linear-gradient(135deg, #f0f8ff 0%, #e3f4ff 100%);
+  border-left: 4px solid var(--brand);
+  padding: 20px;
+  border-radius: 10px;
+  margin-bottom: 16px;
+  animation: slideIn 0.3s ease;
+}
+
+.step-section:nth-child(2n) {
+  background: linear-gradient(135deg, #fff5f0 0%, #ffe8d8 100%);
+  border-left-color: var(--accent);
+}
+
+.step-section:nth-child(3n) {
+  background: linear-gradient(135deg, #f0fff4 0%, #e3ffe8 100%);
+  border-left-color: var(--success);
+}
+
+.step-section h4 {
+  margin: 0 0 12px;
+  color: var(--brand-deep);
+  font-size: 1rem;
+}
+
+.step-section .step-visual {
+  background: white;
+  border: 1px solid rgba(10, 126, 164, 0.1);
+  margin: 12px 0;
+}
+
+.step-section p {
+  margin: 0;
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: var(--ink);
+}
+
+@keyframes slideIn {
+  from {
+    opacity: 0;
+    transform: translateY(-10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
 @keyframes fadeIn {
   from {
     opacity: 0;
