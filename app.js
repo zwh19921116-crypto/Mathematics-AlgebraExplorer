@@ -365,61 +365,48 @@ document.addEventListener('DOMContentLoaded', function() {
         explanation: `This is what we're solving. Goal: Get x by itself on one side.`
       },
       {
-        title: `Step 2: Subtract ${c}x from BOTH sides`,
+        title: `Step 2, 3 & 4: Solve`,
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Original:</div>
-            <div style="margin-bottom: 24px;">${a}x ${signed(b)} = ${c}x ${signed(d)}</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 2.6; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 14px; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 6px;">${a}x ${signed(b)} = ${c}x ${signed(d)}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${c}x from BOTH sides:</div>
-            <div style="margin-bottom: 24px;">
-              ${a}x ${signed(b)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${c}x </span>= ${c}x ${signed(d)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${c}x </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px; font-size: 0.9rem;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${c}x
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${c}x
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700;">${leftCoeff}x ${signed(b)} = ${d}</div>
-            </div>
-          </div>
-        </div>`,
-        explanation: `We subtract ${c}x from both sides to move all x terms to the left.`
-      },
-      {
-        title: `Step 3: Subtract ${b} from BOTH sides`,
-        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
-            <div style="margin-bottom: 24px;">${leftCoeff}x ${signed(b)} = ${d}</div>
+            <div style="margin-bottom: 14px; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px; color: var(--brand-deep);">${leftCoeff}x ${signed(b)} = ${d}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${b} from BOTH sides:</div>
-            <div style="margin-bottom: 24px;">
-              ${leftCoeff}x ${signed(b)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${b} </span>= ${d} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${b} </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px; font-size: 0.9rem;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${b}
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${b}
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700;">${leftCoeff}x = ${rightConst}</div>
-            </div>
-          </div>
-        </div>`,
-        explanation: `We subtract ${b} from both sides to move the constant to the right.`
-      },
-      {
-        title: `Step 4: Divide BOTH sides by ${leftCoeff}`,
-        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
-            <div style="margin-bottom: 24px;">${leftCoeff}x = ${rightConst}</div>
+            <div style="margin-bottom: 14px; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px; color: var(--brand-deep);">${leftCoeff}x = ${rightConst}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Divide BOTH sides by ${leftCoeff}:</div>
-            <div style="margin-bottom: 24px;">
-              ${leftCoeff}x <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${leftCoeff} </span>= ${rightConst} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${leftCoeff} </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px; font-size: 0.9rem;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                ÷${leftCoeff}
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                ÷${leftCoeff}
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${fmt(x)}</div>
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.2rem;">x = ${fmt(x)}</div>
             </div>
           </div>
         </div>`,
-        explanation: `Divide both sides by ${leftCoeff} to get x by itself.`
+        explanation: `Move x terms to one side and constants to the other, then solve for x.`
       },
       {
         title: '✓ Solution',
@@ -1027,31 +1014,26 @@ document.addEventListener('DOMContentLoaded', function() {
         explanation: `We need to find x. To do this, we need to UNDO the operation that's being done to x.`
       },
       {
-        title: `Step 2: What operation is being done to x?`,
-        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-size: 1.1rem; margin: 8px 0;"><strong>We're ${operation}ing ${operand}</strong></div>
-          <div style="margin-top: 12px; font-weight: 600; color: var(--brand-deep);">${explanation1}</div>
-        </div>`,
-        explanation: `The inverse (opposite) operation is key! We do it to BOTH sides of the equation.`
-      },
-      {
-        title: `Step 3: ${inverseOp.charAt(0).toUpperCase() + inverseOp.slice(1)} ${operand} from BOTH sides`,
+        title: `Step 2 & 3: Solve`,
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Original equation:</div>
-            <div style="margin-bottom: 24px;">${example.display}</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.8; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 16px; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 6px;">${example.display}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Apply ${inverseOp} ${operand} to BOTH sides:</div>
-            <div style="margin-bottom: 24px;">
-              ${example.display.split('=')[0].trim()} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>= ${example.display.split('=')[1].trim()} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700; font-size: 0.9rem;">
+                ${inverseSymbol}${operand}
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700; font-size: 0.9rem;">
+                ${inverseSymbol}${operand}
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${x}</div>
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.2rem;">x = ${x}</div>
             </div>
           </div>
         </div>`,
-        explanation: `We MUST do the same operation to both sides to keep the equation balanced. That's the golden rule of algebra!`
+        explanation: `${inverseOp.charAt(0).toUpperCase() + inverseOp.slice(1)} ${operand} from both sides to isolate x.`
       },
       {
         title: '✓ Solution',
@@ -1156,42 +1138,37 @@ document.addEventListener('DOMContentLoaded', function() {
         explanation: `We need to solve this in two steps: first remove the constant, then divide by the coefficient.`
       },
       {
-        title: `Step 2: Subtract ${constant} from BOTH sides`,
+        title: `Step 2 & 3: Subtract and Divide`,
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Original:</div>
-            <div style="margin-bottom: 24px;">${example.display}</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 2.6; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 14px; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 6px;">${example.display}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${constant} from BOTH sides:</div>
-            <div style="margin-bottom: 24px;">
-              ${coeff}x ${signed(constant)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>= ${rightSide} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px; font-size: 0.9rem;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${constant}
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${constant}
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700;">${coeff}x = ${afterStep1}</div>
-            </div>
-          </div>
-        </div>`,
-        explanation: `We subtract the constant to isolate the x term.`
-      },
-      {
-        title: `Step 3: Divide BOTH sides by ${coeff}`,
-        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
-            <div style="margin-bottom: 24px;">${coeff}x = ${afterStep1}</div>
+            <div style="margin-bottom: 14px; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px; color: var(--brand-deep);">${coeff}x = ${afterStep1}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Divide BOTH sides by ${coeff}:</div>
-            <div style="margin-bottom: 24px;">
-              ${coeff}x <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${coeff} </span>= ${afterStep1} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${coeff} </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px; font-size: 0.9rem;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                ÷${coeff}
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                ÷${coeff}
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${fmt(x)}</div>
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.2rem;">x = ${fmt(x)}</div>
             </div>
           </div>
         </div>`,
-        explanation: `Divide both sides by ${coeff} to get x by itself.`
+        explanation: `First subtract ${constant} from both sides, then divide both sides by ${coeff} to solve for x.`
       },
       {
         title: '✓ Solution',
@@ -1310,42 +1287,37 @@ document.addEventListener('DOMContentLoaded', function() {
         explanation: `Add up all the coefficients of x, and all the constant numbers.`
       },
       {
-        title: `Step 3: Subtract ${constant} from BOTH sides`,
+        title: `Step 3 & 4: Subtract and Divide`,
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
-            <div style="margin-bottom: 24px;">${totalCoeff}x ${signed(constant)} = ${rightSide}</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 2.6; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 14px; padding: 10px; background: rgba(255,255,255,0.5); border-radius: 6px;">${totalCoeff}x ${signed(constant)} = ${rightSide}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${constant} from BOTH sides:</div>
-            <div style="margin-bottom: 24px;">
-              ${totalCoeff}x ${signed(constant)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>= ${rightSide} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${constant} </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px; font-size: 0.9rem;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${constant}
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                −${constant}
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700;">${totalCoeff}x = ${afterStep1}</div>
-            </div>
-          </div>
-        </div>`,
-        explanation: `Move the constant to the right side to isolate the x term.`
-      },
-      {
-        title: `Step 4: Divide BOTH sides by ${totalCoeff}`,
-        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
-            <div style="margin-bottom: 24px;">${totalCoeff}x = ${afterStep1}</div>
+            <div style="margin-bottom: 14px; padding: 10px; background: rgba(31, 138, 72, 0.15); border-radius: 6px; color: var(--brand-deep);">${totalCoeff}x = ${afterStep1}</div>
             
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Divide BOTH sides by ${totalCoeff}:</div>
-            <div style="margin-bottom: 24px;">
-              ${totalCoeff}x <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${totalCoeff} </span>= ${afterStep1} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${totalCoeff} </span>
+            <div style="margin-bottom: 8px; display: flex; justify-content: center; gap: 60px; font-size: 0.9rem;">
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                ÷${totalCoeff}
+              </div>
+              <div style="display: inline-flex; align-items: center; background: rgba(217, 74, 74, 0.2); color: #d94a4a; padding: 6px 12px; border-radius: 20px; border: 2px solid #d94a4a; font-weight: 700;">
+                ÷${totalCoeff}
+              </div>
             </div>
             
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${fmt(x)}</div>
+            <div style="padding: 10px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.2rem;">x = ${fmt(x)}</div>
             </div>
           </div>
         </div>`,
-        explanation: `Divide both sides by ${totalCoeff} to isolate x completely.`
+        explanation: `Subtract ${constant} from both sides, then divide both sides by ${totalCoeff} to solve for x.`
       },
       {
         title: '✓ Solution',
