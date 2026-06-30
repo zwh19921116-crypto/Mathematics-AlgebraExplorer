@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Algebra Explorer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="bg-orb orb-1" aria-hidden="true"></div>
+  <div class="bg-orb orb-2" aria-hidden="true"></div>
+  <div class="bg-grid" aria-hidden="true"></div>
+
+  <header class="hero">
+    <div class="hero-content">
+      <p class="kicker">Mathematics Learning Studio</p>
+      <h1>Algebra Explorer</h1>
+      <p class="subtitle">
+        Learn algebra the easy way with guided, step-by-step walkthroughs.
+        Every activity shows what to do, why it works, and how to check your answer.
+      </p>
+      <a class="cta" href="#explorer">Start Exploring</a>
+    </div>
+  </header>
+
+  <main>
+    <section class="quick-guide section-wrap">
+      <h2>Three Easy Rules</h2>
+      <div class="rule-cards">
+        <article class="rule-card">
+          <h3>1) Keep Like Terms Together</h3>
+          <p>Only combine terms with the same variable and power. Example: 3x and 5x can combine, but 3x and 5 cannot.</p>
+        </article>
+        <article class="rule-card">
+          <h3>2) Balance Both Sides</h3>
+          <p>For equations, whatever you do on one side, do the same on the other side to keep things equal.</p>
+        </article>
+        <article class="rule-card">
+          <h3>3) Reverse Operations</h3>
+          <p>Undo addition and subtraction first, then multiplication and division, to isolate the variable.</p>
+        </article>
+      </div>
+    </section>
+
+    <section id="explorer" class="explorer section-wrap">
+      <div class="section-title">
+        <h2>Interactive Algebra Explorer</h2>
+        <p>Pick a topic, enter values, and follow the worked steps.</p>
+      </div>
+
+      <div class="topic-tabs" role="tablist" aria-label="Algebra Topics">
+        <button class="topic-tab active" data-topic="likeTerms" role="tab" aria-selected="true">Combine Like Terms</button>
+        <button class="topic-tab" data-topic="solveEq" role="tab" aria-selected="false">Solve Linear Equation</button>
+        <button class="topic-tab" data-topic="distribute" role="tab" aria-selected="false">Distributive Property</button>
+      </div>
+
+      <div class="panels">
+        <section class="panel active" id="panel-likeTerms" role="tabpanel">
+          <h3>Combine Like Terms</h3>
+          <p class="panel-help">Expression format: ax + b + cx + d</p>
+          <div class="input-grid">
+            <label>a (coefficient of first x)
+              <input type="number" id="lt-a" value="3" />
+            </label>
+            <label>b (first constant)
+              <input type="number" id="lt-b" value="5" />
+            </label>
+            <label>c (coefficient of second x)
+              <input type="number" id="lt-c" value="2" />
+            </label>
+            <label>d (second constant)
+              <input type="number" id="lt-d" value="-1" />
+            </label>
+          </div>
+          <button class="action" id="run-likeTerms">Show Steps</button>
+          <div class="result" id="result-likeTerms"></div>
+        </section>
+
+        <section class="panel" id="panel-solveEq" role="tabpanel">
+          <h3>Solve ax + b = cx + d</h3>
+          <p class="panel-help">Great for practicing balancing equations.</p>
+          <div class="input-grid">
+            <label>a
+              <input type="number" id="se-a" value="5" />
+            </label>
+            <label>b
+              <input type="number" id="se-b" value="3" />
+            </label>
+            <label>c
+              <input type="number" id="se-c" value="2" />
+            </label>
+            <label>d
+              <input type="number" id="se-d" value="15" />
+            </label>
+          </div>
+          <button class="action" id="run-solveEq">Show Steps</button>
+          <div class="result" id="result-solveEq"></div>
+        </section>
+
+        <section class="panel" id="panel-distribute" role="tabpanel">
+          <h3>Use the Distributive Property</h3>
+          <p class="panel-help">Expand k(mx + n)</p>
+          <div class="input-grid">
+            <label>k (outside factor)
+              <input type="number" id="dp-k" value="4" />
+            </label>
+            <label>m (x coefficient inside)
+              <input type="number" id="dp-m" value="2" />
+            </label>
+            <label>n (constant inside)
+              <input type="number" id="dp-n" value="-3" />
+            </label>
+          </div>
+          <button class="action" id="run-distribute">Show Steps</button>
+          <div class="result" id="result-distribute"></div>
+        </section>
+      </div>
+    </section>
+
+    <section class="practice section-wrap">
+      <div class="section-title">
+        <h2>Quick Practice Challenge</h2>
+        <p>Try one random linear equation each time and check your answer.</p>
+      </div>
+      <div class="challenge-box">
+        <p id="challenge-question">Press Generate to start.</p>
+        <label>Your answer for x
+          <input type="number" id="challenge-answer" step="any" />
+        </label>
+        <div class="challenge-actions">
+          <button class="action secondary" id="generate-challenge">Generate</button>
+          <button class="action" id="check-challenge">Check</button>
+        </div>
+        <p id="challenge-feedback" class="feedback"></p>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <p>Built for students learning algebra with confidence.</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
