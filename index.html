@@ -33,8 +33,19 @@
           <p class="subtitle">Group terms that look the same, then add them together.</p>
           
           <div class="card">
-            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Click an example to see the steps:</p>
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
             <div id="lt-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Create Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; align-items: center;">
+              <input type="text" id="lt-custom-input" placeholder="e.g., 3x + 2x + 5" style="flex: 1; min-width: 180px; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace; font-size: 0.95rem;">
+              <button class="btn-secondary" id="lt-pow2-btn" style="padding: 10px 14px; font-size: 0.9rem;">^2</button>
+              <button class="btn-secondary" id="lt-pow3-btn" style="padding: 10px 14px; font-size: 0.9rem;">^3</button>
+              <button class="btn-primary" id="lt-custom-btn">Show Steps</button>
+            </div>
+            <p style="font-size: 0.85rem; color: var(--muted); margin: 0;">Format: <code style="background: var(--light); padding: 2px 6px; border-radius: 4px;">3x + 2x</code> or <code style="background: var(--light); padding: 2px 6px; border-radius: 4px;">3y^2 + 2y^2 + 5</code></p>
             
             <div id="lt-steps-container" style="display: none; margin-top: 24px;"></div>
           </div>

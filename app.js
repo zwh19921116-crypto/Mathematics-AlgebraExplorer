@@ -50,26 +50,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   const signed = (n) => (n < 0 ? `- ${Math.abs(n)}` : `+ ${n}`);
 
-  function showResult(containerId, title, steps, answerText) {
-    const container = document.getElementById(containerId);
-    container.innerHTML = `
-      <h4>${title}</h4>
-      <ol>${steps.map((step) => `<li>${step}</li>`).join('')}</ol>
-      <p><strong>Answer:</strong> ${answerText}</p>
-    `;
-  }
-
-  // Combine Like Terms - Preset Examples
-  const ltExamplesContainer = document.getElementById('lt-examples');
-  const ltStepsContainer = document.getElementById('lt-steps-container');
-
-  const likeTermsExamples = [
-    { display: '3x + 2x', a: 3, b: 0, c: 2, d: 0, var: 'x', pow: 1, label: 'x terms' },
-    { display: '4y + 3y', a: 4, b: 0, c: 3, d: 0, var: 'y', pow: 1, label: 'y terms' },
-    { display: '2y² + 5y²', a: 2, b: 0, c: 5, d: 0, var: 'y', pow: 2, label: 'y² terms' },
-    { display: '3x + 5 + 2x - 1', a: 3, b: 5, c: 2, d: -1, var: 'x', pow: 1, label: 'mixed' }
-  ];
-
   function generateStepsForExample(a, b, c, d, variable, power) {
     const xCoeff = a + c;
     const constant = b + d;
@@ -119,6 +99,148 @@ document.addEventListener('DOMContentLoaded', function() {
     ];
   }
 
+  function showResult(containerId, title, steps, answerText) {
+    const container = document.getElementById(containerId);
+    container.innerHTML = `
+      <h4>${title}</h4>
+      <ol>${steps.map((step) => `<li>${step}</li>`).join('')}</ol>
+      <p><strong>Answer:</strong> ${answerText}</p>
+    `;
+  }
+
+  // Combine Like Terms - Preset Examples + Custom Input
+  const ltExamplesContainer = document.getElementById('lt-examples');
+  const ltStepsContainer = document.getElementById('lt-steps-container');
+  const ltCustomInput = document.getElementById('lt-custom-input');
+  const ltCustomBtn = document.getElementById('lt-custom-btn');
+  const ltPow2Btn = document.getElementById('lt-pow2-btn');
+  const ltPow3Btn = document.getElementById('lt-pow3-btn');
+
+  const likeTermsExamples = [
+    { display: '3x + 2x', a: 3, b: 0, c: 2, d: 0, var: 'x', pow: 1, label: 'x terms' },
+    { display: '4y + 3y', a: 4, b: 0, c: 3, d: 0, var: 'y', pow: 1, label: 'y terms' },
+    { display: '2y² + 5y²', a: 2, b: 0, c: 5, d: 0, var: 'y', pow: 2, label: 'y² terms' },
+    { display: '3x + 5 + 2x - 1', a: 3, b: 5, c: 2, d: -1, var: 'x', pow: 1, label: 'mixed' }
+  ];
+
+  // Helper buttons for powers
+  if (ltPow2Btn) {
+    ltPow2Btn.addEventListener('click', () => {
+      ltCustomInput.value += '^2';
+      ltCustomInput.focus();
+    });
+  }
+
+  if (ltPow3Btn) {
+    ltPow3Btn.addEventListener('click', () => {
+      ltCustomInput.value += '^3';
+      ltCustomInput.focus();
+    });
+  }
+
+  function parseCustomEquation(equation) {
+    // Parse format like "3x + 2x + 5" or "3y^2 + 2y^2 + 5"
+    const terms = [];
+    const regex = /([+-]?\s*\d*\.?\d*)\s*([a-z]?)(\^?\d*)?/gi;
+    let match;
+
+    while ((match = regex.exec(equation)) !== null) {
+      const coefficient = parseFloat(match[1].replace(/\s/g, '')) || (match[2] ? 1 : 0);
+      const variable = match[2] || '';
+      const power = match[3] ? parseInt(match[3].replace('^', '')) : (variable ? 1 : 0);
+
+      if (coefficient !== 0) {
+        terms.push({ coef: coefficient, var: variable, pow: power });
+      }
+    }
+
+    return terms;
+  }
+
+  function groupAndCombineTerms(terms) {
+    const grouped = {};
+    const constantTerms = [];
+
+    terms.forEach((term) => {
+      const key = term.var ? `${term.var}^${term.pow}` : 'constant';
+      if (term.var) {
+        grouped[key] = (grouped[key] || 0) + term.coef;
+      } else {
+        constantTerms.push(term.coef);
+      }
+    });
+
+    return { grouped, constantSum: constantTerms.reduce((a, b) => a + b, 0) };
+  }
+
+  function displayStepsForCustom(equation) {
+    try {
+      const terms = parseCustomEquation(equation);
+      if (terms.length === 0) {
+        ltStepsContainer.innerHTML = '<p style="color: var(--danger); font-weight: 600;">No valid terms found. Try: 3x + 2x</p>';
+        ltStepsContainer.style.display = 'block';
+        return;
+      }
+
+      const { grouped, constantSum } = groupAndCombineTerms(terms);
+      
+      // Display steps
+      ltStepsContainer.innerHTML = '';
+
+      // Step 1: Show original terms
+      const step1Div = document.createElement('div');
+      step1Div.className = 'step-section';
+      const termsDisplay = terms.map(t => {
+        const powerStr = t.pow && t.pow > 1 ? `<sup>${t.pow}</sup>` : '';
+        const term = t.var ? `${t.coef}${t.var}${powerStr}` : `${t.coef}`;
+        return `<span class="term-box ${t.var ? 'x-term' : 'number-term'}">${term}</span>`;
+      }).join(' ');
+
+      step1Div.innerHTML = `
+        <h4>Step 1: Look at all the terms</h4>
+        <div class="step-visual">${termsDisplay}</div>
+        <p>We need to combine terms that are exactly the same (same variable and same power).</p>
+      `;
+      ltStepsContainer.appendChild(step1Div);
+
+      // Step 2+: Show each group
+      Object.entries(grouped).forEach(([key, total]) => {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'step-section';
+        const relatedTerms = terms.filter(t => (t.var ? `${t.var}^${t.pow}` : 'constant') === key);
+        const displayTerms = relatedTerms.map(t => {
+          const powerStr = t.pow && t.pow > 1 ? `<sup>${t.pow}</sup>` : '';
+          return `<span class="term-box x-term">${t.coef}${t.var}${powerStr}</span>`;
+        }).join(' ');
+
+        stepDiv.innerHTML = `
+          <h4>Combine ${key}:</h4>
+          <div class="step-visual">${displayTerms}</div>
+          <p>${relatedTerms.map(t => t.coef).join(' + ')} = <strong>${total}</strong></p>
+        `;
+        ltStepsContainer.appendChild(stepDiv);
+      });
+
+      // Final step
+      const finalDiv = document.createElement('div');
+      finalDiv.className = 'step-section';
+      const finalTerms = Object.entries(grouped).map(([key, total]) => {
+        return `<span class="term-box x-term" style="padding: 16px 20px; font-size: 1.1rem; font-weight: 700;">${total}${key.split('^')[0]}</span>`;
+      }).join('');
+
+      finalDiv.innerHTML = `
+        <h4>✓ Final Answer:</h4>
+        <div class="step-visual">${finalTerms}</div>
+      `;
+      ltStepsContainer.appendChild(finalDiv);
+      ltStepsContainer.style.display = 'block';
+
+    } catch (e) {
+      ltStepsContainer.innerHTML = '<p style="color: var(--danger); font-weight: 600;">Error parsing equation. Try: 3x + 2x</p>';
+      ltStepsContainer.style.display = 'block';
+    }
+  }
+
   function displaySteps(example) {
     const steps = generateStepsForExample(example.a, example.b, example.c, example.d, example.var, example.pow);
     
@@ -139,6 +261,28 @@ document.addEventListener('DOMContentLoaded', function() {
     // Update active card
     document.querySelectorAll('.example-card').forEach(card => card.classList.remove('active'));
     event.target.classList.add('active');
+  }
+
+  // Custom equation handler
+  if (ltCustomBtn) {
+    ltCustomBtn.addEventListener('click', () => {
+      const equation = ltCustomInput.value.trim();
+      if (!equation) {
+        alert('Please enter an equation like: 3x + 2x');
+        return;
+      }
+      displayStepsForCustom(equation);
+      document.querySelectorAll('.example-card').forEach(card => card.classList.remove('active'));
+    });
+  }
+
+  // Allow Enter key
+  if (ltCustomInput) {
+    ltCustomInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        ltCustomBtn.click();
+      }
+    });
   }
 
   // Create example cards
