@@ -312,45 +312,167 @@ document.addEventListener('DOMContentLoaded', function() {
     ltExamplesContainer.appendChild(card);
   });
 
-  // Solve Linear Equation
-  const runSolveEq = document.getElementById('run-solveEq');
-  if (runSolveEq) {
-    runSolveEq.addEventListener('click', () => {
-      const a = Number(document.getElementById('se-a').value);
-      const b = Number(document.getElementById('se-b').value);
-      const c = Number(document.getElementById('se-c').value);
-      const d = Number(document.getElementById('se-d').value);
+  // Solve Linear Equation - Preset Examples + Custom Input
+  const seExamplesContainer = document.getElementById('se-examples');
+  const seStepsContainer = document.getElementById('se-steps-container');
+  const seCustomInput = document.getElementById('se-custom-input');
+  const seCustomBtn = document.getElementById('se-custom-btn');
 
-      // Update equation display
-      document.getElementById('eq-display').textContent = `${a}x ${signed(b)} = ${c}x ${signed(d)}`;
+  const solveEqExamples = [
+    { display: '5x + 3 = 2x + 15', a: 5, b: 3, c: 2, d: 15 },
+    { display: '3x + 2 = x + 8', a: 3, b: 2, c: 1, d: 8 },
+    { display: '2x - 4 = x + 1', a: 2, b: -4, c: 1, d: 1 },
+    { display: '4x + 5 = 3x + 9', a: 4, b: 5, c: 3, d: 9 }
+  ];
 
-      const leftCoeff = a - c;
-      const rightConst = d - b;
+  function generateSolveEqSteps(a, b, c, d) {
+    const leftCoeff = a - c;
+    const rightConst = d - b;
+    const x = rightConst / leftCoeff;
 
-      if (leftCoeff === 0) {
-        const msg = rightConst === 0
-          ? 'All values work (infinite solutions)'
-          : 'No solution exists';
-        showResult('result-solveEq', 'Solution', [
-          `Start: ${a}x ${signed(b)} = ${c}x ${signed(d)}`,
-          `Subtract ${c}x: ${leftCoeff}x ${signed(b)} = ${d}`,
-          `Result: 0x = ${rightConst}`
-        ], msg);
+    const steps = [
+      {
+        title: 'Step 1: Look at the equation',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${a}x ${signed(b)} = ${c}x ${signed(d)}</span>`,
+        explanation: `We need to get all x terms on one side and all numbers on the other side.`
+      },
+      {
+        title: `Step 2: Move x terms to the left`,
+        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${a}x ${signed(b)} - ${c}x = ${d}</span>`,
+        explanation: `Subtract ${c}x from both sides: ${a}x - ${c}x = ${leftCoeff}x`
+      },
+      {
+        title: `Step 3: Simplify left side`,
+        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x ${signed(b)} = ${d}</span>`,
+        explanation: `We now have ${leftCoeff}x ${signed(b)} on the left.`
+      },
+      {
+        title: `Step 4: Move constants to the right`,
+        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x = ${d} ${signed(-b)}</span>`,
+        explanation: `Subtract ${b} from both sides.`
+      },
+      {
+        title: `Step 5: Simplify right side`,
+        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${leftCoeff}x = ${rightConst}</span>`,
+        explanation: `${d} ${signed(-b)} = ${rightConst}`
+      },
+      {
+        title: `Step 6: Divide to isolate x`,
+        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">x = ${rightConst} ÷ ${leftCoeff}</span>`,
+        explanation: `Divide both sides by ${leftCoeff} to isolate x.`
+      },
+      {
+        title: '✓ Final Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--brand-deep); background: rgba(10, 126, 164, 0.1); padding: 16px 24px; border-radius: 10px;">x = ${fmt(x)}</span>`,
+        explanation: `The solution is <strong>x = ${fmt(x)}</strong>`
+      }
+    ];
+
+    return steps;
+  }
+
+  function displaySolveEqSteps(example) {
+    // Populate the custom input field
+    seCustomInput.value = example.display;
+    
+    // Show the steps
+    const steps = generateSolveEqSteps(example.a, example.b, example.c, example.d);
+    
+    seStepsContainer.innerHTML = '';
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      seStepsContainer.appendChild(stepDiv);
+    });
+
+    seStepsContainer.style.display = 'block';
+  }
+
+  function parseSolveEqCustom(equation) {
+    // Parse format: "5x + 3 = 2x + 15"
+    const [left, right] = equation.split('=');
+    if (!left || !right) return null;
+
+    const parseExpression = (expr) => {
+      expr = expr.trim();
+      // Match: coefficient*x + constant
+      const xMatch = expr.match(/([+-]?\s*\d*\.?\d*)\s*x/i);
+      const constMatch = expr.match(/([+-]?\s*\d+\.?\d*)\s*$/) || expr.match(/([+-]\s*\d+\.?\d*)/);
+      
+      const coef = xMatch ? parseFloat(xMatch[1].replace(/\s/g, '') || 1) : 0;
+      const constant = constMatch ? parseFloat(constMatch[1].replace(/\s/g, '') || 0) : 0;
+      
+      return { coef, constant };
+    };
+
+    const leftParts = parseExpression(left);
+    const rightParts = parseExpression(right);
+    
+    if (!leftParts || !rightParts) return null;
+    
+    return {
+      a: leftParts.coef,
+      b: leftParts.constant,
+      c: rightParts.coef,
+      d: rightParts.constant
+    };
+  }
+
+  // Custom equation handler
+  if (seCustomBtn) {
+    seCustomBtn.addEventListener('click', () => {
+      const equation = seCustomInput.value.trim();
+      if (!equation) {
+        alert('Please enter an equation like: 5x + 3 = 2x + 15');
+        return;
+      }
+      
+      const parsed = parseSolveEqCustom(equation);
+      if (!parsed) {
+        alert('Invalid format. Use: ax + b = cx + d');
         return;
       }
 
-      const x = rightConst / leftCoeff;
+      const steps = generateSolveEqSteps(parsed.a, parsed.b, parsed.c, parsed.d);
+      
+      seStepsContainer.innerHTML = '';
+      steps.forEach((step) => {
+        const stepDiv = document.createElement('div');
+        stepDiv.className = 'step-section';
+        stepDiv.innerHTML = `
+          <h4>${step.title}</h4>
+          <div class="step-visual">${step.visual}</div>
+          <p>${step.explanation}</p>
+        `;
+        seStepsContainer.appendChild(stepDiv);
+      });
 
-      const steps = [
-        `Start: ${a}x ${signed(b)} = ${c}x ${signed(d)}`,
-        `Move x terms: ${leftCoeff}x ${signed(b)} = ${d}`,
-        `Move constants: ${leftCoeff}x = ${rightConst}`,
-        `Divide: x = ${fmt(x)}`
-      ];
-
-      showResult('result-solveEq', 'Solution', steps, `x = ${fmt(x)}`);
+      seStepsContainer.style.display = 'block';
     });
   }
+
+  // Allow Enter key
+  if (seCustomInput) {
+    seCustomInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        seCustomBtn.click();
+      }
+    });
+  }
+
+  // Create example cards
+  solveEqExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displaySolveEqSteps(example));
+    seExamplesContainer.appendChild(card);
+  });
 
   // Distributive Property
   const runDistribute = document.getElementById('run-distribute');
@@ -374,63 +496,6 @@ document.addEventListener('DOMContentLoaded', function() {
       ];
 
       showResult('result-distribute', 'Solution', steps, `${xCoeff}x ${signed(constant)}`);
-    });
-  }
-
-  // Practice Challenge
-  let currentChallenge = null;
-
-  function randomInt(min, max) {
-    return Math.floor(Math.random() * (max - min + 1)) + min;
-  }
-
-  const generateChallenge = document.getElementById('generate-challenge');
-  if (generateChallenge) {
-    generateChallenge.addEventListener('click', () => {
-      let a = randomInt(2, 9);
-      let c = randomInt(1, 6);
-      while (a === c) {
-        c = randomInt(1, 6);
-      }
-
-      const xValue = randomInt(-6, 9);
-      const b = randomInt(-12, 12);
-      const d = a * xValue + b - c * xValue;
-
-      currentChallenge = { a, b, c, d, x: xValue };
-
-      document.getElementById('challenge-question').textContent = `${a}x ${signed(b)} = ${c}x ${signed(d)}`;
-      document.getElementById('challenge-answer').value = '';
-      document.getElementById('challenge-feedback').textContent = '';
-      document.getElementById('challenge-feedback').className = 'feedback';
-    });
-  }
-
-  const checkChallenge = document.getElementById('check-challenge');
-  if (checkChallenge) {
-    checkChallenge.addEventListener('click', () => {
-      const feedback = document.getElementById('challenge-feedback');
-
-      if (!currentChallenge) {
-        feedback.textContent = 'Generate a problem first';
-        feedback.className = 'feedback bad';
-        return;
-      }
-
-      const userAnswer = Number(document.getElementById('challenge-answer').value);
-      if (Number.isNaN(userAnswer)) {
-        feedback.textContent = 'Enter a number';
-        feedback.className = 'feedback bad';
-        return;
-      }
-
-      if (Math.abs(userAnswer - currentChallenge.x) < 1e-9) {
-        feedback.textContent = `✓ Correct! x = ${currentChallenge.x}`;
-        feedback.className = 'feedback ok';
-      } else {
-        feedback.textContent = `✗ Try again. Answer: x = ${currentChallenge.x}`;
-        feedback.className = 'feedback bad';
-      }
     });
   }
 });
