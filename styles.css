@@ -175,9 +175,8 @@ h1 {
   padding: 24px;
 }
 
-.section-title p,
-.panel-help {
-  color: var(--muted);
+.topic-section {
+  display: none;
 }
 
 .panel {

@@ -1,5 +1,7 @@
 // Navigation
 const navLinks = document.querySelectorAll('.nav-link');
+const topicSections = document.querySelectorAll('.topic-section');
+const heroSection = document.querySelector('.hero');
 
 function setActiveLink(section) {
   navLinks.forEach((link) => {
@@ -11,36 +13,36 @@ function setActiveLink(section) {
   });
 }
 
+function showSection(sectionId) {
+  // Hide all topic sections
+  topicSections.forEach((section) => {
+    section.style.display = 'none';
+  });
+
+  // If intro is selected, show hero; otherwise show the specific topic
+  if (sectionId === 'intro') {
+    heroSection.style.display = 'block';
+  } else {
+    heroSection.style.display = 'none';
+    document.getElementById(sectionId).style.display = 'block';
+  }
+}
+
 navLinks.forEach((link) => {
   link.addEventListener('click', (e) => {
     e.preventDefault();
     const section = link.dataset.section;
     setActiveLink(section);
-
-    const target = document.getElementById(section);
-    if (target) {
-      target.scrollIntoView({ behavior: 'smooth' });
-    }
+    showSection(section);
   });
 });
 
-// Update active link on scroll
-window.addEventListener('scroll', () => {
-  const sections = document.querySelectorAll('[id^="intro"], [id^="topic-"]');
-  let current = '';
-
-  sections.forEach((section) => {
-    const sectionTop = section.offsetTop;
-    const sectionHeight = section.clientHeight;
-    if (window.pageYOffset >= sectionTop - 100) {
-      current = section.getAttribute('id');
-    }
-  });
-
-  if (current) {
-    setActiveLink(current);
-  }
-});
+// Initialize - show first topic on page load
+if (topicSections.length > 0) {
+  const firstSection = topicSections[0].id;
+  setActiveLink(firstSection);
+  showSection(firstSection);
+}
 
 const fmt = (value) => {
   if (Number.isInteger(value)) {
