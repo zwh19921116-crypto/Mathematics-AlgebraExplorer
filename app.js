@@ -670,9 +670,9 @@ document.addEventListener('DOMContentLoaded', function() {
   const pemdasCustomBtn = document.getElementById('pemdas-custom-btn');
 
   const pemdasExamples = [
-    { display: '2 + 3 * 4', solution: 14 },
-    { display: '(2 + 3) * 4', solution: 20 },
-    { display: '10 - 2 * 3', solution: 4 },
+    { display: '2 + 3 × 4', solution: 14 },
+    { display: '(2 + 3) × 4', solution: 20 },
+    { display: '10 - 2 × 3', solution: 4 },
     { display: '20 ÷ 4 + 3', solution: 8 }
   ];
 
@@ -824,34 +824,84 @@ document.addEventListener('DOMContentLoaded', function() {
   const oneStepCustomBtn = document.getElementById('oneStep-custom-btn');
 
   const oneStepExamples = [
-    { display: 'x + 5 = 12', x: 7 },
-    { display: 'x - 3 = 8', x: 11 },
-    { display: '2x = 10', x: 5 },
-    { display: 'x ÷ 4 = 3', x: 12 }
+    { display: 'x + 5 = 12', operation: 'add', operand: 5, answer: 12, x: 7 },
+    { display: 'x - 3 = 8', operation: 'subtract', operand: 3, answer: 8, x: 11 },
+    { display: '2x = 10', operation: 'multiply', operand: 2, answer: 10, x: 5 },
+    { display: 'x ÷ 4 = 3', operation: 'divide', operand: 4, answer: 3, x: 12 }
   ];
+
+  function generateOneStepSteps(example) {
+    const { operation, operand, answer, x } = example;
+    
+    let inverseOp = '';
+    let inverseSymbol = '';
+    let explanation1 = '';
+    let explanation2 = '';
+
+    if (operation === 'add') {
+      inverseOp = 'subtract';
+      inverseSymbol = '−';
+      explanation1 = `The opposite of adding ${operand} is subtracting ${operand}`;
+      explanation2 = `${answer} − ${operand} = ${x}`;
+    } else if (operation === 'subtract') {
+      inverseOp = 'add';
+      inverseSymbol = '+';
+      explanation1 = `The opposite of subtracting ${operand} is adding ${operand}`;
+      explanation2 = `${answer} + ${operand} = ${x}`;
+    } else if (operation === 'multiply') {
+      inverseOp = 'divide';
+      inverseSymbol = '÷';
+      explanation1 = `The opposite of multiplying by ${operand} is dividing by ${operand}`;
+      explanation2 = `${answer} ÷ ${operand} = ${x}`;
+    } else if (operation === 'divide') {
+      inverseOp = 'multiply';
+      inverseSymbol = '×';
+      explanation1 = `The opposite of dividing by ${operand} is multiplying by ${operand}`;
+      explanation2 = `${answer} × ${operand} = ${x}`;
+    }
+
+    const steps = [
+      {
+        title: 'Step 1: Write the equation',
+        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
+          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
+        </div>`,
+        explanation: `We need to find x. To do this, we need to UNDO the operation that's being done to x.`
+      },
+      {
+        title: `Step 2: What operation is being done to x?`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-size: 1.1rem; margin: 8px 0;"><strong>We're ${operation}ing ${operand}</strong></div>
+          <div style="margin-top: 12px; font-weight: 600; color: var(--brand-deep);">${explanation1}</div>
+        </div>`,
+        explanation: `The inverse (opposite) operation is key! We do it to BOTH sides of the equation.`
+      },
+      {
+        title: `Step 3: ${inverseOp.charAt(0).toUpperCase() + inverseOp.slice(1)} ${operand} from BOTH sides`,
+        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-family: monospace; margin-bottom: 12px;"><strong>Left side:</strong> x ${inverseSymbol} ${operand}</div>
+          <div style="font-family: monospace; margin-bottom: 12px;"><strong>Right side:</strong> ${answer} ${inverseSymbol} ${operand}</div>
+          <div style="margin-top: 12px; font-size: 1.1rem; font-weight: 600; color: var(--brand-deep);">x = ${x}</div>
+        </div>`,
+        explanation: `We MUST do the same operation to both sides to keep the equation balanced. That's the golden rule of algebra!`
+      },
+      {
+        title: '✓ Solution',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">x = ${x}</span>
+        </div>`,
+        explanation: `Check your answer: Replace x with ${x} in the original equation: ${example.display.replace('x', x)} ✓`
+      }
+    ];
+
+    return steps;
+  }
 
   function displayOneStepSteps(example) {
     oneStepCustomInput.value = example.display;
     oneStepStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Identify the equation',
-        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
-        explanation: 'We need to find the value of x.'
-      },
-      {
-        title: 'Step 2: Undo the operation',
-        visual: `<span style="font-size: 1.1rem;">Do the opposite operation on both sides</span>`,
-        explanation: 'If adding, subtract. If multiplying, divide.'
-      },
-      {
-        title: '✓ Answer',
-        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${example.x}</span>`,
-        explanation: `The value of x is ${example.x}`
-      }
-    ];
-
+    const steps = generateOneStepSteps(example);
     steps.forEach((step) => {
       const stepDiv = document.createElement('div');
       stepDiv.className = 'step-section';
@@ -869,8 +919,15 @@ document.addEventListener('DOMContentLoaded', function() {
   if (oneStepCustomBtn) {
     oneStepCustomBtn.addEventListener('click', () => {
       const expr = oneStepCustomInput.value.trim();
-      const exampleObj = { display: expr, x: 0 };
-      displayOneStepSteps(exampleObj);
+      if (!expr) return;
+      // Try to parse - show generic message for custom input
+      displayOneStepSteps({ 
+        display: expr, 
+        operation: 'add', 
+        operand: 0, 
+        answer: 0, 
+        x: 0 
+      });
     });
   }
 
@@ -1377,7 +1434,7 @@ document.addEventListener('DOMContentLoaded', function() {
   const expCustomBtn = document.getElementById('exp-custom-btn');
 
   const expExamples = [
-    { display: 'x² · x³', simplified: 'x⁵', rule: 'Add exponents when multiplying same bases' },
+    { display: 'x² × x³', simplified: 'x⁵', rule: 'Add exponents when multiplying same bases' },
     { display: 'x⁵ ÷ x²', simplified: 'x³', rule: 'Subtract exponents when dividing same bases' },
     { display: '(x²)³', simplified: 'x⁶', rule: 'Multiply exponents when raising to a power' },
     { display: 'x⁰', simplified: '1', rule: 'Any base to the 0 power equals 1' }
