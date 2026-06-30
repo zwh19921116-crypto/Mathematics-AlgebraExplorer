@@ -2078,57 +2078,112 @@ document.addEventListener('DOMContentLoaded', function() {
     radCustomInput.value = example.display;
     radStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Original radical',
-        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
-          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
-        </div>`,
-        explanation: 'We need to simplify this radical by factoring out perfect squares.'
-      },
-      {
-        title: 'Step 2: Find perfect square factors',
-        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-size: 1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
-            Perfect squares: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100...
-          </div>
-          <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px;">
-            <div style="color: var(--accent); font-weight: 700;">${example.explanation}</div>
-          </div>
-        </div>`,
-        explanation: 'Look for the largest perfect square that divides evenly into the number under the radical.'
-      },
-      {
-        title: 'Step 3: Extract perfect squares',
-        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Take square root of perfect squares:</div>
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
-              <span style="color: var(--success); font-weight: 700; font-size: 1.1rem;">√ outside the radical, remainder stays inside</span>
+    // Parse the radical: Extract number from √N
+    const numMatch = example.display.match(/√(\d+)/);
+    const radicand = numMatch ? parseInt(numMatch[1]) : 0;
+    
+    // Find largest perfect square factor
+    let perfectSquare = 1;
+    let remainder = radicand;
+    for (let i = 2; i * i <= radicand; i++) {
+      if (radicand % (i * i) === 0) {
+        perfectSquare = i * i;
+        remainder = radicand / perfectSquare;
+      }
+    }
+    
+    const sqrtPerfect = Math.sqrt(perfectSquare);
+    const simplified = remainder === 1 ? String(sqrtPerfect) : `${sqrtPerfect}√${remainder}`;
+
+    // Step 1: Original radical
+    const step1 = document.createElement('div');
+    step1.className = 'step-section';
+    step1.innerHTML = `
+      <h4>Step 1: Original radical</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.5rem; font-weight: 700; color: var(--brand-deep); padding: 20px; background: rgba(10, 126, 164, 0.1); border-radius: 8px; border: 2px solid var(--brand);">
+          ${example.display}
+        </div>
+      </div>
+    `;
+    radStepsContainer.appendChild(step1);
+
+    // Step 2: Factor breakdown
+    const step2 = document.createElement('div');
+    step2.className = 'step-section';
+    step2.innerHTML = `
+      <h4>Step 2: Factor into perfect square and remainder</h4>
+      <div class="step-visual">
+        <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; padding: 20px; background: rgba(255, 122, 89, 0.1); border-radius: 8px;">
+          <div style="text-align: center;">
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; color: var(--brand-deep); padding: 14px 20px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+              ${radicand}
             </div>
           </div>
-        </div>`,
-        explanation: 'Perfect square factors come outside the radical, and the remaining factors stay inside.'
-      },
-      {
-        title: '✓ Simplified Form',
-        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
-          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.simplified}</span>
-        </div>`,
-        explanation: `${example.display} simplifies to ${example.simplified}`
-      }
-    ];
+          <div style="font-size: 1.3rem; font-weight: 700; color: #999;">=</div>
+          <div style="text-align: center;">
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; color: var(--brand-deep); padding: 14px 20px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+              ${perfectSquare}
+            </div>
+            <div style="font-size: 0.75rem; color: #666; margin-top: 4px; font-weight: 600;">perfect square</div>
+          </div>
+          <div style="font-size: 1.3rem; font-weight: 700; color: #999;">×</div>
+          <div style="text-align: center;">
+            <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; color: var(--brand-deep); padding: 14px 20px; background: rgba(10, 126, 164, 0.2); border-radius: 6px; border: 2px solid var(--brand);">
+              ${remainder}
+            </div>
+            <div style="font-size: 0.75rem; color: #666; margin-top: 4px; font-weight: 600;">remainder</div>
+          </div>
+        </div>
+        <div style="margin-top: 12px; padding: 10px; background: rgba(255, 122, 89, 0.15); border-radius: 6px; text-align: center; font-size: 0.95rem; color: #666; font-weight: 600;">
+          So ${radicand} = ${perfectSquare} × ${remainder}
+        </div>
+      </div>
+    `;
+    radStepsContainer.appendChild(step2);
 
-    steps.forEach((step) => {
-      const stepDiv = document.createElement('div');
-      stepDiv.className = 'step-section';
-      stepDiv.innerHTML = `
-        <h4>${step.title}</h4>
-        <div class="step-visual">${step.visual}</div>
-        <p>${step.explanation}</p>
-      `;
-      radStepsContainer.appendChild(stepDiv);
-    });
+    // Step 3: Extract square roots
+    const step3 = document.createElement('div');
+    step3.className = 'step-section';
+    const sqrtRemainderDisplay = remainder === 1 ? '' : `√${remainder}`;
+    const finalFormDisplay = remainder === 1 ? `${sqrtPerfect}` : `${sqrtPerfect}√${remainder}`;
+    step3.innerHTML = `
+      <h4>Step 3: Take square roots</h4>
+      <div class="step-visual">
+        <div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; line-height: 2.2; color: var(--brand-deep); font-weight: 600;">
+            <div style="margin-bottom: 16px;">
+              √${radicand} = √(${perfectSquare} × ${remainder})
+            </div>
+            <div style="margin-bottom: 16px; font-size: 0.9rem; color: #666; font-weight: 400;">becomes</div>
+            <div style="margin-bottom: 16px;">
+              √${perfectSquare}${remainder === 1 ? '' : ` × √${remainder}`}
+            </div>
+            <div style="margin-bottom: 12px; padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+              <span style="color: var(--success); font-weight: 700;">${finalFormDisplay}</span>
+              <span style="color: #999; font-size: 0.9rem; margin-left: 12px;">makes ${finalFormDisplay}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    `;
+    radStepsContainer.appendChild(step3);
+
+    // Step 4: Final simplified form
+    const step4 = document.createElement('div');
+    step4.className = 'step-section';
+    step4.innerHTML = `
+      <h4>✓ Simplified Form</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.5rem; font-weight: 700; color: var(--success); padding: 24px; background: rgba(31, 138, 72, 0.15); border-radius: 8px; border: 2px solid var(--success);">
+          ${simplified}
+        </div>
+        <div style="margin-top: 12px; font-size: 0.95rem; color: #666; font-weight: 600;">
+          ${example.display} simplifies to ${simplified}
+        </div>
+      </div>
+    `;
+    radStepsContainer.appendChild(step4);
 
     radStepsContainer.style.display = 'block';
   }
