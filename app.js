@@ -341,12 +341,16 @@ document.addEventListener('DOMContentLoaded', function() {
       {
         title: `Step 2: Subtract ${c}x from BOTH sides`,
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 2.2; color: var(--brand-deep); font-weight: 600;">
-            <div style="text-align: center; margin-bottom: 16px;">${a}x ${signed(b)} = ${c}x ${signed(d)}</div>
-            <div style="text-align: center; margin-bottom: 16px;">
-              ${a}x ${signed(b)} <span style="color: var(--accent); font-weight: 700;">− ${c}x</span> = ${c}x ${signed(d)} <span style="color: var(--accent); font-weight: 700;">− ${c}x</span>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Original:</div>
+            <div style="margin-bottom: 24px;">${a}x ${signed(b)} = ${c}x ${signed(d)}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${c}x from BOTH sides:</div>
+            <div style="margin-bottom: 24px;">
+              ${a}x ${signed(b)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${c}x </span>= ${c}x ${signed(d)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${c}x </span>
             </div>
-            <div style="text-align: center; padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
               <div style="color: var(--success); font-weight: 700;">${leftCoeff}x ${signed(b)} = ${d}</div>
             </div>
           </div>
@@ -356,12 +360,16 @@ document.addEventListener('DOMContentLoaded', function() {
       {
         title: `Step 3: Subtract ${b} from BOTH sides`,
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 2.2; color: var(--brand-deep); font-weight: 600;">
-            <div style="text-align: center; margin-bottom: 16px;">${leftCoeff}x ${signed(b)} = ${d}</div>
-            <div style="text-align: center; margin-bottom: 16px;">
-              ${leftCoeff}x ${signed(b)} <span style="color: var(--accent); font-weight: 700;">− ${b}</span> = ${d} <span style="color: var(--accent); font-weight: 700;">− ${b}</span>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
+            <div style="margin-bottom: 24px;">${leftCoeff}x ${signed(b)} = ${d}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Subtract ${b} from BOTH sides:</div>
+            <div style="margin-bottom: 24px;">
+              ${leftCoeff}x ${signed(b)} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${b} </span>= ${d} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> − ${b} </span>
             </div>
-            <div style="text-align: center; padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
               <div style="color: var(--success); font-weight: 700;">${leftCoeff}x = ${rightConst}</div>
             </div>
           </div>
@@ -371,13 +379,17 @@ document.addEventListener('DOMContentLoaded', function() {
       {
         title: `Step 4: Divide BOTH sides by ${leftCoeff}`,
         visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 2.2; color: var(--brand-deep); font-weight: 600;">
-            <div style="text-align: center; margin-bottom: 16px;">${leftCoeff}x = ${rightConst}</div>
-            <div style="text-align: center; margin-bottom: 16px;">
-              ${leftCoeff}x <span style="color: var(--accent); font-weight: 700;">÷ ${leftCoeff}</span> = ${rightConst} <span style="color: var(--accent); font-weight: 700;">÷ ${leftCoeff}</span>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Previous step:</div>
+            <div style="margin-bottom: 24px;">${leftCoeff}x = ${rightConst}</div>
+            
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Divide BOTH sides by ${leftCoeff}:</div>
+            <div style="margin-bottom: 24px;">
+              ${leftCoeff}x <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${leftCoeff} </span>= ${rightConst} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ÷ ${leftCoeff} </span>
             </div>
-            <div style="text-align: center; padding: 12px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700; font-size: 1.2rem;">x = ${fmt(x)}</div>
+            
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${fmt(x)}</div>
             </div>
           </div>
         </div>`,
@@ -897,18 +909,17 @@ document.addEventListener('DOMContentLoaded', function() {
       {
         title: `Step 3: ${inverseOp.charAt(0).toUpperCase() + inverseOp.slice(1)} ${operand} from BOTH sides`,
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.1rem; line-height: 2.2; color: var(--brand-deep); font-weight: 600;">
-            <div style="text-align: center; margin-bottom: 12px; color: #666;">Original equation:</div>
-            <div style="text-align: center; margin-bottom: 16px;">${example.display}</div>
+          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Original equation:</div>
+            <div style="margin-bottom: 24px;">${example.display}</div>
             
-            <div style="text-align: center; margin-bottom: 12px; color: #666;">Apply operation to BOTH sides:</div>
-            <div style="text-align: center; margin-bottom: 16px;">
-              x ${inverseSymbol} ${operand} = ${answer} ${inverseSymbol} ${operand}
-              <span style="display: block; font-size: 0.9rem; margin-top: 8px; color: var(--brand-deep);">+ sides with <span style="color: var(--accent); font-weight: 700;">${inverseOp} ${operand}</span></span>
+            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Apply ${inverseOp} ${operand} to BOTH sides:</div>
+            <div style="margin-bottom: 24px;">
+              ${example.display.replace('x', 'x')} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>= ${answer} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>
             </div>
             
-            <div style="text-align: center; padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="color: var(--success); font-weight: 700; font-size: 1.2rem;">x = ${x}</div>
+            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
+              <div style="color: var(--success); font-weight: 700; font-size: 1.3rem;">x = ${x}</div>
             </div>
           </div>
         </div>`,
