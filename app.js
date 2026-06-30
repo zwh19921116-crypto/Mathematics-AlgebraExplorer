@@ -1990,58 +1990,107 @@ document.addEventListener('DOMContentLoaded', function() {
     fracCustomInput.value = example.display;
     fracStepsContainer.innerHTML = '';
 
-    const steps = [
-      {
-        title: 'Step 1: Original fraction',
-        visual: `<div style="background: rgba(10, 126, 164, 0.1); padding: 16px; border-radius: 8px; border-left: 4px solid var(--brand);">
-          <span style="font-size: 1.3rem; font-weight: 700; color: var(--brand-deep);">${example.display}</span>
-        </div>`,
-        explanation: 'We need to simplify this fraction to lowest terms.'
-      },
-      {
-        title: `Step 2: Find the GCD`,
-        visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
-            Find the Greatest Common Divisor (GCD)
-          </div>
-          <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px;">
-            <div style="color: var(--accent); font-weight: 700;">GCD = ${example.gcd}</div>
-            <div style="color: #666; font-size: 0.9rem; margin-top: 4px;">Divide both top and bottom by ${example.gcd}</div>
-          </div>
-        </div>`,
-        explanation: `The GCD is the largest number that divides both the numerator and denominator evenly.`
-      },
-      {
-        title: 'Step 3: Divide by the GCD',
-        visual: `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1.15rem; line-height: 2.4; color: var(--brand-deep); font-weight: 600; text-align: center;">
-            <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Cancel common factors:</div>
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
-              <span style="color: var(--success); font-weight: 700; font-size: 1.1rem;">Numerator ÷ ${example.gcd} | Denominator ÷ ${example.gcd}</span>
+    // Parse fraction: "6x / 9" → numerator "6x", denominator "9"
+    const parts = example.display.split('/').map(p => p.trim());
+    const numerator = parts[0];
+    const denominator = parts[1];
+
+    // Step 1: Original fraction
+    const step1 = document.createElement('div');
+    step1.className = 'step-section';
+    step1.innerHTML = `
+      <h4>Step 1: Original fraction</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.8rem; font-weight: 700; color: var(--brand-deep); padding: 24px; background: rgba(10, 126, 164, 0.1); border-radius: 8px; border: 2px solid var(--brand);">
+          <div style="margin-bottom: 12px;">${numerator}</div>
+          <div style="border-top: 2px solid var(--brand-deep); padding-top: 12px;">${denominator}</div>
+        </div>
+      </div>
+    `;
+    fracStepsContainer.appendChild(step1);
+
+    // Step 2: Identify GCD
+    const step2 = document.createElement('div');
+    step2.className = 'step-section';
+    step2.innerHTML = `
+      <h4>Step 2: Identify the GCD (Greatest Common Divisor)</h4>
+      <div class="step-visual">
+        <div style="padding: 20px; background: rgba(255, 122, 89, 0.1); border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 20px; flex-wrap: wrap; margin-bottom: 16px;">
+            <div style="text-align: center;">
+              <div style="font-size: 0.85rem; color: #666; font-weight: 600; margin-bottom: 6px;">Numerator</div>
+              <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; color: var(--brand-deep); padding: 14px 20px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+                ${numerator}
+              </div>
+            </div>
+            <div style="font-size: 1.3rem; font-weight: 700; color: #999;">and</div>
+            <div style="text-align: center;">
+              <div style="font-size: 0.85rem; color: #666; font-weight: 600; margin-bottom: 6px;">Denominator</div>
+              <div style="font-family: 'Courier New', monospace; font-size: 1.2rem; font-weight: 700; color: var(--brand-deep); padding: 14px 20px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; border: 2px solid var(--accent);">
+                ${denominator}
+              </div>
             </div>
           </div>
-        </div>`,
-        explanation: 'Divide both the numerator and denominator by the GCD.'
-      },
-      {
-        title: '✓ Simplified Form',
-        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
-          <span style="font-size: 1.5rem; font-weight: 700; color: var(--success);">${example.simplified}</span>
-        </div>`,
-        explanation: `${example.display} = ${example.simplified} (in lowest terms)`
-      }
-    ];
+          <div style="text-align: center; padding: 12px; background: rgba(255, 122, 89, 0.3); border-radius: 6px;">
+            <div style="color: var(--accent); font-weight: 700; font-size: 1.1rem;">GCD = ${example.gcd}</div>
+            <div style="color: #666; font-size: 0.9rem; margin-top: 4px;">The largest number that divides both evenly</div>
+          </div>
+        </div>
+      </div>
+    `;
+    fracStepsContainer.appendChild(step2);
 
-    steps.forEach((step) => {
-      const stepDiv = document.createElement('div');
-      stepDiv.className = 'step-section';
-      stepDiv.innerHTML = `
-        <h4>${step.title}</h4>
-        <div class="step-visual">${step.visual}</div>
-        <p>${step.explanation}</p>
-      `;
-      fracStepsContainer.appendChild(stepDiv);
-    });
+    // Step 3: Cancel common factors (visual division)
+    const step3 = document.createElement('div');
+    step3.className = 'step-section';
+    const numAfter = example.display.includes('x') ? example.simplified.split('/')[0] : String(parseInt(numerator) / example.gcd);
+    const denomAfter = example.display.includes('x') ? example.simplified.split('/')[1] : String(parseInt(denominator) / example.gcd);
+    step3.innerHTML = `
+      <h4>Step 3: Cancel the GCD from both</h4>
+      <div class="step-visual">
+        <div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 20px; flex-wrap: wrap;">
+            <div style="text-align: center;">
+              <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 8px;">Original</div>
+              <div style="font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: 700; color: var(--brand-deep); padding: 14px 20px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid #ccc;">
+                <div style="margin-bottom: 8px;">${numerator}</div>
+                <div style="border-top: 2px solid #ccc; padding-top: 8px;">${denominator}</div>
+              </div>
+            </div>
+            <div style="font-size: 1.5rem; font-weight: 700; color: #999;">÷ ${example.gcd}</div>
+            <div style="text-align: center;">
+              <div style="font-size: 0.8rem; color: #666; font-weight: 600; margin-bottom: 8px;">Result</div>
+              <div style="font-family: 'Courier New', monospace; font-size: 1.4rem; font-weight: 700; color: var(--success); padding: 14px 20px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border: 2px solid var(--success);">
+                <div style="margin-bottom: 8px;">${numAfter}</div>
+                <div style="border-top: 2px solid var(--success); padding-top: 8px;">${denomAfter}</div>
+              </div>
+            </div>
+          </div>
+          <div style="text-align: center; padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px;">
+            <span style="color: var(--success); font-weight: 700;">Divide top and bottom by ${example.gcd}</span>
+            <span style="color: #999; font-size: 0.9rem; margin-left: 8px;">makes ${numAfter}/${denomAfter}</span>
+          </div>
+        </div>
+      </div>
+    `;
+    fracStepsContainer.appendChild(step3);
+
+    // Step 4: Final simplified form
+    const step4 = document.createElement('div');
+    step4.className = 'step-section';
+    step4.innerHTML = `
+      <h4>✓ Simplified Form</h4>
+      <div class="step-visual" style="text-align: center;">
+        <div style="font-family: 'Courier New', monospace; font-size: 1.8rem; font-weight: 700; color: var(--success); padding: 24px; background: rgba(31, 138, 72, 0.15); border-radius: 8px; border: 2px solid var(--success);">
+          <div style="margin-bottom: 12px;">${example.simplified.split('/')[0]}</div>
+          <div style="border-top: 2px solid var(--success); padding-top: 12px;">${example.simplified.split('/')[1]}</div>
+        </div>
+        <div style="margin-top: 12px; font-size: 0.95rem; color: #666; font-weight: 600;">
+          ${example.display} = ${example.simplified} (in lowest terms)
+        </div>
+      </div>
+    `;
+    fracStepsContainer.appendChild(step4);
 
     fracStepsContainer.style.display = 'block';
   }
