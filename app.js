@@ -498,4 +498,1002 @@ document.addEventListener('DOMContentLoaded', function() {
       showResult('result-distribute', 'Solution', steps, `${xCoeff}x ${signed(constant)}`);
     });
   }
+
+  // ========== VARIABLES & EXPRESSIONS ==========
+  const varExamplesContainer = document.getElementById('var-examples');
+  const varStepsContainer = document.getElementById('var-steps-container');
+  const varCustomInput = document.getElementById('var-custom-input');
+  const varCustomBtn = document.getElementById('var-custom-btn');
+
+  const varExamples = [
+    { display: '3x + 5', terms: ['3x', '5'] },
+    { display: '2y - 4', terms: ['2y', '-4'] },
+    { display: '5a + 3b + 7', terms: ['5a', '3b', '7'] },
+    { display: '4x² + 2x + 8', terms: ['4x²', '2x', '8'] }
+  ];
+
+  function displayVarSteps(example) {
+    varCustomInput.value = example.display;
+    varStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Identify the expression',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600; color: var(--brand-deep);">${example.display}</span>`,
+        explanation: 'An expression contains variables (letters) and numbers.'
+      },
+      {
+        title: 'Step 2: Find each term',
+        visual: example.terms.map(t => `<span class="term-box x-term">${t}</span>`).join(''),
+        explanation: `Terms are separated by + and -. This has ${example.terms.length} terms: ${example.terms.join(', ')}`
+      },
+      {
+        title: 'Step 3: Identify parts of each term',
+        visual: `<div style="text-align: left;">
+          <p><strong>Coefficient</strong>: The number that multiplies the variable</p>
+          <p><strong>Variable</strong>: The letter (x, y, a, etc.)</p>
+          <p><strong>Exponent/Power</strong>: The small number (if any)</p>
+          <p><strong>Constant</strong>: A term with no variable</p>
+        </div>`,
+        explanation: 'For example: In 3x², 3 is the coefficient, x is the variable, 2 is the exponent.'
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      varStepsContainer.appendChild(stepDiv);
+    });
+
+    varStepsContainer.style.display = 'block';
+  }
+
+  if (varCustomBtn) {
+    varCustomBtn.addEventListener('click', () => {
+      const expr = varCustomInput.value.trim();
+      if (!expr) {
+        alert('Please enter an expression');
+        return;
+      }
+      displayVarSteps({ display: expr, terms: expr.split(/[+\-]/).map(t => t.trim()) });
+    });
+  }
+
+  varExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayVarSteps(example));
+    varExamplesContainer.appendChild(card);
+  });
+
+  // ========== ORDER OF OPERATIONS (PEMDAS) ==========
+  const pemdasExamplesContainer = document.getElementById('pemdas-examples');
+  const pemdasStepsContainer = document.getElementById('pemdas-steps-container');
+  const pemdasCustomInput = document.getElementById('pemdas-custom-input');
+  const pemdasCustomBtn = document.getElementById('pemdas-custom-btn');
+
+  const pemdasExamples = [
+    { display: '2 + 3 * 4', solution: 14 },
+    { display: '(2 + 3) * 4', solution: 20 },
+    { display: '10 - 2 * 3', solution: 4 },
+    { display: '20 ÷ 4 + 3', solution: 8 }
+  ];
+
+  function displayPemdasSteps(example) {
+    pemdasCustomInput.value = example.display;
+    pemdasStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'PEMDAS Reminder',
+        visual: '<strong>P</strong>arentheses → <strong>E</strong>xponents → <strong>M</strong>ultiply/<strong>D</strong>ivide (left→right) → <strong>A</strong>dd/<strong>S</strong>ubtract (left→right)',
+        explanation: 'Always follow this order!'
+      },
+      {
+        title: 'Step 1: Look at the expression',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'Identify which operations need to be done first.'
+      },
+      {
+        title: 'Step 2: Follow PEMDAS',
+        visual: `<span style="font-size: 1.1rem;">Do multiplication and division first (left to right)</span>`,
+        explanation: 'In this case, multiply or divide before adding or subtracting.'
+      },
+      {
+        title: '✓ Final Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.solution}</span>`,
+        explanation: 'The answer after following the correct order of operations.'
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      pemdasStepsContainer.appendChild(stepDiv);
+    });
+
+    pemdasStepsContainer.style.display = 'block';
+  }
+
+  if (pemdasCustomBtn) {
+    pemdasCustomBtn.addEventListener('click', () => {
+      try {
+        const expr = pemdasCustomInput.value.trim();
+        if (!expr) return;
+        const result = eval(expr.replace(/÷/g, '/'));
+        displayPemdasSteps({ display: expr, solution: result });
+      } catch (e) {
+        pemdasStepsContainer.innerHTML = '<p style="color: var(--danger);">Invalid expression</p>';
+        pemdasStepsContainer.style.display = 'block';
+      }
+    });
+  }
+
+  pemdasExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayPemdasSteps(example));
+    pemdasExamplesContainer.appendChild(card);
+  });
+
+  // ========== INTEGERS & NEGATIVES ==========
+  const intExamplesContainer = document.getElementById('int-examples');
+  const intStepsContainer = document.getElementById('int-steps-container');
+  const intCustomInput = document.getElementById('int-custom-input');
+  const intCustomBtn = document.getElementById('int-custom-btn');
+
+  const intExamples = [
+    { display: '-5 + 3', a: -5, b: 3 },
+    { display: '-3 + -2', a: -3, b: -2 },
+    { display: '5 + -8', a: 5, b: -8 },
+    { display: '-4 - 3', a: -4, b: -3 }
+  ];
+
+  function displayIntSteps(example) {
+    intCustomInput.value = example.display;
+    intStepsContainer.innerHTML = '';
+
+    const result = example.a + example.b;
+    const steps = [
+      {
+        title: 'Step 1: Look at the numbers',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.a} + ${example.b}</span>`,
+        explanation: 'Identify positive and negative numbers.'
+      },
+      {
+        title: 'Step 2: Combine them',
+        visual: `<span style="font-size: 1.1rem;">Think of a number line</span>`,
+        explanation: `Start at ${example.a}, move ${example.b > 0 ? example.b + ' right' : Math.abs(example.b) + ' left'}`
+      },
+      {
+        title: '✓ Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${result}</span>`,
+        explanation: `${example.a} + ${example.b} = ${result}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      intStepsContainer.appendChild(stepDiv);
+    });
+
+    intStepsContainer.style.display = 'block';
+  }
+
+  if (intCustomBtn) {
+    intCustomBtn.addEventListener('click', () => {
+      try {
+        const expr = intCustomInput.value.trim();
+        const parts = expr.match(/^(-?\d+)\s*([+\-])\s*(-?\d+)$/);
+        if (!parts) return;
+        const a = parseInt(parts[1]);
+        const b = parseInt(parts[3]);
+        if (parts[2] === '-') {
+          displayIntSteps({ display: expr, a, b: -b });
+        } else {
+          displayIntSteps({ display: expr, a, b });
+        }
+      } catch (e) {
+        intStepsContainer.innerHTML = '<p style="color: var(--danger);">Invalid format</p>';
+        intStepsContainer.style.display = 'block';
+      }
+    });
+  }
+
+  intExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayIntSteps(example));
+    intExamplesContainer.appendChild(card);
+  });
+
+  // ========== ONE-STEP EQUATIONS ==========
+  const oneStepExamplesContainer = document.getElementById('oneStep-examples');
+  const oneStepStepsContainer = document.getElementById('oneStep-steps-container');
+  const oneStepCustomInput = document.getElementById('oneStep-custom-input');
+  const oneStepCustomBtn = document.getElementById('oneStep-custom-btn');
+
+  const oneStepExamples = [
+    { display: 'x + 5 = 12', x: 7 },
+    { display: 'x - 3 = 8', x: 11 },
+    { display: '2x = 10', x: 5 },
+    { display: 'x ÷ 4 = 3', x: 12 }
+  ];
+
+  function displayOneStepSteps(example) {
+    oneStepCustomInput.value = example.display;
+    oneStepStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Identify the equation',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'We need to find the value of x.'
+      },
+      {
+        title: 'Step 2: Undo the operation',
+        visual: `<span style="font-size: 1.1rem;">Do the opposite operation on both sides</span>`,
+        explanation: 'If adding, subtract. If multiplying, divide.'
+      },
+      {
+        title: '✓ Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${example.x}</span>`,
+        explanation: `The value of x is ${example.x}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      oneStepStepsContainer.appendChild(stepDiv);
+    });
+
+    oneStepStepsContainer.style.display = 'block';
+  }
+
+  if (oneStepCustomBtn) {
+    oneStepCustomBtn.addEventListener('click', () => {
+      const expr = oneStepCustomInput.value.trim();
+      const exampleObj = { display: expr, x: 0 };
+      displayOneStepSteps(exampleObj);
+    });
+  }
+
+  oneStepExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayOneStepSteps(example));
+    oneStepExamplesContainer.appendChild(card);
+  });
+
+  // ========== TWO-STEP EQUATIONS ==========
+  const twoStepExamplesContainer = document.getElementById('twoStep-examples');
+  const twoStepStepsContainer = document.getElementById('twoStep-steps-container');
+  const twoStepCustomInput = document.getElementById('twoStep-custom-input');
+  const twoStepCustomBtn = document.getElementById('twoStep-custom-btn');
+
+  const twoStepExamples = [
+    { display: '2x + 3 = 9', x: 3 },
+    { display: '3x - 2 = 10', x: 4 },
+    { display: '4x + 1 = 17', x: 4 },
+    { display: '5x - 5 = 15', x: 4 }
+  ];
+
+  function displayTwoStepSteps(example) {
+    twoStepCustomInput.value = example.display;
+    twoStepStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Identify the equation',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'We need two operations: undo addition/subtraction, then undo multiplication/division.'
+      },
+      {
+        title: 'Step 2: Undo addition/subtraction first',
+        visual: `<span style="font-size: 1.1rem;">Move the constant to the other side</span>`,
+        explanation: 'This isolates the term with x.'
+      },
+      {
+        title: 'Step 3: Undo multiplication/division',
+        visual: `<span style="font-size: 1.1rem;">Divide by the coefficient</span>`,
+        explanation: 'This isolates x completely.'
+      },
+      {
+        title: '✓ Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${example.x}</span>`,
+        explanation: `The value of x is ${example.x}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      twoStepStepsContainer.appendChild(stepDiv);
+    });
+
+    twoStepStepsContainer.style.display = 'block';
+  }
+
+  if (twoStepCustomBtn) {
+    twoStepCustomBtn.addEventListener('click', () => {
+      const expr = twoStepCustomInput.value.trim();
+      const exampleObj = { display: expr, x: 0 };
+      displayTwoStepSteps(exampleObj);
+    });
+  }
+
+  twoStepExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayTwoStepSteps(example));
+    twoStepExamplesContainer.appendChild(card);
+  });
+
+  // ========== MULTI-STEP EQUATIONS ==========
+  const multiStepExamplesContainer = document.getElementById('multiStep-examples');
+  const multiStepStepsContainer = document.getElementById('multiStep-steps-container');
+  const multiStepCustomInput = document.getElementById('multiStep-custom-input');
+  const multiStepCustomBtn = document.getElementById('multiStep-custom-btn');
+
+  const multiStepExamples = [
+    { display: '2x + 3 + x = 12', x: 3 },
+    { display: '5x - 2 + 3x = 18', x: 2.5 },
+    { display: '3x + 5 - x = 11', x: 3 },
+    { display: '4x - 1 + 2x = 23', x: 4 }
+  ];
+
+  function displayMultiStepSteps(example) {
+    multiStepCustomInput.value = example.display;
+    multiStepStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Original equation',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'Combine like terms first, then solve like a two-step equation.'
+      },
+      {
+        title: 'Step 2: Combine like terms on left side',
+        visual: `<span style="font-size: 1.1rem;">Group all x terms together</span>`,
+        explanation: 'Add or subtract the coefficients of x.'
+      },
+      {
+        title: 'Step 3: Isolate the x term',
+        visual: `<span style="font-size: 1.1rem;">Move constants to the right side</span>`,
+        explanation: 'Use addition or subtraction.'
+      },
+      {
+        title: 'Step 4: Solve for x',
+        visual: `<span style="font-size: 1.1rem;">Divide by the coefficient</span>`,
+        explanation: 'This gives us the final answer.'
+      },
+      {
+        title: '✓ Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${fmt(example.x)}</span>`,
+        explanation: `The value of x is ${fmt(example.x)}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      multiStepStepsContainer.appendChild(stepDiv);
+    });
+
+    multiStepStepsContainer.style.display = 'block';
+  }
+
+  if (multiStepCustomBtn) {
+    multiStepCustomBtn.addEventListener('click', () => {
+      const expr = multiStepCustomInput.value.trim();
+      const exampleObj = { display: expr, x: 0 };
+      displayMultiStepSteps(exampleObj);
+    });
+  }
+
+  multiStepExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayMultiStepSteps(example));
+    multiStepExamplesContainer.appendChild(card);
+  });
+
+  // ========== INEQUALITIES ==========
+  const ineqExamplesContainer = document.getElementById('ineq-examples');
+  const ineqStepsContainer = document.getElementById('ineq-steps-container');
+  const ineqCustomInput = document.getElementById('ineq-custom-input');
+  const ineqCustomBtn = document.getElementById('ineq-custom-btn');
+
+  const ineqExamples = [
+    { display: 'x + 3 > 7', answer: 'x > 4' },
+    { display: '2x ≤ 10', answer: 'x ≤ 5' },
+    { display: 'x - 2 < 5', answer: 'x < 7' },
+    { display: '3x ≥ 12', answer: 'x ≥ 4' }
+  ];
+
+  function displayIneqSteps(example) {
+    ineqCustomInput.value = example.display;
+    ineqStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Look at the inequality',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'Inequalities show a range of values, not just one answer.'
+      },
+      {
+        title: 'Step 2: Solve like an equation',
+        visual: `<span style="font-size: 1.1rem;">Use the same steps as solving equations</span>`,
+        explanation: 'Undo operations by doing the opposite on both sides.'
+      },
+      {
+        title: '⚠️ Important Rule!',
+        visual: `<span style="font-size: 1.1rem; font-weight: 700; color: var(--danger);">If you multiply or divide by a negative number, FLIP the inequality sign!</span>`,
+        explanation: 'For example: -2x > 6 becomes x < -3 (sign flips when dividing by -2)'
+      },
+      {
+        title: '✓ Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.answer}</span>`,
+        explanation: `Any value where ${example.answer} makes the inequality true.`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      ineqStepsContainer.appendChild(stepDiv);
+    });
+
+    ineqStepsContainer.style.display = 'block';
+  }
+
+  if (ineqCustomBtn) {
+    ineqCustomBtn.addEventListener('click', () => {
+      const expr = ineqCustomInput.value.trim();
+      displayIneqSteps({ display: expr, answer: 'x = ?' });
+    });
+  }
+
+  ineqExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayIneqSteps(example));
+    ineqExamplesContainer.appendChild(card);
+  });
+
+  // ========== SYSTEMS OF EQUATIONS ==========
+  const sysExamplesContainer = document.getElementById('sys-examples');
+  const sysStepsContainer = document.getElementById('sys-steps-container');
+  const sysCustomInput1 = document.getElementById('sys-custom-input-1');
+  const sysCustomInput2 = document.getElementById('sys-custom-input-2');
+  const sysCustomBtn = document.getElementById('sys-custom-btn');
+
+  const sysExamples = [
+    { display: 'x + y = 5 and 2x - y = 4', x: 3, y: 2 },
+    { display: 'x + y = 7 and x - y = 1', x: 4, y: 3 },
+    { display: '2x + y = 8 and x + y = 5', x: 3, y: 2 },
+    { display: 'x + 2y = 7 and x - y = 1', x: 3, y: 2 }
+  ];
+
+  function displaySysSteps(example) {
+    sysCustomInput1.value = example.display.split('and')[0].trim();
+    sysCustomInput2.value = example.display.split('and')[1].trim();
+    sysStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Look at both equations',
+        visual: `<div style="text-align: left;">
+          <p style="margin: 8px 0;">${example.display.split('and')[0].trim()}</p>
+          <p style="margin: 8px 0;">${example.display.split('and')[1].trim()}</p>
+        </div>`,
+        explanation: 'We need to find values for both x and y that work in BOTH equations.'
+      },
+      {
+        title: 'Step 2: Choose a method',
+        visual: `<span style="font-size: 1.1rem;"><strong>Elimination:</strong> Add or subtract equations to remove one variable</span>`,
+        explanation: 'Or use <strong>substitution</strong>: solve for one variable, then plug it into the other equation.'
+      },
+      {
+        title: 'Step 3: Solve for one variable',
+        visual: `<span style="font-size: 1.1rem;">Use the equations to find the first value</span>`,
+        explanation: 'Combine the equations cleverly to eliminate one variable.'
+      },
+      {
+        title: 'Step 4: Solve for the other variable',
+        visual: `<span style="font-size: 1.1rem;">Plug back into an original equation</span>`,
+        explanation: 'Use the value you found to get the second variable.'
+      },
+      {
+        title: '✓ Answer',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">x = ${example.x}, y = ${example.y}</span>`,
+        explanation: `The solution is the point (${example.x}, ${example.y})`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      sysStepsContainer.appendChild(stepDiv);
+    });
+
+    sysStepsContainer.style.display = 'block';
+  }
+
+  if (sysCustomBtn) {
+    sysCustomBtn.addEventListener('click', () => {
+      displaySysSteps({ display: 'System of equations', x: 0, y: 0 });
+    });
+  }
+
+  sysExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displaySysSteps(example));
+    sysExamplesContainer.appendChild(card);
+  });
+
+  // ========== FACTORING ==========
+  const factorExamplesContainer = document.getElementById('factor-examples');
+  const factorStepsContainer = document.getElementById('factor-steps-container');
+  const factorCustomInput = document.getElementById('factor-custom-input');
+  const factorCustomBtn = document.getElementById('factor-custom-btn');
+
+  const factorExamples = [
+    { display: 'x² + 5x + 6', factored: '(x + 2)(x + 3)' },
+    { display: 'x² + 7x + 12', factored: '(x + 3)(x + 4)' },
+    { display: 'x² - 5x + 6', factored: '(x - 2)(x - 3)' },
+    { display: 'x² - 1', factored: '(x + 1)(x - 1)' }
+  ];
+
+  function displayFactorSteps(example) {
+    factorCustomInput.value = example.display;
+    factorStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Look at the quadratic',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'Find two numbers that multiply to give the constant term and add to give the middle coefficient.'
+      },
+      {
+        title: 'Step 2: Find the factor pairs',
+        visual: `<span style="font-size: 1.1rem;">Look for patterns</span>`,
+        explanation: 'For quadratics of form x² + bx + c, we need numbers that multiply to c and add to b.'
+      },
+      {
+        title: 'Step 3: Write the factors',
+        visual: `<span style="font-size: 1.1rem;">Use the pattern (x + m)(x + n)</span>`,
+        explanation: 'where m and n are the numbers from Step 2.'
+      },
+      {
+        title: '✓ Factored Form',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.factored}</span>`,
+        explanation: `${example.display} = ${example.factored}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      factorStepsContainer.appendChild(stepDiv);
+    });
+
+    factorStepsContainer.style.display = 'block';
+  }
+
+  if (factorCustomBtn) {
+    factorCustomBtn.addEventListener('click', () => {
+      const expr = factorCustomInput.value.trim();
+      displayFactorSteps({ display: expr, factored: '(x + ?)(x + ?)' });
+    });
+  }
+
+  factorExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayFactorSteps(example));
+    factorExamplesContainer.appendChild(card);
+  });
+
+  // ========== QUADRATIC EQUATIONS ==========
+  const quadExamplesContainer = document.getElementById('quad-examples');
+  const quadStepsContainer = document.getElementById('quad-steps-container');
+  const quadCustomInput = document.getElementById('quad-custom-input');
+  const quadCustomBtn = document.getElementById('quad-custom-btn');
+
+  const quadExamples = [
+    { display: 'x² + 5x + 6 = 0', roots: 'x = -2 or x = -3' },
+    { display: 'x² - 5x + 6 = 0', roots: 'x = 2 or x = 3' },
+    { display: 'x² - 4 = 0', roots: 'x = 2 or x = -2' },
+    { display: 'x² + 2x - 3 = 0', roots: 'x = 1 or x = -3' }
+  ];
+
+  function displayQuadSteps(example) {
+    quadCustomInput.value = example.display;
+    quadStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Identify the quadratic',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'Quadratic equations have an x² term and equal zero.'
+      },
+      {
+        title: 'Step 2: Method 1 - Factor if possible',
+        visual: `<span style="font-size: 1.1rem;">Factor into (x + a)(x + b) = 0</span>`,
+        explanation: 'If it factors nicely, solve each factor = 0'
+      },
+      {
+        title: 'Step 3: Method 2 - Use the Quadratic Formula',
+        visual: `<span style="font-size: 1rem;"><strong>x = [-b ± √(b² - 4ac)] / 2a</strong></span>`,
+        explanation: 'This always works for any quadratic equation'
+      },
+      {
+        title: 'Step 4: Solve for x',
+        visual: `<span style="font-size: 1.1rem;">Perform the calculations</span>`,
+        explanation: 'Quadratics typically have 2 solutions (roots)'
+      },
+      {
+        title: '✓ Roots',
+        visual: `<span style="font-size: 1.3rem; font-weight: 700; color: var(--success);">${example.roots}</span>`,
+        explanation: `The solutions to the quadratic equation`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      quadStepsContainer.appendChild(stepDiv);
+    });
+
+    quadStepsContainer.style.display = 'block';
+  }
+
+  if (quadCustomBtn) {
+    quadCustomBtn.addEventListener('click', () => {
+      const expr = quadCustomInput.value.trim();
+      displayQuadSteps({ display: expr, roots: 'x = ?, x = ?' });
+    });
+  }
+
+  quadExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayQuadSteps(example));
+    quadExamplesContainer.appendChild(card);
+  });
+
+  // ========== EXPONENT RULES ==========
+  const expExamplesContainer = document.getElementById('exp-examples');
+  const expStepsContainer = document.getElementById('exp-steps-container');
+  const expCustomInput = document.getElementById('exp-custom-input');
+  const expCustomBtn = document.getElementById('exp-custom-btn');
+
+  const expExamples = [
+    { display: 'x² · x³', simplified: 'x⁵', rule: 'Add exponents when multiplying same bases' },
+    { display: 'x⁵ ÷ x²', simplified: 'x³', rule: 'Subtract exponents when dividing same bases' },
+    { display: '(x²)³', simplified: 'x⁶', rule: 'Multiply exponents when raising to a power' },
+    { display: 'x⁰', simplified: '1', rule: 'Any base to the 0 power equals 1' }
+  ];
+
+  function displayExpSteps(example) {
+    expCustomInput.value = example.display;
+    expStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Identify the operation',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: `The rule is: ${example.rule}`
+      },
+      {
+        title: 'Step 2: Apply the rule',
+        visual: `<span style="font-size: 1.1rem;">Follow the exponent rule for this operation</span>`,
+        explanation: 'Remember: the bases must be the same to use these rules!'
+      },
+      {
+        title: '✓ Simplified Form',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.simplified}</span>`,
+        explanation: `${example.display} = ${example.simplified}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      expStepsContainer.appendChild(stepDiv);
+    });
+
+    expStepsContainer.style.display = 'block';
+  }
+
+  if (expCustomBtn) {
+    expCustomBtn.addEventListener('click', () => {
+      const expr = expCustomInput.value.trim();
+      displayExpSteps({ display: expr, simplified: '?', rule: 'Apply exponent rules' });
+    });
+  }
+
+  expExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayExpSteps(example));
+    expExamplesContainer.appendChild(card);
+  });
+
+  // ========== SIMPLIFYING FRACTIONS ==========
+  const fracExamplesContainer = document.getElementById('frac-examples');
+  const fracStepsContainer = document.getElementById('frac-steps-container');
+  const fracCustomInput = document.getElementById('frac-custom-input');
+  const fracCustomBtn = document.getElementById('frac-custom-btn');
+
+  const fracExamples = [
+    { display: '6x / 9', simplified: '2x / 3', gcd: 3 },
+    { display: '8x² / 12x', simplified: '2x / 3', gcd: 4 },
+    { display: '15 / 20', simplified: '3 / 4', gcd: 5 },
+    { display: '10xy / 15y', simplified: '2x / 3', gcd: 5 }
+  ];
+
+  function displayFracSteps(example) {
+    fracCustomInput.value = example.display;
+    fracStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Look at the fraction',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'Find the greatest common divisor (GCD) of the numbers.'
+      },
+      {
+        title: `Step 2: Find the GCD`,
+        visual: `<span style="font-size: 1.1rem;">GCD = ${example.gcd}</span>`,
+        explanation: `Divide both numerator and denominator by ${example.gcd}`
+      },
+      {
+        title: 'Step 3: Cancel common factors',
+        visual: `<span style="font-size: 1.1rem;">Also cancel common variables</span>`,
+        explanation: 'Any variables that appear in both numerator and denominator cancel out.'
+      },
+      {
+        title: '✓ Simplified Form',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.simplified}</span>`,
+        explanation: `${example.display} = ${example.simplified}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      fracStepsContainer.appendChild(stepDiv);
+    });
+
+    fracStepsContainer.style.display = 'block';
+  }
+
+  if (fracCustomBtn) {
+    fracCustomBtn.addEventListener('click', () => {
+      const expr = fracCustomInput.value.trim();
+      displayFracSteps({ display: expr, simplified: '?', gcd: 1 });
+    });
+  }
+
+  fracExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayFracSteps(example));
+    fracExamplesContainer.appendChild(card);
+  });
+
+  // ========== RADICALS & SQUARE ROOTS ==========
+  const radExamplesContainer = document.getElementById('rad-examples');
+  const radStepsContainer = document.getElementById('rad-steps-container');
+  const radCustomInput = document.getElementById('rad-custom-input');
+  const radCustomBtn = document.getElementById('rad-custom-btn');
+
+  const radExamples = [
+    { display: '√12', simplified: '2√3', explanation: '12 = 4 × 3, so √12 = √4 × √3 = 2√3' },
+    { display: '√18', simplified: '3√2', explanation: '18 = 9 × 2, so √18 = √9 × √2 = 3√2' },
+    { display: '√36', simplified: '6', explanation: '36 = 6², so √36 = 6' },
+    { display: '√50', simplified: '5√2', explanation: '50 = 25 × 2, so √50 = 5√2' }
+  ];
+
+  function displayRadSteps(example) {
+    radCustomInput.value = example.display;
+    radStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Look at the radical',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'Find perfect square factors of the number under the radical.'
+      },
+      {
+        title: 'Step 2: Factor into perfect squares',
+        visual: `<span style="font-size: 1.1rem;">${example.explanation}</span>`,
+        explanation: 'Perfect squares: 1, 4, 9, 16, 25, 36, 49, 64, 81, 100...'
+      },
+      {
+        title: 'Step 3: Simplify',
+        visual: `<span style="font-size: 1.1rem;">Take square root of perfect squares outside</span>`,
+        explanation: 'Keep the rest under the radical.'
+      },
+      {
+        title: '✓ Simplified Form',
+        visual: `<span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.simplified}</span>`,
+        explanation: `${example.display} = ${example.simplified}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      radStepsContainer.appendChild(stepDiv);
+    });
+
+    radStepsContainer.style.display = 'block';
+  }
+
+  if (radCustomBtn) {
+    radCustomBtn.addEventListener('click', () => {
+      const expr = radCustomInput.value.trim();
+      displayRadSteps({ display: expr, simplified: '?', explanation: 'Factor to find perfect squares' });
+    });
+  }
+
+  radExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayRadSteps(example));
+    radExamplesContainer.appendChild(card);
+  });
+
+  // ========== POLYNOMIAL OPERATIONS ==========
+  const polyExamplesContainer = document.getElementById('poly-examples');
+  const polyStepsContainer = document.getElementById('poly-steps-container');
+  const polyCustomInput = document.getElementById('poly-custom-input');
+  const polyCustomBtn = document.getElementById('poly-custom-btn');
+
+  const polyExamples = [
+    { display: '(x + 2)(x + 3)', expanded: 'x² + 5x + 6' },
+    { display: '(x + 1)(x - 2)', expanded: 'x² - x - 2' },
+    { display: '(2x + 3)(x + 1)', expanded: '2x² + 5x + 3' },
+    { display: '(x - 4)(x - 5)', expanded: 'x² - 9x + 20' }
+  ];
+
+  function displayPolySteps(example) {
+    polyCustomInput.value = example.display;
+    polyStepsContainer.innerHTML = '';
+
+    const steps = [
+      {
+        title: 'Step 1: Identify the polynomials',
+        visual: `<span style="font-size: 1.2rem; font-weight: 600;">${example.display}</span>`,
+        explanation: 'We need to multiply these two binomials together.'
+      },
+      {
+        title: 'Step 2: Use FOIL method',
+        visual: `<span style="font-size: 1.1rem;"><strong>F</strong>irst · <strong>O</strong>uter · <strong>I</strong>nner · <strong>L</strong>ast</span>`,
+        explanation: 'Multiply each term in the first binomial by each term in the second.'
+      },
+      {
+        title: 'Step 3: Multiply all pairs',
+        visual: `<span style="font-size: 1.1rem;">Create four products, then combine like terms</span>`,
+        explanation: 'This gives us the expanded form.'
+      },
+      {
+        title: '✓ Expanded Form',
+        visual: `<span style="font-size: 1.3rem; font-weight: 700; color: var(--success);">${example.expanded}</span>`,
+        explanation: `${example.display} = ${example.expanded}`
+      }
+    ];
+
+    steps.forEach((step) => {
+      const stepDiv = document.createElement('div');
+      stepDiv.className = 'step-section';
+      stepDiv.innerHTML = `
+        <h4>${step.title}</h4>
+        <div class="step-visual">${step.visual}</div>
+        <p>${step.explanation}</p>
+      `;
+      polyStepsContainer.appendChild(stepDiv);
+    });
+
+    polyStepsContainer.style.display = 'block';
+  }
+
+  if (polyCustomBtn) {
+    polyCustomBtn.addEventListener('click', () => {
+      const expr = polyCustomInput.value.trim();
+      displayPolySteps({ display: expr, expanded: '?' });
+    });
+  }
+
+  polyExamples.forEach((example) => {
+    const card = document.createElement('button');
+    card.className = 'example-card';
+    card.innerHTML = example.display;
+    card.addEventListener('click', () => displayPolySteps(example));
+    polyExamplesContainer.appendChild(card);
+  });
 });

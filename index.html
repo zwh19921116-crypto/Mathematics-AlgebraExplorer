@@ -20,8 +20,22 @@
         <div class="brand">Algebra Explorer</div>
         <ul class="menu">
           <li><a href="#" class="menu-link active" data-section="topic-likeTerms">Combine Like Terms</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-variables">Variables & Expressions</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-pemdas">Order of Operations</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-integers">Integers & Negatives</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-oneStep">One-Step Equations</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-twoStep">Two-Step Equations</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-multiStep">Multi-Step Equations</a></li>
           <li><a href="#" class="menu-link" data-section="topic-solveEq">Solve Linear Equation</a></li>
           <li><a href="#" class="menu-link" data-section="topic-distribute">Distributive Property</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-inequalities">Solving Inequalities</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-systems">Systems of Equations</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-factoring">Factoring</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-quadratic">Quadratic Equations</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-exponents">Exponent Rules</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-fractions">Simplifying Fractions</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-radicals">Radicals & Square Roots</a></li>
+          <li><a href="#" class="menu-link" data-section="topic-polynomials">Polynomial Operations</a></li>
         </ul>
       </nav>
 
@@ -97,6 +111,245 @@
             </div>
             <button class="btn-primary" id="run-distribute">Show Steps</button>
             <div class="result" id="result-distribute"></div>
+          </div>
+        </section>
+
+        <!-- Variables & Expressions -->
+        <section id="topic-variables" class="topic">
+          <h1>Variables & Expressions</h1>
+          <p class="subtitle">Identify parts of algebraic expressions.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="var-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="var-custom-input" placeholder="e.g., 3x + 5y - 2" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="var-custom-btn">Analyze</button>
+            </div>
+            <div id="var-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Order of Operations -->
+        <section id="topic-pemdas" class="topic">
+          <h1>Order of Operations (PEMDAS)</h1>
+          <p class="subtitle">Solve expressions step-by-step using the correct order.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="pemdas-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="pemdas-custom-input" placeholder="e.g., 2 + 3 * 4" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="pemdas-custom-btn">Solve</button>
+            </div>
+            <div id="pemdas-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Integers & Negatives -->
+        <section id="topic-integers" class="topic">
+          <h1>Integers & Negatives</h1>
+          <p class="subtitle">Add, subtract, multiply with negative numbers.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="int-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="int-custom-input" placeholder="e.g., -5 + 3" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="int-custom-btn">Solve</button>
+            </div>
+            <div id="int-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- One-Step Equations -->
+        <section id="topic-oneStep" class="topic">
+          <h1>One-Step Equations</h1>
+          <p class="subtitle">Solve equations in just one operation.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="oneStep-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="oneStep-custom-input" placeholder="e.g., x + 5 = 12" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="oneStep-custom-btn">Solve</button>
+            </div>
+            <div id="oneStep-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Two-Step Equations -->
+        <section id="topic-twoStep" class="topic">
+          <h1>Two-Step Equations</h1>
+          <p class="subtitle">Solve equations using two operations.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="twoStep-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="twoStep-custom-input" placeholder="e.g., 2x + 3 = 9" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="twoStep-custom-btn">Solve</button>
+            </div>
+            <div id="twoStep-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Multi-Step Equations -->
+        <section id="topic-multiStep" class="topic">
+          <h1>Multi-Step Equations</h1>
+          <p class="subtitle">Solve complex equations with many operations.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="multiStep-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="multiStep-custom-input" placeholder="e.g., 2x + 3 + x = 12" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="multiStep-custom-btn">Solve</button>
+            </div>
+            <div id="multiStep-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Inequalities -->
+        <section id="topic-inequalities" class="topic">
+          <h1>Solving Inequalities</h1>
+          <p class="subtitle">Solve inequalities like equations (remember: flip the sign!).</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="ineq-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="ineq-custom-input" placeholder="e.g., 2x + 3 > 9" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="ineq-custom-btn">Solve</button>
+            </div>
+            <div id="ineq-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Systems of Equations -->
+        <section id="topic-systems" class="topic">
+          <h1>Systems of Equations</h1>
+          <p class="subtitle">Solve two equations together to find where they meet.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="sys-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px; flex-direction: column;">
+              <input type="text" id="sys-custom-input-1" placeholder="Equation 1: x + y = 5" style="padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <input type="text" id="sys-custom-input-2" placeholder="Equation 2: 2x - y = 4" style="padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="sys-custom-btn">Solve</button>
+            </div>
+            <div id="sys-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Factoring -->
+        <section id="topic-factoring" class="topic">
+          <h1>Factoring</h1>
+          <p class="subtitle">Break down expressions into their factors.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="factor-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="factor-custom-input" placeholder="e.g., x^2 + 5x + 6" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="factor-custom-btn">Factor</button>
+            </div>
+            <div id="factor-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Quadratic Equations -->
+        <section id="topic-quadratic" class="topic">
+          <h1>Quadratic Equations</h1>
+          <p class="subtitle">Solve equations with x² terms.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="quad-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="quad-custom-input" placeholder="e.g., x^2 + 3x + 2 = 0" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="quad-custom-btn">Solve</button>
+            </div>
+            <div id="quad-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Exponent Rules -->
+        <section id="topic-exponents" class="topic">
+          <h1>Exponent Rules</h1>
+          <p class="subtitle">Simplify expressions with powers using rules.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="exp-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="exp-custom-input" placeholder="e.g., x^2 * x^3" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="exp-custom-btn">Simplify</button>
+            </div>
+            <div id="exp-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Simplifying Fractions -->
+        <section id="topic-fractions" class="topic">
+          <h1>Simplifying Fractions</h1>
+          <p class="subtitle">Reduce fractions with variables to lowest terms.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="frac-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="frac-custom-input" placeholder="e.g., 6x/9" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="frac-custom-btn">Simplify</button>
+            </div>
+            <div id="frac-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Radicals & Square Roots -->
+        <section id="topic-radicals" class="topic">
+          <h1>Radicals & Square Roots</h1>
+          <p class="subtitle">Simplify square roots and radical expressions.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="rad-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="rad-custom-input" placeholder="e.g., √12" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="rad-custom-btn">Simplify</button>
+            </div>
+            <div id="rad-steps-container" style="display: none; margin-top: 24px;"></div>
+          </div>
+        </section>
+
+        <!-- Polynomial Operations -->
+        <section id="topic-polynomials" class="topic">
+          <h1>Polynomial Operations</h1>
+          <p class="subtitle">Add, subtract, and multiply polynomials.</p>
+          <div class="card">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Quick Examples:</p>
+            <div id="poly-examples" style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 12px; margin-bottom: 24px;"></div>
+            <hr style="border: none; border-top: 1px solid var(--line); margin: 24px 0;">
+            <p style="margin: 0 0 16px; font-weight: 600; color: var(--brand-deep);">Or Enter Your Own:</p>
+            <div style="display: flex; gap: 12px; margin-bottom: 16px;">
+              <input type="text" id="poly-custom-input" placeholder="e.g., (x + 2)(x + 3)" style="flex: 1; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px; font-family: monospace;">
+              <button class="btn-primary" id="poly-custom-btn">Expand</button>
+            </div>
+            <div id="poly-steps-container" style="display: none; margin-top: 24px;"></div>
           </div>
         </section>
       </div>
