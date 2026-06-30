@@ -14,24 +14,6 @@
   <div class="bg-orb orb-2" aria-hidden="true"></div>
   <div class="bg-grid" aria-hidden="true"></div>
 
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <h2>Algebra Explorer</h2>
-      <button class="menu-toggle" id="menu-toggle" aria-label="Toggle menu">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-    </div>
-    <ul class="nav-menu" role="navigation">
-      <li><a href="#intro" class="nav-link active" data-section="intro">Overview</a></li>
-      <li><a href="#topic-likeTerms" class="nav-link" data-section="likeTerms">Combine Like Terms</a></li>
-      <li><a href="#topic-solveEq" class="nav-link" data-section="solveEq">Solve Linear Equation</a></li>
-      <li><a href="#topic-distribute" class="nav-link" data-section="distribute">Distributive Property</a></li>
-      <li><a href="#topic-practice" class="nav-link" data-section="practice">Practice Challenge</a></li>
-    </ul>
-  </nav>
-
   <header class="hero" id="intro">
     <div class="hero-content">
       <p class="kicker">Mathematics Learning Studio</p>
@@ -45,7 +27,19 @@
   </header>
 
   <main>
-    <section id="topic-likeTerms" class="explorer section-wrap topic-section">
+    <section class="content-wrapper section-wrap">
+      <nav class="panel-nav">
+        <h3>Topics</h3>
+        <ul class="nav-menu" role="navigation">
+          <li><a href="#intro" class="nav-link active" data-section="intro">Overview</a></li>
+          <li><a href="#topic-likeTerms" class="nav-link" data-section="likeTerms">Combine Like Terms</a></li>
+          <li><a href="#topic-solveEq" class="nav-link" data-section="solveEq">Solve Linear Equation</a></li>
+          <li><a href="#topic-distribute" class="nav-link" data-section="distribute">Distributive Property</a></li>
+          <li><a href="#topic-practice" class="nav-link" data-section="practice">Practice Challenge</a></li>
+        </ul>
+      </nav>
+      <div class="content-panel">
+        <section id="topic-likeTerms" class="explorer topic-section">
       <div class="section-title">
         <h2>Combine Like Terms</h2>
         <p>Learn how to simplify expressions by grouping terms with the same variable.</p>
@@ -73,9 +67,9 @@
           <div class="result" id="result-likeTerms"></div>
         </section>
       </div>
-    </section>
+        </section>
 
-    <section id="topic-solveEq" class="explorer section-wrap topic-section">
+        <section id="topic-solveEq" class="explorer topic-section">
       <div class="section-title">
         <h2>Solve Linear Equations</h2>
         <p>Master the steps to balance equations and isolate the variable.</p>
@@ -103,9 +97,9 @@
           <div class="result" id="result-solveEq"></div>
         </section>
       </div>
-    </section>
+        </section>
 
-    <section id="topic-distribute" class="explorer section-wrap topic-section">
+        <section id="topic-distribute" class="explorer topic-section">
       <div class="section-title">
         <h2>Distributive Property</h2>
         <p>Learn how to multiply a number by a sum or difference inside parentheses.</p>
@@ -130,9 +124,9 @@
           <div class="result" id="result-distribute"></div>
         </section>
       </div>
-    </section>
+        </section>
 
-    <section id="topic-practice" class="practice section-wrap topic-section">
+        <section id="topic-practice" class="practice topic-section">
       <div class="section-title">
         <h2>Quick Practice Challenge</h2>
         <p>Try one random linear equation each time and check your answer.</p>
@@ -147,6 +141,8 @@
           <button class="action" id="check-challenge">Check</button>
         </div>
         <p id="challenge-feedback" class="feedback"></p>
+      </div>
+        </section>
       </div>
     </section>
   </main>

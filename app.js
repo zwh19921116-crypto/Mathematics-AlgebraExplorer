@@ -1,8 +1,5 @@
-// Sidebar Navigation
+// Navigation
 const navLinks = document.querySelectorAll('.nav-link');
-const menuToggle = document.getElementById('menu-toggle');
-const sidebar = document.getElementById('sidebar');
-const navMenu = document.querySelector('.nav-menu');
 
 function setActiveLink(section) {
   navLinks.forEach((link) => {
@@ -24,29 +21,7 @@ navLinks.forEach((link) => {
     if (target) {
       target.scrollIntoView({ behavior: 'smooth' });
     }
-
-    // Close mobile menu after navigation
-    if (window.innerWidth <= 720) {
-      navMenu.classList.remove('open');
-      menuToggle.classList.remove('open');
-    }
   });
-});
-
-// Mobile menu toggle
-if (menuToggle) {
-  menuToggle.addEventListener('click', () => {
-    navMenu.classList.toggle('open');
-    menuToggle.classList.toggle('open');
-  });
-}
-
-// Close menu when clicking outside
-document.addEventListener('click', (e) => {
-  if (window.innerWidth <= 720 && !e.target.closest('.sidebar')) {
-    navMenu.classList.remove('open');
-    menuToggle.classList.remove('open');
-  }
 });
 
 // Update active link on scroll
