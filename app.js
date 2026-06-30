@@ -679,6 +679,30 @@ document.addEventListener('DOMContentLoaded', function() {
           </div>
         </div>`,
         explanation: 'Example: In 3x², the coefficient is 3, variable is x, and exponent is 2.'
+      },
+      {
+        title: 'Step 4: Analyze your expression',
+        visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-size: 0.95rem; color: var(--brand-deep); line-height: 2.4;">
+            ${example.terms.map((term, idx) => {
+              const isCoeffVar = /^[+-]?\d*[a-zA-Z]/.test(term);
+              const hasExponent = /\^/.test(term) || /[²³]/.test(term);
+              
+              let analysis = '';
+              if (isCoeffVar) {
+                const coeffMatch = term.match(/^[+-]?\d*/);
+                const coeff = coeffMatch[0] || '1';
+                const varPart = term.replace(/^[+-]?\d*/, '');
+                analysis = `<strong style="color: var(--success);">${term}</strong> = Coefficient: ${coeff}, Variable: ${varPart.replace(/[\^²³]/g, '')}${hasExponent ? ', has exponent' : ''}`;
+              } else {
+                analysis = `<strong style="color: var(--success);">${term}</strong> = Constant (no variable)`;
+              }
+              
+              return `<div style="padding: 12px; background: rgba(255, 255, 255, 0.8); border-radius: 6px; margin-bottom: 8px;">${analysis}</div>`;
+            }).join('')}
+          </div>
+        </div>`,
+        explanation: `Breaking down the expression "${example.display}": Each term has been identified and its parts analyzed.`
       }
     ];
 
