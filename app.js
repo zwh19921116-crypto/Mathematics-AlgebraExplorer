@@ -915,7 +915,7 @@ document.addEventListener('DOMContentLoaded', function() {
             
             <div style="margin-bottom: 12px; color: #666; font-size: 0.95rem;">Apply ${inverseOp} ${operand} to BOTH sides:</div>
             <div style="margin-bottom: 24px;">
-              ${example.display.replace('x', 'x')} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>= ${answer} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>
+              ${example.display.split('=')[0].trim()} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>= ${example.display.split('=')[1].trim()} <span style="color: #d94a4a; font-weight: 700; font-size: 1.2rem;"> ${inverseSymbol} ${operand} </span>
             </div>
             
             <div style="padding: 12px; background: rgba(31, 138, 72, 0.2); border-radius: 6px; border-left: 3px solid var(--success);">
