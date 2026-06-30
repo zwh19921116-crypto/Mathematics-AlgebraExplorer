@@ -2185,48 +2185,132 @@ document.addEventListener('DOMContentLoaded', function() {
     polyStepsContainer.innerHTML = '';
 
     const parsed = parseBinomial(example.display);
-    let foilVisual = '';
-    let finalText = '';
+    let foilWorkingVisual = '';
+    let combineVisual = '';
     
     if (parsed) {
       const { term1, term2 } = parsed;
       if (term1 && term2) {
+        // Format terms for display in calculations
+        const formatBinomialTerm = (coeff, constant) => {
+          const coeffStr = coeff === 1 ? '' : coeff === -1 ? '-' : coeff;
+          const xPart = coeff === 0 ? '' : 'x';
+          const constPart = constant === 0 ? '' : (constant > 0 ? ` + ${constant}` : ` - ${Math.abs(constant)}`);
+          return `${coeffStr}${xPart}${constPart}`.trim();
+        };
+        
+        const term1Str = formatBinomialTerm(term1.coeff, term1.constant);
+        const term2Str = formatBinomialTerm(term2.coeff, term2.constant);
+        
         // Calculate FOIL products
         const first = term1.coeff * term2.coeff;
         const outer = term1.coeff * term2.constant;
         const inner = term1.constant * term2.coeff;
         const last = term1.constant * term2.constant;
         
-        // Format the products for display
-        const formatTerm = (val, isFirst = false) => {
-          if (val === 0) return '';
-          if (isFirst) return val === 1 ? 'x²' : val === -1 ? '-x²' : `${val}x²`;
-          return val === 1 ? 'x' : val === -1 ? '-x' : `${val}x`;
-        };
+        // Create detailed FOIL breakdown with actual calculations shown
+        const coeff1 = term1.coeff === 1 ? 'x' : term1.coeff === -1 ? '-x' : `${term1.coeff}x`;
+        const const1 = term1.constant > 0 ? `+ ${term1.constant}` : term1.constant < 0 ? `- ${Math.abs(term1.constant)}` : '';
+        const coeff2 = term2.coeff === 1 ? 'x' : term2.coeff === -1 ? '-x' : `${term2.coeff}x`;
+        const const2 = term2.constant > 0 ? `+ ${term2.constant}` : term2.constant < 0 ? `- ${Math.abs(term2.constant)}` : '';
         
-        foilVisual = `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
-          <div style="font-family: 'Courier New', monospace; font-size: 1rem; color: var(--brand-deep); margin-bottom: 16px;">
-            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px;">
-              <div style="padding: 10px; background: rgba(26, 188, 156, 0.2); border-radius: 6px; border-left: 3px solid #1abc9c;">
-                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">First</div>
-                <div style="font-weight: 700; color: var(--brand-deep);">${first}x²</div>
-              </div>
-              <div style="padding: 10px; background: rgba(155, 89, 182, 0.2); border-radius: 6px; border-left: 3px solid #9b59b6;">
-                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">Outer</div>
-                <div style="font-weight: 700; color: var(--brand-deep);">${outer > 0 ? '+' : ''}${outer}x</div>
-              </div>
-              <div style="padding: 10px; background: rgba(230, 126, 34, 0.2); border-radius: 6px; border-left: 3px solid #e67e22;">
-                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">Inner</div>
-                <div style="font-weight: 700; color: var(--brand-deep);">${inner > 0 ? '+' : ''}${inner}x</div>
-              </div>
-              <div style="padding: 10px; background: rgba(231, 76, 60, 0.2); border-radius: 6px; border-left: 3px solid #e74c3c;">
-                <div style="font-size: 0.85rem; color: #666; margin-bottom: 4px;">Last</div>
-                <div style="font-weight: 700; color: var(--brand-deep);">${last > 0 ? '+' : ''}${last}</div>
+        foilWorkingVisual = `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
+          <div style="font-family: 'Courier New', monospace; color: var(--brand-deep); line-height: 2.4;">
+            <!-- Original binomials at top -->
+            <div style="text-align: center; margin-bottom: 24px;">
+              <div style="font-size: 1.1rem; font-weight: 700; letter-spacing: 12px; color: var(--brand-deep);">
+                <span style="border: 2px solid #0a7ea4; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${coeff1}</span>
+                <span style="border: 2px solid #0a7ea4; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${const1}</span>
+                <span style="border: 2px solid #0c4c72; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${coeff2}</span>
+                <span style="border: 2px solid #0c4c72; padding: 6px 10px; border-radius: 4px; margin: 0 8px;">${const2}</span>
               </div>
             </div>
-            <div style="padding: 12px; background: rgba(31, 138, 72, 0.15); border-radius: 6px; border-left: 3px solid var(--success);">
-              <div style="font-size: 0.9rem; color: #666; margin-bottom: 4px;">Combine like terms:</div>
-              <div style="font-weight: 700; font-size: 1.1rem; color: var(--success);">${example.expanded}</div>
+            
+            <!-- FOIL Products with connections shown -->
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+              <div style="padding: 12px; background: rgba(26, 188, 156, 0.2); border-radius: 6px; border: 2px solid #1abc9c; position: relative;">
+                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 First: ${coeff1} × ${coeff2}</div>
+                <div style="font-weight: 700; font-size: 1.2rem; color: #1abc9c; text-align: center;">${first}x²</div>
+                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ From outer terms</div>
+              </div>
+              <div style="padding: 12px; background: rgba(155, 89, 182, 0.2); border-radius: 6px; border: 2px solid #9b59b6;">
+                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 Outer: ${coeff1} × ${const2}</div>
+                <div style="font-weight: 700; font-size: 1.2rem; color: #9b59b6; text-align: center;">${outer > 0 ? '+' : ''}${outer}x</div>
+                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ Outer pair</div>
+              </div>
+              <div style="padding: 12px; background: rgba(230, 126, 34, 0.2); border-radius: 6px; border: 2px solid #e67e22;">
+                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 Inner: ${const1} × ${coeff2}</div>
+                <div style="font-weight: 700; font-size: 1.2rem; color: #e67e22; text-align: center;">${inner > 0 ? '+' : ''}${inner}x</div>
+                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ Inner pair</div>
+              </div>
+              <div style="padding: 12px; background: rgba(231, 76, 60, 0.2); border-radius: 6px; border: 2px solid #e74c3c;">
+                <div style="font-size: 0.75rem; color: #666; margin-bottom: 8px; font-weight: 600;">📍 Last: ${const1} × ${const2}</div>
+                <div style="font-weight: 700; font-size: 1.2rem; color: #e74c3c; text-align: center;">${last > 0 ? '+' : ''}${last}</div>
+                <div style="font-size: 0.7rem; color: #999; margin-top: 6px; text-align: center;">↑ Constants</div>
+              </div>
+            </div>
+          </div>
+        </div>`;
+        
+        // Show how like terms are combined
+        const xTermSum = outer + inner;
+        const xTermDisplay = xTermSum === 0 ? '' : xTermSum === 1 ? 'x' : xTermSum === -1 ? '-x' : `${xTermSum}x`;
+        const lastDisplay = last > 0 ? `+ ${last}` : last < 0 ? `- ${Math.abs(last)}` : '';
+        
+        combineVisual = `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+          <div style="font-family: 'Courier New', monospace; color: var(--brand-deep); line-height: 2.8;">
+            <!-- Show trace from FOIL products to final answer -->
+            <div style="margin-bottom: 20px;">
+              <div style="font-size: 0.85rem; color: #666; font-weight: 600; margin-bottom: 12px;">📌 Trace each FOIL product to the final answer:</div>
+              
+              <div style="display: grid; grid-template-columns: 2fr 1fr 2fr; gap: 12px; align-items: center; margin-bottom: 16px;">
+                <!-- FOIL Products -->
+                <div style="text-align: center;">
+                  <div style="font-size: 0.8rem; color: #666; margin-bottom: 6px;">FOIL Products</div>
+                  <div style="padding: 10px; background: rgba(255,255,255,0.5); border-radius: 6px; border: 2px solid #999;">
+                    <div style="font-weight: 700; font-size: 1rem; margin: 4px;">
+                      <span style="background: rgba(26, 188, 156, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${first}x²</span>
+                      <span style="background: rgba(155, 89, 182, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${outer > 0 ? '+' : ''}${outer}x</span>
+                      <span style="background: rgba(230, 126, 34, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${inner > 0 ? '+' : ''}${inner}x</span>
+                      <span style="background: rgba(231, 76, 60, 0.3); padding: 3px 6px; border-radius: 3px; display: block;">${last > 0 ? '+' : ''}${last}</span>
+                    </div>
+                  </div>
+                </div>
+                
+                <!-- Arrow -->
+                <div style="text-align: center; font-size: 1.4rem; color: #1f8a48; font-weight: 700;">→</div>
+                
+                <!-- Final Answer -->
+                <div style="text-align: center;">
+                  <div style="font-size: 0.8rem; color: #666; margin-bottom: 6px;">Combine Like Terms</div>
+                  <div style="padding: 10px; background: rgba(31, 138, 72, 0.3); border-radius: 6px; border: 2px solid var(--success);">
+                    <div style="font-weight: 700; font-size: 1rem; margin: 4px;">
+                      <div style="background: rgba(26, 188, 156, 0.3); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px;">${first}x²</div>
+                      <div style="background: rgba(155, 89, 182, 0.6); padding: 3px 6px; border-radius: 3px; display: block; margin-bottom: 2px; color: white; font-weight: 800;">+ ${xTermSum}x</div>
+                      <div style="background: rgba(231, 76, 60, 0.3); padding: 3px 6px; border-radius: 3px; display: block;">${last > 0 ? '+' : ''}${last}</div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+            
+            <!-- Show the combining calculation -->
+            <div style="padding: 12px; background: rgba(155, 89, 182, 0.15); border-radius: 6px; border-left: 3px solid #9b59b6; margin-bottom: 16px;">
+              <div style="font-size: 0.85rem; color: #666; font-weight: 600; margin-bottom: 8px;">✏️ Combine the x terms:</div>
+              <div style="font-size: 1.05rem; font-weight: 700; color: var(--brand-deep); text-align: center;">
+                ${outer}x + (${inner}x) = <span style="background: rgba(155, 89, 182, 0.3); padding: 2px 6px; border-radius: 3px;">${xTermSum}x</span>
+              </div>
+            </div>
+            
+            <!-- Final expanded form with breakdown -->
+            <div style="padding: 14px; background: rgba(31, 138, 72, 0.25); border-radius: 6px; border: 3px solid var(--success); text-align: center;">
+              <div style="font-size: 0.85rem; color: #666; margin-bottom: 10px; font-weight: 600;">✓ FINAL EXPANDED FORM:</div>
+              <div style="font-size: 1.5rem; font-weight: 900; color: var(--success); letter-spacing: 1px;">
+                ${example.expanded}
+              </div>
+              <div style="font-size: 0.8rem; color: #666; margin-top: 10px; font-weight: 500;">
+                From: ${first}x² term + ${xTermSum}x combined + ${last} constant
+              </div>
             </div>
           </div>
         </div>`;
@@ -2242,30 +2326,37 @@ document.addEventListener('DOMContentLoaded', function() {
         explanation: 'We need to multiply these two binomials together to expand the expression.'
       },
       {
-        title: 'Step 2: Use FOIL method',
+        title: 'Step 2: Apply FOIL method',
         visual: `<div style="background: rgba(255, 122, 89, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--accent);">
           <div style="font-size: 1.1rem; font-weight: 600; color: var(--brand-deep); margin-bottom: 12px;">
             <strong>F</strong>irst · <strong>O</strong>uter · <strong>I</strong>nner · <strong>L</strong>ast
           </div>
           <div style="padding: 12px; background: rgba(255, 122, 89, 0.2); border-radius: 6px; font-size: 0.9rem;">
-            Multiply each term in first binomial by each term in second binomial
+            Multiply each term in the first binomial by each term in the second binomial
           </div>
         </div>`,
-        explanation: 'FOIL helps us remember to multiply all four pairs of terms.'
+        explanation: 'FOIL helps us remember to multiply all four pairs of terms correctly.'
       },
       {
-        title: 'Step 3: Multiply and combine',
-        visual: foilVisual || `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
+        title: 'Step 3: Calculate each product',
+        visual: foilWorkingVisual || `<div style="background: rgba(31, 138, 72, 0.1); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success);">
           <div style="color: var(--brand-deep); font-weight: 600;">Unable to parse expression. Use format: (ax+b)(cx+d)</div>
         </div>`,
-        explanation: 'Multiply all pairs, then add together any like terms (same variable and power).'
+        explanation: 'Each colored box shows one FOIL product with the actual multiplication calculation.'
       },
       {
-        title: '✓ Expanded Form',
+        title: 'Step 4: Combine like terms',
+        visual: combineVisual || `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
+          <span style="font-size: 1.2rem; font-weight: 700; color: var(--success);">${example.expanded}</span>
+        </div>`,
+        explanation: 'Add together all the x terms (the middle terms). These are "like terms" because they both have x.'
+      },
+      {
+        title: '✓ Final Answer',
         visual: `<div style="background: rgba(31, 138, 72, 0.15); padding: 20px; border-radius: 8px; border-left: 4px solid var(--success); text-align: center;">
           <span style="font-size: 1.4rem; font-weight: 700; color: var(--success);">${example.expanded}</span>
         </div>`,
-        explanation: `${example.display} expands to ${example.expanded}`
+        explanation: `${example.display} completely expanded is ${example.expanded}`
       }
     ];
 
